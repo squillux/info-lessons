@@ -153,10 +153,10 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
 
 <main>
 <!-- 도입 -->
-<section id="intro" data-label="도입 · 5분">
-  <span class="tag">도입</span>
+<section id="intro" data-label="도입 · 7분">
+  <span class="tag">도입 · 7분</span>
   <h2>컴퓨터는 사진과 글자를 어떻게 기억할까?</h2>
-  <p class="lead">컴퓨터 안에는 전기가 <b>흐른다(켜짐)</b>, <b>흐르지 않는다(꺼짐)</b>는 두 가지 상태만 있어요. 이것을 <b>1</b>과 <b>0</b>으로 나타냅니다.</p>
+  <p class="lead">컴퓨팅 시스템은 데이터를 디지털 형태로 바꾸어 <b>0과 1의 이진수</b>로 표현해요. 컴퓨터 안에서는 <b>전압의 높낮이</b>를 1과 0으로 나타냅니다.</p>
 
   <div class="card goal">
     <h3>🎯 학습 목표</h3>
@@ -169,19 +169,42 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
 
   <div class="card">
     <h3>📈 아날로그 데이터 vs 디지털 데이터</h3>
-    <p><b>아날로그 데이터</b>는 소리의 크기·빛의 밝기처럼 <b>연속적인 값</b>이고, <b>디지털 데이터</b>는 일정한 간격으로 끊어서 나타낸 <b>불연속적인 값</b>이에요. 막대를 움직여 끊는 간격을 바꿔 보세요.</p>
-    <canvas id="wave" height="180" style="width:100%;background:var(--bg);border-radius:12px"></canvas>
-    <div class="ctrl" style="margin-top:8px">
-      <label for="samples">나누는 칸 수</label>
-      <input type="range" id="samples" min="4" max="48" value="8" style="flex:1;min-width:160px">
-      <span class="pill" id="sampleN">8</span>
+    <div class="row" style="gap:12px">
+      <div style="flex:1 1 220px">
+        <svg viewBox="0 0 220 110" style="width:100%;max-width:280px" aria-label="아날로그 데이터 그래프">
+          <line x1="20" y1="95" x2="210" y2="95" stroke="#9aa3b5"/><line x1="20" y1="10" x2="20" y2="95" stroke="#9aa3b5"/>
+          <path d="M20 70 C50 20 70 20 90 55 S130 95 150 50 S190 30 210 45" fill="none" stroke="#2f5bea" stroke-width="3"/>
+          <text x="200" y="108" font-size="10" fill="#5b6478">시간</text><text x="2" y="14" font-size="10" fill="#5b6478">값</text>
+        </svg>
+        <p style="margin:4px 0 0"><b>아날로그 데이터</b>: 바람의 세기, 소리의 크기, 빛의 밝기처럼 <b>연속적으로 변하는 값</b></p>
+      </div>
+      <div style="flex:1 1 220px">
+        <svg viewBox="0 0 220 110" style="width:100%;max-width:280px" aria-label="디지털 데이터 그래프">
+          <line x1="20" y1="95" x2="210" y2="95" stroke="#9aa3b5"/><line x1="20" y1="10" x2="20" y2="95" stroke="#9aa3b5"/>
+          <path d="M20 95 H50 V30 H80 V95 H100 V30 H150 V95 H170 V30 H190 V95 H210" fill="none" stroke="#e09b00" stroke-width="3"/>
+          <text x="8" y="34" font-size="10" fill="#5b6478">1</text><text x="8" y="98" font-size="10" fill="#5b6478">0</text>
+          <text x="200" y="108" font-size="10" fill="#5b6478">시간</text>
+        </svg>
+        <p style="margin:4px 0 0"><b>디지털 데이터</b>: 연속된 데이터를 일정하게 끊어서 나타낸 <b>불연속적인 값</b></p>
+      </div>
     </div>
-    <p class="hint">— 파란 곡선: 아날로그 데이터 &nbsp; ■ 주황 계단: 디지털 데이터. 칸을 잘게 나눌수록 원래 모습에 가까워져요(대신 저장할 데이터는 많아져요).</p>
   </div>
 
   <div class="card">
-    <h3>💡 생각 열기: 전구로 신호 보내기</h3>
-    <p>친구와 멀리 떨어져 전구만으로 신호를 주고받는다면, 전구 <b>몇 개</b>로 <b>몇 가지</b> 신호를 보낼 수 있을까요? 전구를 눌러 켜고 꺼 보세요.</p>
+    <h3>👍 디지털 데이터로 바꾸면 무엇이 좋을까?</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px">
+      <div class="pill" style="font-weight:600;padding:10px">💾 많은 양의 데이터를 저장할 수 있어요</div>
+      <div class="pill" style="font-weight:600;padding:10px">🔍 쉽고 빠르게 검색할 수 있어요</div>
+      <div class="pill" style="font-weight:600;padding:10px">📤 복사·공유·전송이 쉽고 여럿이 함께 작업할 수 있어요</div>
+      <div class="pill" style="font-weight:600;padding:10px">🎮 음악·영상·게임 등 다른 형태로 바꿀 수 있어요</div>
+      <div class="pill" style="font-weight:600;padding:10px">🔒 삭제된 데이터를 복구하고, 암호화로 보호할 수 있어요</div>
+    </div>
+    <p class="hint" style="margin-bottom:0">💬 아날로그 데이터만의 좋은 점도 있을까요? (예: LP 음반, 손 편지)</p>
+  </div>
+
+  <div class="card">
+    <h3>💡 비트(bit): 전구로 신호 보내기</h3>
+    <p>디지털 데이터의 최소 저장 단위를 <b>비트(bit: binary digit)</b>라고 해요. 1비트는 0과 1 중 하나를 나타내요. 전구 하나를 비트 하나라고 생각하고, 전구 <b>몇 개</b>로 <b>몇 가지</b> 신호를 보낼 수 있는지 확인해 보세요.</p>
     <div class="ctrl">
       <button class="btn ghost" id="bulbMinus">전구 빼기 −</button>
       <button class="btn ghost" id="bulbPlus">전구 더하기 +</button>
@@ -194,8 +217,8 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
 </section>
 
 <!-- 활동 1 -->
-<section id="cards" data-label="활동1 · 이진수 카드">
-  <span class="tag">활동 1 · 12분</span>
+<section id="cards" data-label="활동1 · 이진수">
+  <span class="tag">활동 1 · 10분</span>
   <h2>이진수 카드로 수 만들기</h2>
   <p class="lead">카드를 누르면 뒤집혀요. 앞면(점이 보임)은 <b>1</b>, 뒷면은 <b>0</b>입니다. 보이는 점의 개수를 모두 더하면 10진수가 돼요.</p>
 
@@ -221,6 +244,18 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
   </div>
 
   <div class="card">
+    <h3>➗ 2로 나누어 이진수 구하기</h3>
+    <p>10진수를 <b>2로 계속 나누면서 나머지</b>를 적고, 나머지를 <b>아래에서 위로(오른쪽부터 왼쪽으로)</b> 나열하면 이진수가 돼요. 미션을 맞히면 그 수의 나누기 과정이 여기에 나타나요.</p>
+    <div class="ctrl">
+      <label for="divIn">10진수</label>
+      <input id="divIn" class="charin" type="number" min="1" max="255" value="19" style="width:120px">
+      <button class="btn" id="divStep">한 단계씩 ▶</button>
+      <button class="btn ghost" id="divAll">전체 보기</button>
+    </div>
+    <div id="divBox" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
     <h3>🤔 함께 생각해 봐요</h3>
     <ul>
       <li>카드의 점 개수(1, 2, 4, 8, 16)에는 어떤 규칙이 있나요?</li>
@@ -231,8 +266,8 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
 </section>
 
 <!-- 활동 2 -->
-<section id="pixels" data-label="활동2 · 픽셀 그림">
-  <span class="tag">활동 2 · 13분</span>
+<section id="pixels" data-label="활동2 · 이미지">
+  <span class="tag">활동 2 · 11분</span>
   <h2>그림도 0과 1로 저장해요</h2>
   <p class="lead">디지털 그림은 작은 점인 <b>픽셀</b>이 모여 만들어져요. 흑백 그림에서는 칸마다 칠하면 <b>1</b>, 비우면 <b>0</b>으로 저장합니다.</p>
 
@@ -275,18 +310,39 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
     <h3>🎨 픽셀 하나에 비트를 더 쓰면?</h3>
     <p>픽셀 하나를 몇 비트로 표현하느냐에 따라 나타낼 수 있는 색의 수가 달라져요.</p>
     <div class="seg" id="depth">
-      <button data-b="1" class="active">1비트</button><button data-b="2">2비트</button><button data-b="4">4비트</button><button data-b="8">8비트</button><button data-b="24">24비트</button>
+      <button data-b="1" class="active">단색(1비트)</button><button data-b="4">16색(4비트)</button><button data-b="8">256색(8비트)</button><button data-b="24">24비트</button>
     </div>
     <p>2<sup id="depthB">1</sup> = <span class="pill" id="depthN">2</span>가지 색</p>
     <div id="swatches" style="display:flex;flex-wrap:wrap;gap:3px"></div>
-    <p class="hint">24비트는 빨강(R)·초록(G)·파랑(B)에 8비트씩 써서 약 1,677만 가지 색을 표현해요(트루 컬러).</p>
+    <p class="hint">24비트는 빨강(R)·초록(G)·파랑(B)에 8비트씩 써서 16,777,216가지 색을 표현해요(트루 컬러).</p>
+  </div>
+
+  <div class="card">
+    <h3>🔍 비트맵 방식 vs 벡터 방식: 확대해 보기</h3>
+    <p><b>비트맵 방식</b>은 이미지를 <b>픽셀</b>이라는 작은 점으로, <b>벡터 방식</b>은 <b>수학적 연산</b>으로 표현해요. 막대를 움직여 두 그림을 확대해 보세요.</p>
+    <div class="ctrl"><label for="zoom">확대</label><input type="range" id="zoom" min="1" max="8" value="1" style="flex:1;min-width:160px"><span class="pill" id="zoomN">1배</span></div>
+    <div class="row" style="margin-top:12px">
+      <div style="flex:1 1 220px;text-align:center">
+        <div style="width:200px;height:200px;margin:0 auto;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center">
+          <canvas id="bmp" width="16" height="16" style="image-rendering:pixelated;width:50px;height:50px"></canvas>
+        </div>
+        <p style="margin:6px 0 0"><b>비트맵 방식</b> · jpg, png, bmp, gif<br><span class="hint">확대하면 계단 현상이 생겨요</span></p>
+      </div>
+      <div style="flex:1 1 220px;text-align:center">
+        <div style="width:200px;height:200px;margin:0 auto;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center">
+          <svg id="vec" viewBox="0 0 16 16" style="width:50px;height:50px"><circle cx="8" cy="8" r="6.5" fill="#d64545"/><rect x="7.4" y="0.2" width="1.2" height="3" rx=".5" fill="#6b4b2a"/></svg>
+        </div>
+        <p style="margin:6px 0 0"><b>벡터 방식</b> · ai, svg, pdf<br><span class="hint">확대해도 매끄러워요</span></p>
+      </div>
+    </div>
+    <p class="hint"><b>계단 현상</b>: 비트맵 그림을 확대하면 픽셀의 사각형 모양이 커져서 계단이나 톱니처럼 각이 지게 보이는 현상이에요. <b>해상도</b>(가로 픽셀 수 × 세로 픽셀 수)가 높을수록 선명한 이미지를 표현할 수 있어요.</p>
   </div>
 </section>
 
 <!-- 활동 3 -->
-<section id="text" data-label="활동3 · 문자 코드">
-  <span class="tag">활동 3 · 5분</span>
-  <h2>글자도 0과 1로!</h2>
+<section id="text" data-label="활동3 · 문자와 소리">
+  <span class="tag">활동 3 · 7분</span>
+  <h2>글자와 소리도 0과 1로!</h2>
   <p class="lead">컴퓨터는 글자마다 약속된 이진수 <b>문자 코드</b>를 사용해요. <b>아스키(ASCII) 코드</b>는 <b>7비트</b>로 128(2<sup>7</sup>)개의 문자를 나타내고, 한글처럼 더 많은 문자는 <b>유니코드</b>로 나타냅니다.</p>
   <div class="card">
     <h3>🕵️ 암호 놀이: 아스키 코드를 해독하라!</h3>
@@ -305,6 +361,25 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
     <input id="charIn" class="charin" maxlength="8" value="HI" autocomplete="off">
     <div class="chars" id="chars"></div>
     <p class="hint" style="margin-top:12px">💬 대문자 A와 소문자 a의 코드는 같을까요? 한글은 왜 더 많은 비트가 필요할까요?</p>
+    <p class="hint" style="margin:0">※ 유니코드는 UTF-8, UTF-16, UTF-32 등 여러 방식으로 저장돼요. 여기서는 글자의 유니코드 번호를 이진수로 나타낸 값을 보여 줘요.</p>
+  </div>
+
+  <div class="card">
+    <h3>🎵 소리 데이터의 디지털 표현</h3>
+    <p>소리의 파형(파란 곡선)을 일정한 간격으로 나누고, 그 값을 이진수로 바꿔요. 막대를 움직여 나누는 간격을 바꿔 보세요.</p>
+    <canvas id="wave" height="200" style="width:100%;background:var(--bg);border-radius:12px"></canvas>
+    <div class="ctrl" style="margin-top:8px">
+      <label for="samples">표본 개수</label>
+      <input type="range" id="samples" min="4" max="16" value="6" style="flex:1;min-width:160px">
+      <span class="pill" id="sampleN">6</span>
+    </div>
+    <ol style="margin:10px 0 6px;padding-left:1.3em">
+      <li><b>표본화</b>: 일정한 간격으로 소리의 크기를 추출해요(주황 점).</li>
+      <li><b>양자화</b>: 추출한 값을 0~15 사이의 숫자로 바꿔요.</li>
+      <li><b>부호화</b>: 바꾼 숫자를 이진수(4비트)로 표현해요.</li>
+    </ol>
+    <div id="waveTable" style="overflow-x:auto"></div>
+    <p class="hint">간격을 짧게 할수록(표본이 많을수록) 원래 소리에 가까워져 음질이 좋아지지만, 저장할 데이터도 많아져요.</p>
   </div>
 </section>
 
@@ -320,11 +395,12 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
   <div class="card summary">
     <h3>📝 오늘 배운 내용</h3>
     <ul>
-      <li><b>아날로그 데이터</b>는 연속적인 값, <b>디지털 데이터</b>는 불연속적인 값이에요. 디지털 데이터는 저장·편집·복사·전송이 쉬워요.</li>
+      <li><b>아날로그 데이터</b>는 연속적인 값, <b>디지털 데이터</b>는 불연속적인 값이에요. 디지털 데이터는 많은 양을 저장하고, 빠르게 검색하고, 복사·공유·전송하고, 다른 형태로 바꾸고, 복구·암호화하기 쉬워요.</li>
       <li><b>비트(bit: binary digit)</b>: 디지털 데이터의 최소 저장 단위로 0 또는 1을 나타내요. 비트가 n개면 2<sup>n</sup>가지를 표현해요. 8비트 = 1바이트.</li>
       <li><b>이진수</b>: 0과 1만 사용하는 수 체계. 10진수를 2로 계속 나눈 나머지를 오른쪽부터 왼쪽으로 나열해 구해요.</li>
       <li><b>문자</b>: 아스키 코드(7비트, 128개 문자), 유니코드(전 세계 문자)로 표현해요.</li>
       <li><b>이미지</b>: <b>비트맵 방식</b>은 픽셀로 표현해 확대하면 <b>계단 현상</b>이 생기고, <b>벡터 방식</b>은 수학적 연산으로 표현해 확대해도 깨지지 않아요. <b>해상도</b>(가로 픽셀 수 × 세로 픽셀 수)가 높을수록 선명해요.</li>
+      <li><b>소리</b>: 표본화 → 양자화 → 부호화 과정을 거쳐 이진수로 표현해요.</li>
     </ul>
   </div>
 </section>
@@ -360,7 +436,7 @@ function go(i){
   $('#where').textContent = `${cur + 1} / ${sections.length}`;
   history.replaceState(null, '', '#' + sections[cur].id);
   window.scrollTo({top: 0});
-  if (sections[cur].id === 'intro') drawWave();
+  if (sections[cur].id === 'text') drawWave();
 }
 $('#prev').onclick = () => go(cur - 1);
 $('#next').onclick = () => go(cur + 1);
@@ -453,6 +529,7 @@ $('#checkMission').onclick = () => {
   const fb = $('#missionFb'), t = MISSIONS[mi], v = cardValue();
   if (v === t){
     solved.add(mi); showMission();
+    $('#divIn').value = t; divShown = 99; renderDiv();
     fb.textContent = solved.size === MISSIONS.length
       ? `🎉 정답! ${t} = ${bin(t, 5)}₍₂₎  모든 미션 완료! 31은 카드 5장으로 만들 수 있는 가장 큰 수예요.`
       : `⭕ 정답! ${t}은(는) 2진수로 ${bin(t, 5)}이에요.`;
@@ -464,6 +541,40 @@ $('#checkMission').onclick = () => {
 };
 $('#nextMission').onclick = () => { mi = (mi + 1) % MISSIONS.length; bitState.fill(0); updateCards(); showMission(); };
 updateCards(); showMission();
+
+/* 2로 나누기 */
+let divShown = 0;
+function divSteps(n){ const s = []; while (n > 0){ s.push({n, q: Math.floor(n / 2), r: n % 2}); n = Math.floor(n / 2); } return s; }
+function renderDiv(){
+  const n = Math.max(1, Math.min(255, Math.floor(+$('#divIn').value || 1)));
+  const steps = divSteps(n), k = Math.min(divShown, steps.length);
+  let rows = steps.slice(0, k).map(s => `<tr><td>2 )</td><td class="mono" style="text-align:right">${s.n}</td><td class="hint">… 나머지</td><td class="mono" style="color:var(--brand);font-weight:800">${s.r}</td></tr>`).join('');
+  if (k === steps.length) rows += `<tr><td></td><td class="mono" style="text-align:right">0</td><td></td><td>⬆</td></tr>`;
+  const done = k === steps.length;
+  $('#divBox').innerHTML = `<table class="combo">${rows}</table>` + (done
+    ? `<p style="margin:10px 0 0">나머지를 아래에서 위로 읽으면 → <span class="pill mono" style="font-size:1.2rem">${n.toString(2)}</span>₍₂₎ &nbsp;<span class="hint">(${n.toString(2).split('').map((d, i, a) => d === '1' ? 2 ** (a.length - 1 - i) : null).filter(x => x !== null).join(' + ')} = ${n})</span></p>`
+    : `<p class="hint" style="margin:8px 0 0">몫이 0이 될 때까지 2로 나눠요.</p>`);
+  $('#divStep').disabled = done;
+}
+$('#divStep').onclick = () => { divShown++; renderDiv(); };
+$('#divAll').onclick = () => { divShown = 99; renderDiv(); };
+$('#divIn').addEventListener('input', () => { divShown = 0; renderDiv(); });
+renderDiv();
+
+/* 비트맵 vs 벡터 */
+(function(){
+  const c = $('#bmp').getContext('2d');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++){
+    const inApple = (x + .5 - 8) ** 2 + (y + .5 - 8) ** 2 <= 6.5 ** 2;
+    const stem = x >= 7 && x <= 8 && y <= 2;
+    if (inApple || stem){ c.fillStyle = stem ? '#6b4b2a' : '#d64545'; c.fillRect(x, y, 1, 1); }
+  }
+  $('#zoom').addEventListener('input', e => {
+    const z = +e.target.value, s = 50 * z + 'px';
+    $('#zoomN').textContent = z + '배';
+    for (const el of [$('#bmp'), $('#vec')]){ el.style.width = s; el.style.height = s; }
+  });
+})();
 
 /* ---------- 활동 2: 픽셀 ---------- */
 const PUZZLES = [
@@ -533,11 +644,10 @@ function renderChars(){
   for (const ch of [...$('#charIn').value].slice(0, 8)){
     const code = ch.codePointAt(0);
     const ascii = code < 128;
-    const width = ascii ? 7 : 16;
-    const b = bin(code, width).replace(/(.{8})(?=.)/g, '$1 ');
+    const b = bin(code, ascii ? 7 : 0).replace(/(.{8})(?=.)/g, '$1 ');
     box.insertAdjacentHTML('beforeend', `<div class="ch"><div class="c">${ch === ' ' ? '␣' : ch.replace(/[<>&]/g, '')}</div>
-      <div class="d">${ascii ? '아스키' : '유니코드'} 번호 ${code}</div>
-      <div class="mono">${b}</div><div class="d">${width}비트</div></div>`);
+      <div class="d">${ascii ? '아스키 코드' : '유니코드 번호'} ${code}</div>
+      <div class="mono">${b}</div><div class="d">${ascii ? '7비트 아스키 코드' : '유니코드 번호를 이진수로 나타낸 값'}</div></div>`);
   }
 }
 $('#charIn').addEventListener('input', renderChars);
@@ -545,16 +655,30 @@ renderChars();
 
 /* ---------- 도입: 아날로그 vs 디지털 ---------- */
 function drawWave(){
-  const cv = $('#wave'), n = +$('#samples').value;
+  const cv = $('#wave'), n = +$('#samples').value, dpr = devicePixelRatio || 1;
   $('#sampleN').textContent = n;
-  const w = cv.width = cv.clientWidth * devicePixelRatio, h = cv.height = 180 * devicePixelRatio;
-  const ctx = cv.getContext('2d'), f = x => h / 2 - Math.sin(x * Math.PI * 4) * h * 0.32 - Math.sin(x * Math.PI * 9) * h * 0.08;
+  if (!cv.clientWidth) return;
+  const w = cv.width = cv.clientWidth * dpr, h = cv.height = 200 * dpr, pad = 10 * dpr, ph = h - pad * 2;
+  const ctx = cv.getContext('2d');
+  const amp = x => 0.5 + Math.sin(x * Math.PI * 2) * 0.32 + Math.sin(x * Math.PI * 5) * 0.12;   // 0~1
+  const Y = v => pad + (1 - v) * ph;
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = 'rgba(255,183,3,.75)';
-  for (let i = 0; i < n; i++){ const x0 = i / n * w, y = f((i + .5) / n); ctx.fillRect(x0 + 1, y, w / n - 2, h - y); }
-  ctx.strokeStyle = '#2f5bea'; ctx.lineWidth = 3 * devicePixelRatio; ctx.beginPath();
-  for (let x = 0; x <= w; x += 2){ const y = f(x / w); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  ctx.strokeStyle = 'rgba(91,100,120,.15)'; ctx.lineWidth = 1;
+  for (let l = 0; l <= 15; l++){ const y = Y(l / 15); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+  const vals = [];
+  for (let i = 0; i < n; i++){
+    const xr = (i + .5) / n, q = Math.round(amp(xr) * 15), x = xr * w;
+    vals.push(q);
+    ctx.fillStyle = 'rgba(255,183,3,.45)'; ctx.fillRect(i / n * w + 1, Y(q / 15), w / n - 2, h - pad - Y(q / 15));
+    ctx.fillStyle = '#e07b00'; ctx.beginPath(); ctx.arc(x, Y(amp(xr)), 5 * dpr, 0, 7); ctx.fill();
+  }
+  ctx.strokeStyle = '#2f5bea'; ctx.lineWidth = 3 * dpr; ctx.beginPath();
+  for (let x = 0; x <= w; x += 2){ const y = Y(amp(x / w)); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
   ctx.stroke();
+  $('#waveTable').innerHTML = `<table class="combo"><tr><th>표본</th>${vals.map((_, i) => `<td>${i + 1}</td>`).join('')}</tr>
+    <tr><th>양자화(숫자)</th>${vals.map(v => `<td>${v}</td>`).join('')}</tr>
+    <tr><th>부호화(이진수)</th>${vals.map(v => `<td class="mono">${bin(v, 4)}</td>`).join('')}</tr></table>
+    <p class="hint" style="margin:6px 0 0">저장할 데이터: ${n}개 × 4비트 = <b>${n * 4}비트</b></p>`;
 }
 $('#samples').addEventListener('input', drawWave);
 addEventListener('resize', drawWave);
@@ -568,7 +692,6 @@ function drawDepth(b){
   for (let i = 0; i < n; i++){
     let c;
     if (b === 1) c = i ? '#000' : '#fff';
-    else if (b <= 2){ const v = Math.round(255 * i / (n - 1)); c = `rgb(${v},${v},${v})`; }
     else c = `hsl(${Math.round(360 * i / n)},${b === 24 ? 85 : 70}%,${b >= 8 ? 30 + (i % 4) * 12 : 50}%)`;
     sw.push(`<span style="width:26px;height:26px;border-radius:4px;border:1px solid var(--line);background:${c}"></span>`);
   }
@@ -612,6 +735,8 @@ const QUIZ = [
   {q:'10진수 6을 2진수로 바꾸면?', o:['110','101','011','1100'], a:0, e:'6 = 4 + 2 → 110₍₂₎'},
   {q:'1바이트(byte)는 몇 비트일까요?', o:['2비트','4비트','8비트','10비트'], a:2, e:'8비트를 묶어 1바이트라고 해요.'},
   {q:'8×8 흑백 픽셀 그림을 저장하려면 몇 비트가 필요할까요?', o:['8비트','16비트','64비트','256비트'], a:2, e:'픽셀 1개 = 1비트, 8×8 = 64개 → 64비트(8바이트)'},
+  {q:'비트맵 이미지를 구성하는 작은 점을 무엇이라고 할까요?', o:['비트','픽셀','프레임','벡터'], a:1, e:'비트맵 이미지는 픽셀(pixel)이라는 작은 점으로 이루어져요. 확대하면 계단 현상이 생겨요.'},
+  {q:'소리 데이터를 디지털로 바꾸는 과정의 순서로 알맞은 것은?', o:['양자화 → 표본화 → 부호화','표본화 → 양자화 → 부호화','부호화 → 표본화 → 양자화','표본화 → 부호화 → 양자화'], a:1, e:'일정한 간격으로 값을 추출(표본화) → 숫자로 변환(양자화) → 이진수로 표현(부호화)'},
 ];
 const answered = {};
 $('#quiz').innerHTML = QUIZ.map((x, i) => `<div class="q" data-q="${i}"><p>${i + 1}. ${x.q}</p>
