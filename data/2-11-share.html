@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>저장·공유 방법 고르기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tcard{border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px;text-align:center;min-height:120px}
+.tcard .ic{font-size:2rem}
+.tcard b{display:block;margin:4px 0}
+.tcard p{margin:0;font-size:.85rem;color:var(--muted);display:none}
+.tcard.open{border-color:var(--mint);background:var(--mint-soft)}
+.tcard.open p{display:block}
+.names{display:grid;gap:10px}
+.pair{display:flex;gap:8px;flex-wrap:wrap}
+.pair .opt{font-family:ui-monospace,Consolas,monospace;font-size:.9rem}
+.tree{font-family:ui-monospace,Consolas,monospace;background:var(--bg);border-radius:12px;padding:12px 16px;line-height:1.8;font-size:.95rem}
+</style>
+</head>
+<body data-unit="2" data-title="저장·공유 방법 고르기" data-sub="중1 Ⅱ단원 · 데이터의 수집과 관리 · 미래엔 54쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 수집과 관리</span>
+  <h1>저장·공유 방법 고르기</h1>
+  <p class="lead">데이터는 하드 디스크, USB 메모리, 온라인 저장 공간 등에 저장하고, 전자 우편이나 클라우드, SNS 등 다양한 방법으로 공유할 수 있어요. 상황에 맞는 방법을 골라 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>모둠 발표 자료를 집에서 만들어 학교 컴퓨터에서 발표해야 해요. 그런데 USB 메모리를 집에 두고 왔다면? 어떤 방법이 있었으면 좋았을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧰 저장·공유 도구 살펴보기</h3>
+      <p>카드를 눌러 각각 어떤 특징이 있는지 확인해 보세요.</p>
+      <div class="tools-grid" id="tools"></div>
+      <p class="hint" id="toolN"></p>
+    </div>
+
+    <div class="card">
+      <h3>🤔 이럴 땐 어떻게?</h3>
+      <div id="cases"></div>
+    </div>
+
+    <div class="card">
+      <h3>📁 나중에도 잘 찾으려면</h3>
+      <p>데이터를 <b>목적, 주제, 기간</b> 등에 따라 구분하여 저장하면 관리하기 좋아요. 두 이름 중 나중에 찾기 쉬운 쪽을 고르세요.</p>
+      <div id="names"></div>
+      <p style="margin-top:14px">이렇게 폴더를 나누어 저장하면 한눈에 찾을 수 있어요.</p>
+      <div class="tree">📁 정보 수업<br>&nbsp;&nbsp;├ 📁 1학기_데이터 단원<br>&nbsp;&nbsp;│&nbsp;&nbsp;├ 📄 2026-05-12_설문조사_결과.xlsx<br>&nbsp;&nbsp;│&nbsp;&nbsp;└ 📄 2026-05-19_모둠발표.pptx<br>&nbsp;&nbsp;└ 📁 2학기_프로그래밍 단원</div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>데이터는 <b>하드 디스크·USB 메모리·클라우드</b> 등에 저장하고 <b>전자 우편·클라우드·SNS·메신저</b> 등으로 공유해요. 상황에 맞는 방법을 고르고, <b>목적·주제·기간</b>에 따라 구분해 저장하면 관리하기 좋아요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 54쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const TOOLS = [
+  ['💽', '하드 디스크', '컴퓨터 안에 있어 많은 데이터를 저장해요. 다른 곳에서 쓰려면 옮겨야 해요.'],
+  ['🔌', 'USB 메모리', '컴퓨터에 꽂아 데이터를 저장하고 옮기는 휴대용 저장 장치예요. 잃어버리기 쉬워요.'],
+  ['☁️', '클라우드', '인터넷만 되면 장소와 시간에 상관없이 파일에 접근하고 공유할 수 있어요.'],
+  ['✉️', '전자 우편', '지정한 주소로 메시지와 파일을 보낼 수 있어요.'],
+  ['💬', '메신저', '실시간으로 대화하며 사진, 문서, 위치 등을 주고받아요.'],
+  ['📝', '블로그', '관심사에 대한 글, 그림, 파일을 올려 방문자와 공유해요.'],
+  ['👥', 'SNS', '사람들과 연결되어 사진과 글을 올리고 생각과 경험을 나눠요.'],
+  ['▶️', '동영상 공유 사이트', '영상을 올려 공유하거나 다른 사람의 영상을 볼 수 있어요.'],
+];
+const opened = new Set();
+$('#tools').innerHTML = TOOLS.map(([ic, n, d], i) => `<button class="tcard" data-i="${i}"><div class="ic">${ic}</div><b>${n}</b><p>${d}</p></button>`).join('');
+$$('.tcard').forEach(c => c.onclick = () => { c.classList.toggle('open'); opened.add(+c.dataset.i); $('#toolN').textContent = opened.size === TOOLS.length ? '✅ 모두 살펴봤어요! 저장한 데이터는 공유도 할 수 있는 경우가 많아요.' : `${opened.size} / ${TOOLS.length} 살펴봄`; });
+
+renderChoice($('#cases'), [
+  {icon:'🏫', t:'집에서 만든 발표 자료를 학교 컴퓨터에서 바로 열고 싶어요. (USB 없이)', a:0, e:'클라우드에 저장하면 인터넷이 되는 어느 컴퓨터에서든 열 수 있어요.'},
+  {icon:'👩‍🏫', t:'완성한 보고서 파일을 선생님께 제출하면서 짧은 인사도 함께 보내고 싶어요.', a:1, e:'전자 우편은 지정한 주소로 메시지와 파일을 함께 보낼 수 있어요.'},
+  {icon:'👫', t:'모둠 친구 4명이 같은 문서를 동시에 고치며 작업하고 싶어요.', a:0, e:'클라우드 문서는 여러 사람이 동시에 접근해 함께 편집할 수 있어요.'},
+  {icon:'📍', t:'친구에게 지금 내가 있는 위치와 사진을 바로 보내고 싶어요.', a:2, e:'메신저는 실시간 대화와 함께 사진·위치를 주고받기 좋아요.'},
+  {icon:'🎬', t:'동아리에서 만든 홍보 영상을 많은 사람에게 보여 주고 싶어요.', a:3, e:'동영상 공유 사이트에 올리면 많은 사람이 볼 수 있어요. 단, 얼굴이 나온 친구의 동의를 꼭 받아요!'},
+], ['☁️ 클라우드', '✉️ 전자 우편', '💬 메신저', '▶️ 동영상 공유 사이트']);
+
+const NAMES = [
+  ['새 문서 (3).hwp', '2026-05-12_체험학습_안전교육.hwp', 1, '날짜·주제가 들어간 이름은 열어 보지 않아도 내용을 알 수 있어요.'],
+  ['ㅁㄴㅇㄹ.xlsx', '1학년_설문조사_결과.xlsx', 1, '누가, 무엇을 담았는지 알 수 있는 이름이 좋아요.'],
+  ['최종_진짜최종_수정2.pptx', '모둠발표_v3.pptx', 1, '버전 번호를 정해 두면 어느 것이 최신인지 헷갈리지 않아요.'],
+];
+$('#names').innerHTML = NAMES.map(([a, b], i) => `<div class="choice" data-i="${i}"><p>${i + 1}. 어떤 이름이 더 좋을까요?</p><div class="pair">
+  <button class="opt" data-k="0">${a}</button><button class="opt" data-k="1">${b}</button></div><div class="explain"></div></div>`).join('');
+$$('#names .choice').forEach(c => c.querySelectorAll('.opt').forEach(btn => btn.onclick = () => {
+  const n = NAMES[+c.dataset.i], ok = +btn.dataset.k === n[2];
+  c.querySelectorAll('.opt').forEach(x => x.classList.remove('right', 'wrong'));
+  btn.classList.add(ok ? 'right' : 'wrong');
+  const ex = c.querySelector('.explain'); ex.textContent = ok ? '⭕ ' + n[3] : '❌ 나중에 이 파일만 보고 내용을 알 수 있을까요?'; ex.classList.add('show');
+}));
+
+renderQuiz($('#quiz'), [
+  {q:'인터넷이 연결되어 있으면 장소와 시간에 상관없이 파일에 접근하고 공유할 수 있는 방법은?', o:['USB 메모리','클라우드 컴퓨팅','하드 디스크'], a:1, e:'클라우드 컴퓨팅은 인터넷을 통해 데이터를 저장·관리·공유하게 해 줘요.'},
+  {q:'컴퓨터에 꽂아 데이터를 저장하고 옮기는 휴대용 저장 장치는?', o:['블로그','USB 메모리','메신저'], a:1, e:'USB 메모리는 휴대가 편리하지만 잃어버리지 않게 조심해야 해요.'},
+  {q:'데이터를 저장할 때 관리하기 좋은 방법은?', o:['모든 파일을 바탕 화면에 저장한다','목적, 주제, 기간 등에 따라 구분하여 저장한다','파일 이름을 아무렇게나 짓는다'], a:1, e:'기준을 정해 폴더와 이름을 정리하면 나중에 찾기 쉬워요.'},
+]);
+</script>
+</body>
+</html>

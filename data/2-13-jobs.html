@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터 직업 탐색</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.order{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;padding:10px;border:2px dashed var(--line);border-radius:14px;background:var(--bg)}
+.order .opt{font-size:.95rem}
+.slots{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
+.slot{min-width:96px;min-height:40px;border:2px solid var(--brand);border-radius:12px;display:flex;align-items:center;justify-content:center;padding:4px 10px;font-weight:700;background:#fff}
+.slot.empty{border-style:dashed;color:var(--muted);font-weight:400}
+.checks label{display:flex;gap:10px;align-items:center;padding:6px 10px;border-radius:10px}
+.checks label:hover{background:var(--bg)}
+.checks input{width:20px;height:20px}
+.meter{height:14px;border-radius:999px;background:var(--bg);overflow:hidden;max-width:420px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--on));transition:width .4s}
+</style>
+</head>
+<body data-unit="2" data-title="데이터 직업 탐색" data-sub="중1 Ⅱ단원 · 진로 탐색 · 미래엔 56쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 진로 탐색</span>
+  <h1>데이터 직업 탐색</h1>
+  <p class="lead">많은 데이터를 수집·저장·분석·시각화해서 의미 있는 정보를 찾아내는 직업들이 있어요. 데이터와 관련된 직업을 알아보고 나와 맞는 점을 찾아봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>동영상 앱은 내가 좋아할 만한 영상을 어떻게 알고 추천해 줄까요? 그 뒤에서는 어떤 사람들이 일하고 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📊 빅데이터 전문가는 어떤 순서로 일할까?</h3>
+      <p><b>빅데이터</b>는 전통적인 방법으로는 수집·저장·관리·분석하기 어려울 만큼 많은 양의 데이터예요. 빅데이터 전문가가 하는 일을 순서대로 눌러 보세요.</p>
+      <div class="slots" id="slots"></div>
+      <div class="order" id="pool"></div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn line" id="orderReset">다시 하기</button></div>
+      <div class="feedback" id="orderFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>💼 어떤 직업일까?</h3>
+      <div id="jobs"></div>
+    </div>
+
+    <div class="card">
+      <h3>🙋 나와 맞는 점 찾기</h3>
+      <p>데이터 관련 직업에 도움이 되는 특성이에요. 나에게 해당하는 것을 체크해 보세요. (기록은 저장되지 않아요)</p>
+      <div class="checks" id="traits"></div>
+      <div class="meter" style="margin-top:8px"><i id="meter"></i></div>
+      <p id="traitMsg" class="hint"></p>
+      <p class="hint">🔗 더 알아보기: <a href="https://www.career.go.kr" target="_blank" rel="noopener">커리어넷</a>, <a href="https://www.work24.go.kr" target="_blank" rel="noopener">고용24</a>에서 직업 정보를 찾아볼 수 있어요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>빅데이터 전문가</b>는 많은 데이터를 수집·저장·분석·시각화해 의미 있는 정보를 찾고 공유해요. 데이터 분석가, 데이터 과학자, 데이터 엔지니어 등 데이터 관련 직업은 앞으로 더 중요해질 거예요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 56쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+/* 일의 순서 */
+const STEPS = ['📥 수집', '💾 저장', '🔬 분석', '📈 시각화', '📢 공유'];
+let picked = [], shuffled = [];
+function resetOrder(){ picked = []; shuffled = STEPS.map((s, i) => i).sort(() => Math.random() - .5); renderOrder(); $('#orderFb').className = 'feedback'; }
+function renderOrder(){
+  $('#slots').innerHTML = STEPS.map((_, i) => `<span class="slot${picked[i] === undefined ? ' empty' : ''}">${picked[i] === undefined ? i + 1 : STEPS[picked[i]]}</span>${i < STEPS.length - 1 ? '→' : ''}`).join('');
+  $('#pool').innerHTML = shuffled.filter(i => !picked.includes(i)).map(i => `<button class="opt" data-i="${i}">${STEPS[i]}</button>`).join('') || '<span class="hint">모두 골랐어요!</span>';
+  $$('#pool .opt').forEach(b => b.onclick = () => {
+    picked.push(+b.dataset.i); renderOrder();
+    if (picked.length === STEPS.length){
+      const ok = picked.every((v, i) => v === i);
+      feedback($('#orderFb'), ok, ok ? '🎉 정답! 데이터를 실시간으로 수집·저장하고, 분석해 시각화한 뒤 결과를 공유해요.' : '순서가 조금 달라요. 데이터가 있어야 저장하고, 저장해야 분석할 수 있겠죠? 다시 해 보세요.');
+    }
+  });
+}
+$('#orderReset').onclick = resetOrder;
+resetOrder();
+
+renderChoice($('#jobs'), [
+  {icon:'📝', t:'데이터를 수집·정리하고 분석해서 보고서를 쓰거나 시각화해요.', a:0, e:'데이터 분석가예요.'},
+  {icon:'🤖', t:'빅데이터를 분석하고 머신러닝과 예측 모델로 새로운 가치를 만들어요.', a:1, e:'데이터 과학자예요.'},
+  {icon:'🏗️', t:'다른 사람들이 데이터를 쉽게 분석할 수 있도록 환경을 만들고 데이터 시설(인프라)을 관리해요.', a:2, e:'데이터 엔지니어예요.'},
+  {icon:'🌐', t:'대량의 데이터로 사람들의 행동이나 시장의 변화를 분석해 도움이 되는 정보를 제공해요.', a:3, e:'빅데이터 전문가예요.'},
+], ['데이터 분석가', '데이터 과학자', '데이터 엔지니어', '빅데이터 전문가']);
+
+const TRAITS = ['🔢 수학이나 논리 퍼즐을 푸는 게 즐겁다', '🗺️ 그래프나 도형, 지도를 보면 금방 이해된다', '🌏 세계 소식이나 새로운 유행에 호기심이 많다', '🔍 꼼꼼하게 살펴보고 탐구하는 것을 좋아한다', '🤝 여러 사람과 협력하는 것이 좋다', '💻 컴퓨터로 무언가 만드는 것이 재미있다'];
+$('#traits').innerHTML = TRAITS.map((t, i) => `<label><input type="checkbox" data-i="${i}"> ${t}</label>`).join('');
+function traitUpd(){
+  const n = $$('#traits input').filter(c => c.checked).length;
+  $('#meter').style.width = (n / TRAITS.length * 100) + '%';
+  $('#traitMsg').textContent = n === 0 ? '' : n >= 4 ? `${n}개! 데이터 관련 직업과 잘 맞는 특성이 많아요. 관심 있는 직업을 더 찾아보세요.` : `${n}개! 지금 체크하지 않은 특성도 정보 수업을 하며 충분히 키울 수 있어요.`;
+}
+$$('#traits input').forEach(c => c.onchange = traitUpd);
+
+renderQuiz($('#quiz'), [
+  {q:'전통적인 방법으로는 수집·저장·분석하기 어려울 만큼 많은 양의 데이터는?', o:['메타데이터','빅데이터','아날로그 데이터'], a:1, e:'빅데이터는 아주 많은 양의 데이터로, 분석·시각화를 위한 다양한 도구와 기술이 필요해요.'},
+  {q:'빅데이터 전문가에게 필요한 능력으로 거리가 먼 것은?', o:['수리·논리력','데이터를 시각화하는 공간 지각 능력','데이터를 보지 않고 짐작하는 능력'], a:2, e:'데이터에 근거해 판단하는 것이 핵심이에요.'},
+]);
+</script>
+</body>
+</html>

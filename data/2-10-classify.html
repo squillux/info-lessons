@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터 분류 정리함</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.pile{display:flex;flex-wrap:wrap;gap:6px;min-height:44px;padding:10px;border:2px dashed var(--line);border-radius:14px;background:var(--bg)}
+.file{border:2px solid var(--line);background:#fff;border-radius:10px;padding:5px 10px;font-size:.88rem;font-weight:600}
+.file.sel{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.file.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.file.good{border-color:var(--ok);background:var(--ok-soft)}
+.folders{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
+.folder{border:2px solid #f7dd8f;background:var(--yellow-soft);border-radius:14px;padding:8px;min-height:110px;cursor:pointer}
+.folder>b{display:block;margin-bottom:6px}
+.folder .file{display:inline-block;margin:2px}
+table.sheet{border-collapse:collapse;width:100%;max-width:560px;font-size:.95rem}
+table.sheet th,table.sheet td{border:1px solid var(--line);padding:5px 10px;text-align:center}
+table.sheet th{background:var(--bg)}
+table.sheet .rh{background:var(--bg);color:var(--muted);width:34px}
+table.sheet tr.g1 td:not(.rh){background:#eef3ff}
+table.sheet tr.g2 td:not(.rh){background:#fff6db}
+table.sheet tr.g3 td:not(.rh){background:#e2f7f4}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.photo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;font-size:.8rem;color:var(--muted)}
+.photo .pic{font-size:2.2rem;text-align:center}
+.grp-h{font-weight:800;margin:12px 0 6px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.day{border:2px solid var(--line);border-radius:14px;padding:10px;background:#fff}
+.dish{display:block;width:100%;text-align:left;border:2px solid transparent;background:var(--bg);border-radius:10px;padding:6px 10px;margin:4px 0;font-size:.92rem}
+.dish small{color:var(--muted)}
+.dish.on{border-color:var(--pink);background:var(--pink-soft)}
+.dish.miss{border-color:var(--bad)}
+.dish.extra{border-color:var(--bad);background:var(--bad-soft)}
+</style>
+</head>
+<body data-unit="2" data-title="데이터 분류 정리함" data-sub="중1 Ⅱ단원 · 데이터의 수집과 관리 · 미래엔 52~53쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 수집과 관리</span>
+  <h1>데이터 분류 정리함</h1>
+  <p class="lead">수집한 데이터를 <b>형식</b>, <b>의미</b> 등의 기준으로 분류하면 문제 해결에 필요한 데이터를 찾기 쉬워요. 뒤섞인 데이터를 기준을 세워 정리해 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>체험 학습을 준비하며 모은 사진, 영상, 문서, 음악 파일 수십 개가 바탕 화면에 뒤섞여 있어요. 필요한 파일을 빨리 찾으려면 어떻게 정리하면 좋을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🗂️ 같은 파일, 다른 기준</h3>
+      <p>파일을 누른 다음 넣을 폴더를 누르세요. 먼저 <b>형식</b>으로 정리하고, 다음에는 같은 파일을 <b>의미(쓰임)</b>로 정리해 봐요.</p>
+      <div class="seg" id="mode"><button data-m="0" class="active">① 형식에 따라</button><button data-m="1">② 의미에 따라</button></div>
+      <div class="pile" id="pile"></div>
+      <div class="folders" id="folders"></div>
+      <div class="ctrl" style="margin-top:12px"><button class="btn" id="sortCheck">채점하기</button><button class="btn line" id="sortReset">다시 하기</button></div>
+      <div class="feedback" id="sortFb"></div>
+      <p class="hint">💬 두 기준으로 정리한 결과를 비교해 보세요. 어떤 때는 형식 기준이, 어떤 때는 의미 기준이 더 편리할까요?</p>
+    </div>
+
+    <div class="card">
+      <h3>📊 스프레드시트로 정렬하기</h3>
+      <p>체험 학습 희망 조사 결과예요. <b>스프레드시트</b>는 행과 열로 이루어진 표의 칸(셀)에 데이터를 넣어 계산·비교·검색할 수 있는 응용 프로그램이에요. 정렬 기준을 바꿔 보세요.</p>
+      <div class="ctrl" id="sortBy" style="margin-bottom:10px"></div>
+      <div class="scroll-x"><table class="sheet" id="sheet"></table></div>
+      <p class="hint" id="sheetQ">💬 정렬 기준을 누르면 같은 값끼리 모여요. 4월에 가고 싶은 학생은 몇 명일까요?</p>
+    </div>
+
+    <div class="card">
+      <h3>🏷️ 메타데이터로 사진 정리하기</h3>
+      <p><b>메타데이터</b>는 데이터에 대한 데이터예요. 스마트폰 사진에는 촬영 날짜, 장소, 크기 같은 정보가 함께 저장되어 있어서, 폴더를 따로 만들지 않아도 여러 기준으로 정리할 수 있어요.</p>
+      <div class="seg" id="metaBy"><button data-k="none" class="active">찍은 순서</button><button data-k="place">장소별</button><button data-k="date">날짜별</button><button data-k="who">함께 찍힌 친구별</button></div>
+      <div id="photos"></div>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 씨마스 중학교 정보 67쪽</p>
+    </div>
+
+    <div class="card">
+      <h3>🍱 급식 알레르기 음식 찾기</h3>
+      <p>가상 식단표에서 알레르기를 일으킬 수 있는 음식을 찾아 분류해요. 메뉴 옆 숫자가 알레르기 유발 식품 번호예요.</p>
+      <p class="hint" style="margin-top:0">1 난류 · 2 우유 · 3 메밀 · 4 땅콩 · 5 대두 · 6 밀 · 7 고등어 · 8 게 · 9 새우 · 10 돼지고기 · 11 복숭아 · 12 토마토 · 13 아황산류 · 14 호두 · 15 닭고기 · 16 쇠고기 · 17 오징어 · 18 조개류 · 19 잣</p>
+      <div class="ctrl" style="margin-bottom:10px"><b>찾을 재료</b><div class="seg" id="allergen" style="margin:0"></div></div>
+      <div class="menu" id="menu"></div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn" id="menuCheck">채점하기</button></div>
+      <div class="feedback" id="menuFb"></div>
+      <div id="menuTable" class="scroll-x" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>데이터는 <b>형식</b>(사진·동영상·문서·소리)이나 <b>의미</b>(쓰임) 등 목적에 맞는 기준으로 분류해요. <b>스프레드시트의 정렬</b>이나 <b>메타데이터</b>를 활용하면 같은 데이터를 여러 기준으로 쉽게 정리할 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 52~53쪽 내용을 바탕으로 재구성 · 메타데이터 참고: 씨마스 중학교 정보 67쪽 · 파일, 학생, 식단은 모두 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+/* 1. 형식/의미 분류: [이름, 형식 번호, 의미 번호] */
+const FILES = [
+  ['🖼️ 숙소 방 사진.jpg', 0, 0], ['🎬 박물관 소개 영상.mp4', 1, 0], ['📄 희망지 조사 결과.xlsx', 2, 0],
+  ['🖼️ 화재 대피 안내도.png', 0, 1], ['🎬 안전 수칙 영상.mp4', 1, 1], ['📄 응급 처치 안내.pdf', 2, 1],
+  ['🖼️ 도자기 만들기 사진.jpg', 0, 2], ['🎵 장기 자랑 음악.mp3', 3, 2], ['🎬 체험 활동 영상.mp4', 1, 2],
+  ['📄 버스 좌석 배치표.hwp', 2, 3], ['🎵 개회식 음원.mp3', 3, 3], ['📄 일정 안내문.hwp', 2, 3],
+];
+const FOLDERS = [['🖼️ 사진', '🎬 동영상', '📄 문서', '🎵 소리·음악'], ['📍 장소 정하기', '🦺 안전 교육', '🎨 체험 활동', '📋 행사 진행']];
+let mode = 0, place = FILES.map(() => -1), sel = -1;
+function renderSort(){
+  const chip = i => `<button class="file${i === sel ? ' sel' : ''}" data-i="${i}">${FILES[i][0]}</button>`;
+  $('#pile').innerHTML = FILES.map((_, i) => place[i] < 0 ? chip(i) : '').join('') || '<span class="hint">모든 파일을 폴더에 넣었어요. 채점해 보세요!</span>';
+  $('#folders').innerHTML = FOLDERS[mode].map((f, k) => `<div class="folder" data-k="${k}"><b>📁 ${f}</b>${FILES.map((_, i) => place[i] === k ? chip(i) : '').join('')}</div>`).join('');
+  $$('#pile .file, .folder .file').forEach(b => b.onclick = e => { e.stopPropagation(); const i = +b.dataset.i; sel = sel === i ? -1 : i; renderSort(); });
+  $$('.folder').forEach(f => f.onclick = () => { if (sel < 0) return; place[sel] = +f.dataset.k; sel = -1; $('#sortFb').className = 'feedback'; renderSort(); });
+}
+$$('#mode button').forEach(b => b.onclick = () => { mode = +b.dataset.m; $$('#mode button').forEach(x => x.classList.toggle('active', x === b)); place.fill(-1); sel = -1; $('#sortFb').className = 'feedback'; renderSort(); });
+$('#sortReset').onclick = () => { place.fill(-1); sel = -1; $('#sortFb').className = 'feedback'; renderSort(); };
+$('#sortCheck').onclick = () => {
+  let wrong = 0, left = 0;
+  renderSort();
+  FILES.forEach((f, i) => {
+    if (place[i] < 0){ left++; return; }
+    const ok = place[i] === f[1 + mode]; if (!ok) wrong++;
+    $$(`.folder .file[data-i="${i}"]`).forEach(b => b.classList.add(ok ? 'good' : 'wrong'));
+  });
+  feedback($('#sortFb'), !wrong && !left, left ? `아직 넣지 않은 파일이 ${left}개 있어요.` : wrong ? `빨간 파일 ${wrong}개를 다시 생각해 보세요.` : (mode === 0 ? '🎉 형식 분류 완료! 이번엔 ② 의미에 따라 정리해 보세요.' : '🎉 의미 분류 완료! 같은 파일도 기준에 따라 다르게 묶여요.'));
+};
+renderSort();
+
+/* 2. 스프레드시트 정렬 (가상 학생) */
+const ROWS = [['1학년','학생 가','4월','박물관'],['3학년','학생 나','4월','미술관'],['3학년','학생 다','5월','유적지'],['1학년','학생 라','6월','유적지'],['2학년','학생 마','5월','박물관'],['2학년','학생 바','4월','미술관'],['2학년','학생 사','6월','미술관'],['1학년','학생 아','5월','미술관']];
+const HEAD = ['학년','이름','희망 시기','희망지'];
+let sortCol = -1;
+function renderSheet(){
+  let rows = ROWS.slice();
+  if (sortCol >= 0) rows.sort((a, b) => a[sortCol].localeCompare(b[sortCol], 'ko'));
+  const groups = sortCol >= 0 ? [...new Set(rows.map(r => r[sortCol]))] : [];
+  $('#sheet').innerHTML = `<tr><th class="rh"></th>${'ABCD'.split('').map(c => `<th>${c}</th>`).join('')}</tr>
+    <tr><td class="rh">1</td>${HEAD.map(h => `<th>${h}</th>`).join('')}</tr>` +
+    rows.map((r, i) => `<tr class="${sortCol >= 0 ? 'g' + (groups.indexOf(r[sortCol]) % 3 + 1) : ''}"><td class="rh">${i + 2}</td>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+}
+$('#sortBy').innerHTML = '<b>정렬 기준</b>' + [0, 2, 3].map(c => `<button class="btn ghost" data-c="${c}">${HEAD[c]}</button>`).join('') + '<button class="btn line" data-c="-1">원래대로</button>';
+$$('#sortBy button').forEach(b => b.onclick = () => { sortCol = +b.dataset.c; $$('#sortBy button').forEach(x => x.style.outline = x === b && sortCol >= 0 ? '3px solid var(--brand)' : ''); renderSheet(); });
+renderSheet();
+
+/* 3. 메타데이터 */
+const PHOTOS = [
+  {pic:'🏯', date:'5월 13일', place:'경주', who:'가은, 나래'}, {pic:'🍜', date:'5월 13일', place:'경주', who:'나래'},
+  {pic:'🌊', date:'5월 14일', place:'부산', who:'가은, 다온'}, {pic:'🎡', date:'5월 14일', place:'부산', who:'다온'},
+  {pic:'🏺', date:'5월 13일', place:'경주', who:'다온'}, {pic:'🦀', date:'5월 15일', place:'부산', who:'가은'},
+];
+function renderPhotos(k){
+  const card = p => `<div class="photo"><div class="pic">${p.pic}</div>📅 ${p.date}<br>📍 ${p.place}<br>👥 ${p.who}</div>`;
+  if (k === 'none'){ $('#photos').innerHTML = `<div class="photos">${PHOTOS.map(card).join('')}</div>`; return; }
+  const keys = k === 'who' ? [...new Set(PHOTOS.flatMap(p => p.who.split(', ')))] : [...new Set(PHOTOS.map(p => p[k]))].sort();
+  $('#photos').innerHTML = keys.map(v => `<div class="grp-h">${k === 'place' ? '📍' : k === 'date' ? '📅' : '👤'} ${v}</div>
+    <div class="photos">${PHOTOS.filter(p => k === 'who' ? p.who.split(', ').includes(v) : p[k] === v).map(card).join('')}</div>`).join('');
+}
+$$('#metaBy button').forEach(b => b.onclick = () => { $$('#metaBy button').forEach(x => x.classList.toggle('active', x === b)); renderPhotos(b.dataset.k); });
+renderPhotos('none');
+
+/* 4. 급식 알레르기 (가상 식단) */
+const MENU = [
+  ['월', [['현미밥',[5]],['미역국',[5,13,18]],['돈가스',[1,2,5,6,10,12]],['양배추 샐러드',[1,5,12]],['배추김치',[9]]]],
+  ['화', [['카레라이스',[2,5,6,10,16]],['꽃게탕',[5,6,8,9,13]],['달걀말이',[1,5]],['깍두기',[9]],['우유 푸딩',[2]]]],
+  ['수', [['짜장밥',[5,6,10,13]],['굴 무국',[5,18]],['치킨 텐더',[1,5,6,15]],['단무지',[13]],['딸기 요구르트',[2]]]],
+];
+const ALLERGEN = [[2,'우유'],[8,'게'],[18,'조개류']];
+let al = 0; const pick = ALLERGEN.map(() => new Set());
+$('#allergen').innerHTML = ALLERGEN.map(([n, t], i) => `<button data-a="${i}" class="${i ? '' : 'active'}">${t}(${n})</button>`).join('');
+$$('#allergen button').forEach(b => b.onclick = () => { al = +b.dataset.a; $$('#allergen button').forEach(x => x.classList.toggle('active', x === b)); $('#menuFb').className = 'feedback'; renderMenu(); });
+function renderMenu(check){
+  const n = ALLERGEN[al][0];
+  $('#menu').innerHTML = MENU.map(([d, dishes], di) => `<div class="day"><b>${d}요일</b>${dishes.map(([name, codes], k) => {
+    const id = di + '-' + k, on = pick[al].has(id), has = codes.includes(n);
+    const cls = on ? (check && !has ? 'dish on extra' : 'dish on') : (check && has ? 'dish miss' : 'dish');
+    return `<button class="${cls}" data-id="${id}">${name} <small>(${codes.join(', ')})</small></button>`; }).join('')}</div>`).join('');
+  $$('.dish').forEach(b => b.onclick = () => { const s = pick[al]; s.has(b.dataset.id) ? s.delete(b.dataset.id) : s.add(b.dataset.id); $('#menuFb').className = 'feedback'; renderMenu(); });
+}
+$('#menuCheck').onclick = () => {
+  const n = ALLERGEN[al][0];
+  const answer = new Set(); MENU.forEach(([, dishes], di) => dishes.forEach(([, codes], k) => codes.includes(n) && answer.add(di + '-' + k)));
+  const s = pick[al], ok = s.size === answer.size && [...s].every(x => answer.has(x));
+  renderMenu(true);
+  feedback($('#menuFb'), ok, ok ? `🎉 ${ALLERGEN[al][1]}이(가) 들어간 음식을 모두 찾았어요! 다른 재료도 찾아보세요.` : '빨간 테두리는 빠뜨린 음식, 빨간 바탕은 잘못 고른 음식이에요. 번호를 다시 확인해 보세요.');
+  $('#menuTable').innerHTML = `<table class="tbl"><tr><th>구분</th>${MENU.map(([d]) => `<th>${d}</th>`).join('')}</tr>` + ALLERGEN.map(([code, t]) =>
+    `<tr><th>${t}이(가) 들어간 음식</th>${MENU.map(([, dishes]) => `<td>${dishes.filter(([, c]) => c.includes(code)).map(([nm]) => nm).join(', ') || '-'}</td>`).join('')}</tr>`).join('') + '</table><p class="hint">↑ 분류 결과를 표로 정리하면 한눈에 볼 수 있어요.</p>';
+};
+renderMenu();
+
+renderQuiz($('#quiz'), [
+  {q:'사진, 동영상, 문서, 음악으로 나누는 것은 어떤 기준의 분류일까요?', o:['형식에 따른 분류','의미에 따른 분류'], a:0, e:'파일의 형태(형식)를 기준으로 나눈 거예요.'},
+  {q:'스프레드시트에서 같은 희망지끼리 모아 보려면 어떤 기능을 쓰면 좋을까요?', o:['정렬','글꼴 바꾸기','인쇄'], a:0, e:'희망지 열을 기준으로 정렬하면 같은 값끼리 모여요.'},
+  {q:'사진에 저장된 촬영 날짜, 장소 같은 "데이터에 대한 데이터"는?', o:['메타데이터','빅데이터','아스키 코드'], a:0, e:'메타데이터를 활용하면 사진을 날짜·장소별로 쉽게 정리할 수 있어요.'},
+]);
+</script>
+</body>
+</html>

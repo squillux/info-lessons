@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>똑똑한 검색과 믿을 만한 출처</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.engine{border:2px solid var(--line);border-radius:18px;padding:14px;background:var(--bg)}
+.sbar{display:flex;gap:8px}
+.sbar input{flex:1;min-width:0;font-size:1.1rem;padding:10px 14px;border:2px solid var(--brand);border-radius:999px;background:#fff;color:var(--ink)}
+.sbar button{border-radius:999px}
+.opts-row{display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0 4px;align-items:center;font-size:.9rem}
+.opts-row .seg{margin:0}
+.opts-row .seg button{padding:4px 10px;font-size:.85rem}
+.results{display:grid;gap:8px;margin-top:10px}
+.res{background:#fff;border-radius:12px;padding:10px 14px;border:1px solid var(--line)}
+.res b{color:#1a4fd8}
+.res small{color:var(--muted)}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px}
+.img{background:#fff;border-radius:12px;border:1px solid var(--line);padding:8px;text-align:center;font-size:.85rem}
+.img .pic{font-size:2.6rem;line-height:1.3}
+.count{font-weight:700;color:var(--muted);font-size:.9rem}
+.mis{display:flex;gap:10px;align-items:flex-start;background:var(--yellow-soft);border:2px solid #f7dd8f;border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.mis .no{flex:0 0 auto;font-family:var(--cute);font-size:1.2rem}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.tips div{background:var(--brand-soft);border-radius:12px;padding:8px 12px;font-size:.92rem}
+.tips code{background:#fff;border-radius:6px;padding:0 6px;font-weight:700}
+</style>
+</head>
+<body data-unit="2" data-title="똑똑한 검색과 믿을 만한 출처" data-sub="중1 Ⅱ단원 · 데이터의 수집과 관리 · 미래엔 51쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 수집과 관리</span>
+  <h1>똑똑한 검색과 믿을 만한 출처</h1>
+  <p class="lead">검색 엔진은 입력한 검색어와 일치하거나 비슷한 정보를 찾아 주는 프로그램이에요. 검색어와 검색 옵션을 잘 쓰면 필요한 데이터를 더 정확하고 빠르게 모을 수 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>검색했는데 원하지 않는 결과가 너무 많이 나와서 한참 헤맨 적이 있나요? 검색 결과에 나온 정보는 모두 믿어도 될까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🔍 검색 엔진 연습장</h3>
+      <div class="tips" style="margin-bottom:12px">
+        <div>① 검색어는 <b>키워드 중심의 명사</b>로</div>
+        <div>② 정확히 일치: <code>"데이터 수집"</code></div>
+        <div>③ 단어 제외: <code>-빅데이터</code></div>
+        <div>④ 최신 결과: <b>검색 기간</b> 설정</div>
+        <div>⑤ 이미지는 <b>저작권 범위(CCL)</b> 설정</div>
+      </div>
+      <div class="mis"><span class="no" id="misNo">미션 1</span><div><div id="misText"></div><div class="progress" id="misProg" style="margin-top:6px"></div></div></div>
+      <div class="engine">
+        <div class="sbar"><input id="q" placeholder="검색어를 입력하세요" autocomplete="off"><button class="btn" id="go">검색</button></div>
+        <div class="opts-row">
+          <div class="seg" id="tab"><button data-v="web" class="active">웹 문서</button><button data-v="img">이미지</button></div>
+          <span>기간</span><div class="seg" id="period"><button data-v="99999" class="active">전체</button><button data-v="1">1일</button><button data-v="31">1개월</button><button data-v="365">1년</button></div>
+          <span id="cclWrap" hidden>저작권</span><div class="seg" id="ccl" hidden><button data-v="all" class="active">모든 이미지</button><button data-v="ccl">CCL</button></div>
+        </div>
+        <div class="count" id="count"></div>
+        <div id="results"></div>
+      </div>
+      <div class="feedback" id="misFb"></div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn ghost" id="misNext" hidden>다음 미션 ▶</button></div>
+      <p class="hint">※ 연습용 가상 검색 엔진이에요. 실제 검색 엔진마다 옵션 이름과 쓰는 법이 조금씩 달라요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧐 믿어도 될까?</h3>
+      <p>인터넷으로 데이터를 모을 때는 <b>출처가 명확하고 믿을 만한지</b>, 편견이나 선입견은 없는지, <b>허위 정보</b>는 아닌지 확인하고 비판적으로 받아들여야 해요.</p>
+      <div id="trust"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>검색어는 <b>명사 키워드</b>로 쓰고 <b>큰따옴표, 제외(-), 기간, 저작권(CCL)</b> 옵션으로 결과를 좁혀요. 찾은 데이터는 <b>출처와 신뢰성</b>을 꼭 확인해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 51쪽 내용을 바탕으로 재구성 · 검색 결과는 모두 연습용 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+/* 가상 검색 데이터: k = 문서 속 단어 */
+const DOCS = [
+  {id:1, t:'떡볶이 조리법: 국물 떡볶이 쉽게 만들기', s:'요리 블로그', d:200, k:'떡볶이 조리법 재료 떡 어묵 고추장'},
+  {id:2, t:'학교 앞 떡볶이 맛집 BEST 5 (할인 쿠폰)', s:'광고 블로그', d:30, k:'떡볶이 맛집 할인 쿠폰'},
+  {id:3, t:'떡볶이의 역사와 조리법의 변화', s:'온라인 백과사전', d:900, k:'떡볶이 역사 조리법 변화'},
+  {id:4, t:'데이터 수집 방법 총정리', s:'교육청 자료실', d:400, k:'데이터 수집 방법 설문 조사 인터뷰 관찰 실험'},
+  {id:5, t:'빅데이터 시대의 데이터 수집 방법', s:'IT 뉴스', d:20, k:'빅데이터 데이터 수집 방법 센서'},
+  {id:6, t:'수집 방법이 다양한 데이터 이야기', s:'개인 블로그', d:100, k:'다양한 데이터 이야기 수집 방법'},
+  {id:7, t:'이번 달 급식 메뉴 안내', s:'○○중학교 누리집', d:5, k:'급식 메뉴 식단표 알레르기'},
+  {id:8, t:'작년 급식 메뉴 인기 순위', s:'학교 신문', d:300, k:'급식 메뉴 인기 순위'},
+  {id:9, t:'학교 급식 메뉴 영양 정보', s:'공공 데이터 포털', d:25, k:'학교 급식 메뉴 영양 정보 공공 데이터'},
+];
+const IMGS = [
+  {id:21, t:'고양이 사진', pic:'🐱', d:50, ccl:true, k:'고양이 사진'},
+  {id:22, t:'고양이 사진', pic:'😺', d:10, ccl:false, k:'고양이 사진'},
+  {id:23, t:'고양이 그림', pic:'🐈', d:400, ccl:true, k:'고양이 그림'},
+  {id:24, t:'강아지 사진', pic:'🐶', d:70, ccl:true, k:'강아지 사진'},
+  {id:25, t:'고양이 캐릭터', pic:'🐾', d:3, ccl:false, k:'고양이 캐릭터'},
+];
+const S = {tab:'web', period:99999, ccl:'all', q:''};
+function search(){
+  const raw = S.q.trim();
+  const phrases = [...raw.matchAll(/"([^"]+)"/g)].map(m => m[1].trim()).filter(Boolean);
+  const rest = raw.replace(/"[^"]*"/g, ' ').split(/\s+/).filter(Boolean);
+  const minus = rest.filter(w => w.startsWith('-') && w.length > 1).map(w => w.slice(1));
+  const words = rest.filter(w => !w.startsWith('-'));
+  if (!phrases.length && !words.length) return [];
+  const pool = S.tab === 'web' ? DOCS : IMGS;
+  return pool.filter(o => {
+    const text = (o.t + ' ' + o.k).replace(/[:()]/g, ' ');
+    const flat = text.replace(/\s+/g, ' ');
+    if (!words.every(w => flat.includes(w))) return false;
+    if (!phrases.every(p => flat.includes(p.replace(/\s+/g, ' ')))) return false;
+    if (minus.some(w => flat.includes(w))) return false;
+    if (o.d > S.period) return false;
+    if (S.tab === 'img' && S.ccl === 'ccl' && !o.ccl) return false;
+    return true;
+  });
+}
+const ago = d => d < 31 ? `${d}일 전` : d < 365 ? `${Math.round(d / 30)}개월 전` : `${Math.floor(d / 365)}년 전`;
+function render(){
+  const r = search();
+  $('#count').textContent = S.q.trim() ? `검색 결과 ${r.length}건` : '검색어를 입력하세요.';
+  $('#results').innerHTML = S.tab === 'web'
+    ? `<div class="results">${r.map(o => `<div class="res"><b>${o.t}</b><br><small>${o.s} · ${ago(o.d)}</small></div>`).join('')}</div>`
+    : `<div class="imgs">${r.map(o => `<div class="img"><div class="pic">${o.pic}</div>${o.t}<br><small>${o.ccl ? '🅭 CCL' : '© 저작권 보호'} · ${ago(o.d)}</small></div>`).join('')}</div>`;
+  checkMission(r);
+}
+const segBind = (sel, key, cb) => $$(sel + ' button').forEach(b => b.onclick = () => {
+  $$(sel + ' button').forEach(x => x.classList.toggle('active', x === b));
+  S[key] = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; cb && cb(); render();
+});
+segBind('#tab', 'tab', () => { $('#ccl').hidden = $('#cclWrap').hidden = S.tab !== 'img'; });
+segBind('#period', 'period'); segBind('#ccl', 'ccl');
+$('#go').onclick = () => { S.q = $('#q').value; render(); };
+$('#q').addEventListener('keydown', e => { if (e.key === 'Enter') $('#go').click(); });
+
+/* 미션 */
+const ids = r => r.map(o => o.id).sort((a, b) => a - b).join(',');
+const MIS = [
+  {t:'친구가 <b>"떡볶이 어떻게 만드는지 좀 알려 줘"</b>라고 문장 그대로 검색했더니 결과가 없대요. <b>명사 키워드</b>로 바꿔 <b>조리법</b> 결과 2건만 찾아보세요.', ok: r => ids(r) === '1,3', tab:'web', hint:'‘떡볶이’와 ‘조리법’처럼 핵심 명사만 넣어 보세요.'},
+  {t:'<b>데이터 수집 방법</b>이라는 말이 <b>정확히 그대로</b> 들어간 문서만 찾아보세요.', ok: r => ids(r) === '4,5', tab:'web', hint:'검색어를 큰따옴표 " "로 묶어 보세요.'},
+  {t:'데이터 수집 방법 결과에서 <b>빅데이터</b> 이야기는 빼고 찾아보세요.', ok: r => ids(r) === '4,6' || ids(r) === '4', tab:'web', hint:'제외할 단어 앞에 - 기호를 붙여요. 예: -빅데이터'},
+  {t:'<b>급식 메뉴</b>에 대한 <b>최근 1개월</b> 안의 결과만 찾아보세요.', ok: r => ids(r) === '7,9', tab:'web', hint:'검색어를 넣고 기간을 1개월로 바꿔 보세요.'},
+  {t:'발표 자료에 넣을 <b>고양이 이미지</b>를 찾아요. 저작권 걱정 없이 쓸 수 있도록 <b>CCL 이미지</b>만 찾아보세요.', ok: r => ids(r) === '21,23', tab:'img', hint:'이미지 탭에서 기간은 전체, 저작권은 CCL로 바꿔 보세요.'},
+];
+let mi = 0; const solved = new Set();
+function showMission(){
+  $('#misNo').textContent = `미션 ${mi + 1}`;
+  $('#misText').innerHTML = MIS[mi].t;
+  $('#misProg').innerHTML = MIS.map((_, k) => `<i class="${solved.has(k) ? 'done' : ''}"></i>`).join('');
+  $('#misFb').className = 'feedback'; $('#misNext').hidden = true;
+}
+function checkMission(r){
+  if (!S.q.trim()) return;
+  const m = MIS[mi], fb = $('#misFb');
+  if (S.tab === m.tab && m.ok(r)){
+    solved.add(mi); showMission();
+    feedback(fb, true, solved.size === MIS.length ? '🎉 미션을 모두 해결했어요! 검색 달인이네요.' : '⭕ 미션 성공! 결과가 원하는 것만 남았어요.');
+    $('#misNext').hidden = solved.size === MIS.length;
+  } else {
+    feedback(fb, false, `아직 원하는 결과만 남지 않았어요. 💡 ${m.hint}`);
+  }
+}
+$('#misNext').onclick = () => { mi = (mi + 1) % MIS.length; showMission(); };
+showMission(); render();
+
+renderChoice($('#trust'), [
+  {icon:'🏛️', t:'공공 데이터 포털에 올라온 우리 시의 연도별 인구 통계', a:0, e:'공공 기관이 제공하고 출처와 기준 날짜가 분명해요.'},
+  {icon:'📱', t:'출처 없이 퍼지는 SNS 글: "이 음료를 매일 마시면 키가 10cm 큰다!"', a:1, e:'근거와 출처가 없고 과장된 허위 정보일 수 있어요.'},
+  {icon:'📢', t:'학원 광고 블로그: "우리 학원 다니면 성적 향상률 100%"', a:1, e:'광고는 한쪽에 유리하게 쓰인 편향된 정보일 수 있어요.'},
+  {icon:'☔', t:'기상청 누리집의 내일 강수 확률', a:0, e:'날씨를 공식적으로 관측·예보하는 기관의 데이터예요.'},
+  {icon:'📰', t:'5년 전 기사에 나온 "최신 스마트폰 가격"', a:1, e:'오래된 정보라 지금은 맞지 않을 수 있어요. 날짜를 확인해요.'},
+], ['👍 믿을 만해요', '🔎 한 번 더 확인해요']);
+
+renderQuiz($('#quiz'), [
+  {q:'검색 결과에서 특정 단어가 들어간 결과를 빼고 싶을 때 쓰는 기호는?', o:['큰따옴표 " "','빼기 기호 -','물음표 ?'], a:1, e:'제외하고 싶은 단어 앞에 - 기호를 붙여요.'},
+  {q:'검색어가 정확히 일치하는 결과만 보고 싶을 때는?', o:['검색어를 큰따옴표로 묶는다','검색어를 문장으로 길게 쓴다','검색 기간을 1일로 한다'], a:0, e:'"데이터 수집 방법"처럼 큰따옴표로 묶으면 그대로 일치하는 결과만 보여요.'},
+  {q:'인터넷에서 데이터를 수집할 때의 태도로 알맞은 것은?', o:['검색 결과 첫 번째는 무조건 믿는다','출처와 날짜를 확인하고 비판적으로 받아들인다','좋아요 수가 많으면 사실이다'], a:1, e:'출처가 명확한지, 편견·허위는 없는지 확인해야 해요.'},
+]);
+</script>
+</body>
+</html>
