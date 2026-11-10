@@ -45,6 +45,12 @@
         <button class="btn" id="addBtn">약속 추가하기</button>
       </div>
     </div>
+
+    <div class="card">
+      <h3>🗳️ 의견이 갈리는 규칙, 함께 정해요</h3>
+      <p>정답이 하나로 정해지지 않은 규칙이에요. 먼저 <b>찬성·반대의 근거</b>를 짝과 이야기한 뒤 손을 들어 투표하고, 선생님이 숫자를 눌러 기록해요. 소수 의견도 끝까지 들어 봐요. (결과는 저장되지 않아요.)</p>
+      <div id="vote"></div>
+    </div>
   </section>
 
   <section class="step">
@@ -55,7 +61,7 @@
   <section class="step sum">
     <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
     <div class="card">
-      <p>건전한 디지털 사회를 만들려면 상대방의 입장을 생각하고, 다른 사람의 정보와 권리를 존중하며, 익명 공간에서도 예의를 지키는 <b>디지털 윤리</b>를 실천해야 해요.</p>
+      <p>건전한 디지털 사회를 만들려면 상대방의 입장을 생각하고, 다른 사람의 정보와 권리를 존중하며, 익명 공간에서도 예의를 지키는 <b>디지털 윤리</b>를 실천해야 해요. 규칙은 서로 다른 의견을 존중하며 <b>민주적으로 논의</b>해 정하고 함께 지켜요.</p>
     </div>
   </section>
   <p class="src">미래엔 중학교 정보 203, 208쪽 내용을 바탕으로 재구성 · 상황은 모두 가상</p>
@@ -84,6 +90,19 @@ const esc = s => s.replace(/[<>&]/g, '');
 function draw(){ $('#list').innerHTML = BASE.map(b => `<li>${b}</li>`).join('') + mine.map(m => `<li class="mine">${m}</li>`).join(''); }
 $('#addBtn').onclick = () => { const t = esc($('#txt').value.trim()); if (!t) { $('#txt').focus(); return; } mine.push(`[${$('#when').value}] ${t}`); $('#txt').value = ''; draw(); };
 draw();
+
+const VOTE = [
+  ['단체 대화방은 밤 10시 이후에는 메시지를 보내지 않는다.', '쉬는 시간을 지켜 줄 수 있어요.', '급한 연락을 못 할 수도 있어요.'],
+  ['반 단체 사진은 SNS에 올리지 않고 학급 앨범에만 둔다.', '얼굴이 나온 친구의 개인 정보를 지킬 수 있어요.', '추억을 나누기 어렵고, 동의만 받으면 괜찮을 수도 있어요.'],
+  ['모둠 대화방에서는 이모티콘만 보내는 답장을 하지 않는다.', '성의 있게 대답하면 오해가 줄어요.', '짧게 답하는 것도 개인의 자유예요.'],
+];
+$('#vote').innerHTML = VOTE.map(([r, y, n], i) => `<div class="choice"><p><b>${i + 1}. ${r}</b></p><p class="hint" style="margin:2px 0">👍 ${y}<br>👎 ${n}</p>
+  <div class="opts"><button class="opt" data-v="${i}" data-k="0">👍 찬성 <b>0</b></button><button class="opt" data-v="${i}" data-k="1">👎 반대 <b>0</b></button><button class="btn line" data-r="${i}">초기화</button></div><div class="explain"></div></div>`).join('');
+const tally = VOTE.map(() => [0, 0]);
+const showV = i => { const [a, b] = tally[i], c = $('#vote .choice')[i]; c.querySelectorAll('.opt b').forEach((x, k) => x.textContent = tally[i][k]);
+  const ex = c.querySelector('.explain'); if (a + b){ ex.textContent = a === b ? '⚖️ 의견이 똑같이 나뉘었어요. 서로의 근거를 더 들어 보고 조건을 바꿔 다시 정해 볼까요?' : (a > b ? '👍 찬성' : '👎 반대') + ` 의견이 많아요 (${a}:${b}). 다른 의견을 낸 친구의 근거도 규칙을 다듬는 데 반영해 보세요.`; ex.classList.add('show'); } else ex.classList.remove('show'); };
+$('#vote .opt').forEach(b => b.onclick = () => { tally[+b.dataset.v][+b.dataset.k]++; showV(+b.dataset.v); });
+$('#vote [data-r]').forEach(b => b.onclick = () => { tally[+b.dataset.r] = [0, 0]; showV(+b.dataset.r); });
 
 renderQuiz($('#quiz'), [
   {q:'디지털 기술을 쓸 때 감정을 조절하고 타인을 존중하며 긍정적인 관계를 맺는 데 필요한 기본 소양은?', o:['디지털 윤리','디지털 기술','디지털 전환'], a:0, e:'디지털 윤리를 실천하는 노력이 건전한 디지털 사회를 만들어요.'},

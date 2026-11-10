@@ -9,6 +9,9 @@
 .checks label{display:block;padding:6px 0;border-bottom:1px dashed var(--line)}
 .meter{height:16px;background:var(--bg);border-radius:999px;overflow:hidden;margin:10px 0}
 .meter i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s}
+.tbl2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:8px}
+.tbl2 label{font-weight:700;font-size:.9rem}
+.tbl2 textarea{font:inherit;font-weight:400;width:100%;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);margin-top:4px}
 .case{background:var(--bg);border-radius:14px;padding:10px 14px;margin:8px 0}
 </style>
 </head>
@@ -38,7 +41,8 @@
     </div>
 
     <div class="card">
-      <h3>📖 사례별 실천 방안 찾기</h3>
+      <h3>📖 사례 분석: 개인과 사회의 실천 방안</h3>
+      <p>사례를 읽고 알맞은 방안을 고른 다음, <b>개인</b>과 <b>사회</b>가 할 수 있는 방안을 직접 적어 보세요. (저장되지 않아요. 인쇄하거나 캡처하세요.)</p>
       <div id="cases"></div>
     </div>
 
@@ -86,7 +90,10 @@ const CASES = [
   ['서연', 'SNS에 올린 사진에 \'좋아요\'가 적으면 하루 종일 우울하고 계속 확인하게 돼요.', ['더 자극적인 사진을 올려 관심을 끌어요.', 'SNS 알림을 끄고 확인하는 시간을 하루 한두 번으로 정해요.'], 1],
 ];
 $('#cases').innerHTML = CASES.map(([n, s], i) => `<div class="case"><b>${n}의 이야기</b><p style="margin:4px 0">${s}</p><div id="c${i}"></div></div>`).join('');
-CASES.forEach(([n, s, opts, a], i) => renderChoice($('#c' + i), [{t:'알맞은 실천 방안은?', a, e:'자신을 지키는 건강한 실천 방안이에요.'}], opts));
+CASES.push(['지후', '밤마다 게임을 하느라 잠이 부족하고, 게임을 못 하게 하면 가족에게 짜증을 내요.', ['게임 시간을 정해 가족과 약속하고, 잠자기 1시간 전에는 기기를 끄기로 해요.', '가족이 모르게 밤에 몰래 게임을 해요.'], 0]);
+$('#cases').innerHTML = CASES.map(([n, s], i) => `<div class="case"><b>${n}의 이야기</b><p style="margin:4px 0">${s}</p><div id="c${i}"></div>
+  <div class="tbl2"><label>🙋 개인의 실천 방안<textarea rows="2" placeholder="${n}이(가) 스스로 할 수 있는 일"></textarea></label><label>🏛️ 사회의 실천 방안<textarea rows="2" placeholder="학교·기관·기업이 도울 수 있는 일"></textarea></label></div></div>`).join('');
+CASES.forEach(([n, s, opts, a], i) => renderChoice($('#c' + i), [{t:'먼저, 알맞은 방안을 골라 보세요.', a, e:'자신을 지키는 건강한 실천 방안이에요. 아래에 더 적어 보세요.'}], opts));
 
 const SELF = ['스마트폰이 없으면 불안하다.', '하려던 일을 미루고 스마트폰을 본다.', '잠들기 직전까지 화면을 본다.', '정해 둔 사용 시간을 넘길 때가 많다.', '가족과 식사할 때도 화면을 본다.', '게임이나 영상 때문에 잠이 부족하다.'];
 $('#self').innerHTML = SELF.map(s => `<label><input type="checkbox"> ${s}</label>`).join('');

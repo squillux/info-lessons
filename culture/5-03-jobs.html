@@ -60,6 +60,7 @@
         <label>관심 있는 직업 <input id="job" placeholder="예: 게임 기획자"></label>
         <label>이 직업이 하는 일 <textarea id="what" rows="2"></textarea></label>
         <label>이 직업에서 활용할 수 있는 디지털 기술 <textarea id="tech" rows="2" placeholder="예: 인공지능으로 게임 속 캐릭터의 대사를 만들어요."></textarea></label>
+        <label>정보 시간에 배운 것 중 이 직업에 도움이 될 것 <input id="learn" placeholder="예: 데이터를 표와 그래프로 정리하기(Ⅱ단원)"></label>
         <div><label>필요한 역량 (여러 개 가능)</label><div class="chips" id="caps"></div></div>
       </div>
       <div class="board" id="board"></div>
@@ -113,9 +114,10 @@ function draw(){
   $('#board').innerHTML = `<h4>🚀 나는 미래에 ${j}이(가) 될 거예요</h4>
     <p><b>하는 일</b> ${esc($('#what').value.trim()) || '<span class="hint">-</span>'}</p>
     <p><b>활용할 기술</b> ${esc($('#tech').value.trim()) || '<span class="hint">-</span>'}</p>
+    <p><b>정보 시간에 배운 것</b> ${esc($('#learn').value.trim()) || '<span class="hint">-</span>'}</p>
     <p><b>필요한 역량</b> ${on.size ? [...on].map(c => `<span class="pill">${c}</span>`).join(' ') : '<span class="hint">-</span>'}</p>`;
 }
-['#job', '#what', '#tech'].forEach(s => $(s).oninput = draw); draw();
+['#job', '#what', '#tech', '#learn'].forEach(s => $(s).oninput = draw); draw();
 
 const QA = [
   ['기술이 발전하면 일자리가 모두 사라지지 않을까요?', '과거 자동차가 등장했을 때 마부는 줄었지만 자동차를 만들고 고치는 새로운 일자리가 생겼어요. 반복적인 일은 기계가 맡더라도 새로운 직업이 계속 생겨나므로, 변화에 맞는 역량을 기르는 것이 중요해요.'],
