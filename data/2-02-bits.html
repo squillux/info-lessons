@@ -63,6 +63,9 @@
       <p>전구 <span class="pill" id="bulbN">1</span>개 → 만들 수 있는 신호 <span class="pill" id="bulbWays">2</span>가지 <span class="hint" id="bulbFormula"></span></p>
       <div id="comboBox" class="scroll-x"></div>
       <p class="hint">👉 전구가 하나 늘 때마다 신호의 가짓수는 어떻게 변하나요? 비트 8개를 묶어 <b>1바이트(byte)</b>라고 해요.</p>
+      <h3 style="margin-top:18px">🔌 컴퓨터 안에서는 전기 신호로</h3>
+      <p>컴퓨팅 시스템은 <b>전압의 높낮이</b>를 이진수로 표현해요. 전압이 높으면 1, 낮으면 0이에요. 위의 전구를 켜고 끄면 전기 신호가 어떻게 바뀌는지 보세요.</p>
+      <div id="volt"></div>
     </div>
 
     <div class="card">
@@ -89,8 +92,8 @@
     </div>
 
     <div class="card">
-      <h3>➗ 2로 나누어 이진수 구하기</h3>
-      <p>10진수를 <b>2로 계속 나누면서 나머지</b>를 적고, 나머지를 <b>아래에서 위로</b> 읽으면 이진수가 돼요. 미션을 맞히면 그 수의 과정이 여기에 나타나요.</p>
+      <h3>➗ 2로 나누어 이진수 구하기 <span class="tag-opt">더 해 보기</span></h3>
+      <p>카드 없이도 이진수를 구할 수 있어요. 10진수를 <b>2로 계속 나누면서 나머지</b>를 적고, 나머지를 <b>아래에서 위로</b> 읽으면 이진수가 돼요. 미션을 맞히면 그 수의 과정이 여기에 나타나요.</p>
       <div class="ctrl">
         <label for="divIn">10진수</label>
         <input id="divIn" class="inp" type="number" min="1" max="255" value="19" style="width:110px">
@@ -99,6 +102,13 @@
       </div>
       <div id="divBox" style="margin-top:12px"></div>
       <p class="hint">💬 내 생일 날짜(일)를 이진수로 나타내 보세요. 카드 5장으로 31일까지 모두 나타낼 수 있을까요?</p>
+    </div>
+
+    <div class="card">
+      <h3>🗺️ 글자, 그림, 소리, 영상도 모두 이진수로</h3>
+      <p>우리가 디지털 기기로 만나는 모든 데이터는 <b>실생활 데이터 → 이진수 표현 → 디지털 데이터</b>의 과정을 거쳐요. 눌러서 각각 어떻게 바뀌는지 미리 보고, 다음 활동에서 직접 해 봐요.</p>
+      <div class="ctrl" id="flowmap"></div>
+      <div id="flowOut" class="feedback show ok" style="font-weight:600"></div>
     </div>
   </section>
 
@@ -110,11 +120,12 @@
   <section class="step sum">
     <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
     <div class="card">
-      <p><b>비트</b>는 0 또는 1을 나타내는 최소 단위이고, 비트가 n개면 <b>2<sup>n</sup>가지</b>를 표현해요. 10진수는 <b>2로 나눈 나머지를 거꾸로 읽어</b> 이진수로 바꿔요.</p>
+      <p>컴퓨팅 시스템은 <b>전압의 높낮이</b>로 0과 1을 나타내고, 글자·그림·소리·영상도 모두 <b>이진수</b>로 바꿔 처리해요. <b>비트</b>가 n개면 <b>2<sup>n</sup>가지</b>를 표현할 수 있어요.</p>
     </div>
   </section>
   <p class="src">미래엔 중학교 정보 46, 48쪽 내용을 바탕으로 재구성</p>
 </main>
+<script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
 <script>
 /* 전구 */
@@ -128,9 +139,10 @@ function drawBulbs(){
     b.className = 'bulb' + (prev[i] ? ' on' : '');
     b.setAttribute('aria-label', `전구 ${i + 1}`);
     b.innerHTML = `<span class="glass"></span><span class="base"></span><span class="lbl">${prev[i] ? '1' : '0'}</span>`;
-    b.onclick = () => { b.classList.toggle('on'); b.querySelector('.lbl').textContent = b.classList.contains('on') ? '1' : '0'; };
+    b.onclick = () => { b.classList.toggle('on'); b.querySelector('.lbl').textContent = b.classList.contains('on') ? '1' : '0'; drawVolt(); };
     box.appendChild(b);
   }
+  drawVolt();
   $('#bulbN').textContent = bulbCount;
   $('#bulbWays').textContent = 2 ** bulbCount;
   $('#bulbFormula').textContent = bulbCount > 1 ? `(${Array(bulbCount).fill(2).join(' × ')} = ${2 ** bulbCount})` : '';
@@ -145,6 +157,18 @@ function drawBulbs(){
   } else {
     cb.innerHTML = `<p class="hint">전구가 ${bulbCount}개면 경우가 ${2 ** bulbCount}가지라 표로 다 보여 주기 어려워요!</p>`;
   }
+}
+/* 전기 신호: 켜진 전구 = 높은 전압(1), 꺼진 전구 = 낮은 전압(0) */
+function drawVolt(){
+  const bits = $$('#bulbs .bulb').map(b => b.classList.contains('on') ? 1 : 0);
+  const cw = 60, w = 60 + bits.length * cw, hi = 22, lo = 78;
+  let d = `M40 ${bits[0] ? hi : lo}`;
+  bits.forEach((v, i) => { const y = v ? hi : lo, x = 40 + i * cw; d += ` V${y} H${x + cw}`; });
+  $('#volt').innerHTML = `<svg viewBox="0 0 ${w + 10} 110" style="width:min(100%,${(w + 10) * 1.15}px);background:var(--bg);border-radius:12px">
+    <text x="6" y="${hi + 4}" font-size="11" fill="#5a6578">높음</text><text x="6" y="${lo + 4}" font-size="11" fill="#5a6578">낮음</text>
+    <path d="${d}" fill="none" stroke="#3b6cf6" stroke-width="3"/>
+    ${bits.map((v, i) => `<text x="${40 + i * cw + cw / 2}" y="102" font-size="15" font-weight="800" text-anchor="middle" fill="${v ? '#e0a000' : '#5a6578'}" font-family="monospace">${v}</text>`).join('')}
+  </svg>`;
 }
 $('#bulbPlus').onclick = () => { bulbCount++; drawBulbs(); };
 $('#bulbMinus').onclick = () => { bulbCount--; drawBulbs(); };
@@ -216,11 +240,27 @@ $('#divAll').onclick = () => { divShown = 99; renderDiv(); };
 $('#divIn').addEventListener('input', () => { divShown = 0; renderDiv(); });
 renderDiv();
 
+/* 모든 데이터는 이진수로 */
+const FLOW = [
+  ['🔢 숫자 13', '13 = 8 + 4 + 1 → <b class="mono">1101</b> (이진수 카드처럼 자리값의 합)', null],
+  ['🔤 글자 A', '약속된 문자 코드표에서 A = <b class="mono">1000001</b>', 'data/2-03-ascii.html'],
+  ['🖼️ 그림', '작은 점(픽셀)마다 색을 0과 1로 → 흑백이면 칠한 칸 <b class="mono">1</b>, 빈칸 <b class="mono">0</b>', 'data/2-04-pixels.html'],
+  ['🎵 소리', '일정한 간격으로 소리 크기를 재서 숫자로, 그 숫자를 이진수로 → <b class="mono">1100 1011 …</b>', 'data/2-06-sound.html'],
+  ['🎬 영상', '여러 장의 그림(프레임) + 소리를 모두 이진수로', 'data/2-07-flipbook.html'],
+];
+$('#flowmap').innerHTML = FLOW.map(([n], i) => `<button class="btn ghost" data-f="${i}">${n}</button>`).join('');
+$$('#flowmap button').forEach(b => b.onclick = () => {
+  const [n, t, href] = FLOW[+b.dataset.f];
+  $('#flowOut').innerHTML = `${n} → ${t}${href ? ` <a href="../${href}" style="margin-left:6px">직접 해 보기 ▶</a>` : ''}`;
+});
+$('#flowmap button').click();
+
 renderQuiz($('#quiz'), [
   {q:'비트(bit) 1개로 나타낼 수 있는 상태는 몇 가지일까요?', o:['1가지','2가지','8가지','10가지'], a:1, e:'비트는 0 또는 1, 두 가지 상태를 나타내요.'},
   {q:'생각 열기 질문: 디저트 4가지를 구분하려면 전구가 최소 몇 개 필요할까요?', o:['1개','2개','3개','4개'], a:1, e:'전구 2개면 00, 01, 10, 11 → 2² = 4가지 신호를 만들 수 있어요.'},
   {q:'2진수 1011을 10진수로 바꾸면?', o:['9','11','13','1011'], a:1, e:'8 + 0 + 2 + 1 = 11'},
-  {q:'10진수 6을 2진수로 바꾸면?', o:['110','101','011','1100'], a:0, e:'6 ÷ 2 = 3 … 0, 3 ÷ 2 = 1 … 1, 1 ÷ 2 = 0 … 1 → 아래에서 위로 읽으면 110'},
+  {q:'컴퓨팅 시스템은 0과 1을 무엇으로 구별할까요?', o:['전압의 높낮이','화면의 밝기','소리의 크기'], a:0, e:'컴퓨터 안에서는 전압이 높으면 1, 낮으면 0으로 나타내요.'},
+  {q:'이진수 카드로 10진수 6을 만들려면 어떤 카드를 켜야 할까요?', o:['4와 2 → 110','4와 1 → 101','2와 1 → 011'], a:0, e:'4 + 2 = 6 → 이진수 110'},
   {q:'1바이트(byte)는 몇 비트일까요?', o:['2비트','4비트','8비트','10비트'], a:2, e:'비트 8개를 묶어 1바이트라고 해요.'},
 ]);
 </script>

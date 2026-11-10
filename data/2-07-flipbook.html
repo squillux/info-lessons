@@ -74,7 +74,7 @@
         <label>초</label><input id="vSec" type="number" class="inp" value="60" min="1" max="600" style="width:90px;font-size:1rem">
       </div>
       <p id="sizeOut" style="font-size:1.1rem;margin-top:12px"></p>
-      <p class="hint">그래서 동영상은 <b>코덱(codec)</b>이라는 소프트웨어로 압축(coder)했다가, 재생할 때 압축을 풀어(decoder) 사용해요.</p>
+      <p class="hint"><span class="tag-more" style="margin:0 4px 0 0">심화</span>그래서 동영상은 <b>코덱(codec)</b>이라는 소프트웨어로 압축(coder)했다가, 재생할 때 압축을 풀어(decoder) 사용해요.</p>
     </div>
   </section>
 
@@ -86,11 +86,12 @@
   <section class="step sum">
     <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
     <div class="card">
-      <p>동영상은 여러 장의 <b>프레임</b>을 빠르게 보여 주어 <b>잔상 효과</b>로 움직이는 것처럼 보이게 해요. 이미지·소리·자막을 함께 담아 용량이 커서 <b>코덱</b>으로 압축해요.</p>
+      <p>동영상은 여러 장의 <b>프레임</b>을 빠르게 보여 주어 <b>잔상 효과</b>로 움직이는 것처럼 보이게 해요. 이미지·소리·자막을 함께 담기 때문에 다른 데이터보다 <b>용량이 커요</b>.</p>
     </div>
   </section>
   <p class="src">미래엔 중학교 정보 48쪽 내용을 바탕으로 재구성</p>
 </main>
+<script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
 <script>
 /* 예시 애니메이션: 공이 튀어 오르는 8프레임 (16×16) */
@@ -166,7 +167,7 @@ renderQuiz($('#quiz'), [
   {q:'동영상을 구성하는 하나하나의 장면을 무엇이라고 할까요?', o:['픽셀','프레임','비트','코덱'], a:1, e:'동영상을 이루는 한 장면을 프레임이라고 해요.'},
   {q:'30fps는 무슨 뜻일까요?', o:['1초에 프레임 30장을 보여 준다','30초짜리 동영상이다','픽셀이 30개다'], a:0, e:'fps(frame per second)는 1초에 보여 주는 프레임 수예요.'},
   {q:'멈춘 그림을 빠르게 바꿔 보여 주면 움직이는 것처럼 보이는 까닭은?', o:['잔상 효과','계단 현상','양자화'], a:0, e:'이미지가 사라진 뒤에도 잠시 남아 보이는 잔상 효과 때문이에요.'},
-  {q:'동영상의 큰 용량을 줄이기 위해 압축하고 푸는 소프트웨어는?', o:['아스키 코드','비디오 코덱','검색 엔진'], a:1, e:'비디오 코덱은 압축(coder)과 압축 해제(decoder)를 해요.'},
+  {q:'동영상 데이터가 다른 데이터보다 용량이 큰 까닭은?', o:['글자만 담고 있어서','여러 장의 이미지에 소리와 자막까지 담고 있어서','픽셀을 사용하지 않아서'], a:1, e:'동영상은 1초에도 여러 장의 이미지(프레임)를 담고, 소리와 자막도 포함해 용량이 커요.'},
 ]);
 </script>
 </body>

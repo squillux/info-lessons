@@ -36,6 +36,10 @@
     <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
     <div class="card">
       <h3>🎵 소리 파형을 이진수로</h3>
+      <p>단계 버튼을 차례로 눌러 소리가 이진수로 바뀌는 과정을 따라가 보세요.</p>
+      <div class="seg" id="stage">
+        <button data-s="0" class="active">원래 소리</button><button data-s="1">① 표본화</button><button data-s="2">② 양자화</button><button data-s="3">③ 부호화</button>
+      </div>
       <canvas id="wave"></canvas>
       <div class="ctrl" style="margin-top:10px">
         <label for="samples">표본 개수</label>
@@ -44,11 +48,22 @@
       </div>
       <div class="flow">
         <div><b>① 표본화</b><br>일정한 간격으로 소리의 크기를 추출해요(주황 점).</div>
-        <div><b>② 양자화</b><br>추출한 값을 0~15 사이의 정수로 바꿔요(노란 막대).</div>
+        <div><b>② 양자화</b><br>추출한 값을 정해진 단계의 숫자로 바꿔요. 여기서는 0~15(노란 막대).</div>
         <div><b>③ 부호화</b><br>바꾼 정수를 이진수(4비트)로 표현해요.</div>
       </div>
       <div id="waveTable" class="scroll-x"></div>
       <p class="hint">💬 표본 개수를 4개와 16개로 바꿔 보세요. 노란 막대가 원래 파형과 더 비슷해지는 쪽은? 그 대신 무엇이 늘어나나요?</p>
+    </div>
+
+    <div class="card">
+      <h3>🎧 귀로 비교해 보기</h3>
+      <p>짧은 멜로디를 디지털로 바꿀 때 <b>표본화 간격</b>과 <b>양자화 단계</b>를 다르게 하면 소리가 어떻게 달라질까요? 🔊 소리가 나니 음량을 확인하세요.</p>
+      <div class="ctrl"><b style="width:120px">표본화 (1초에)</b>
+        <div class="seg" id="aRate" style="margin:0"><button data-v="1000">1,000번</button><button data-v="4000">4,000번</button><button data-v="44100" class="active">44,100번</button></div></div>
+      <div class="ctrl" style="margin-top:6px"><b style="width:120px">양자화 단계</b>
+        <div class="seg" id="aBits" style="margin:0"><button data-v="2">2비트(4단계)</button><button data-v="4">4비트(16단계)</button><button data-v="16" class="active">16비트(65,536단계)</button></div></div>
+      <div class="ctrl" style="margin-top:12px"><button class="btn" id="aPlay">▶ 들어 보기</button><span class="hint" id="aInfo"></span></div>
+      <p class="hint">💬 음악 파일은 보통 1초에 44,100번 표본화하고 16비트로 양자화해요. 가장 거친 소리와 가장 좋은 소리의 데이터 양은 몇 배 차이 날까요?</p>
     </div>
 
     <div class="card">
@@ -73,8 +88,11 @@
   </section>
   <p class="src">미래엔 중학교 정보 48쪽 내용을 바탕으로 재구성</p>
 </main>
+<script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
 <script>
+let stage = 0;
+$$('#stage button').forEach(b => b.onclick = () => { stage = +b.dataset.s; $$('#stage button').forEach(x => x.classList.toggle('active', x === b)); drawWave(); });
 function drawWave(){
   const cv = $('#wave'), n = +$('#samples').value, dpr = devicePixelRatio || 1;
   $('#sampleN').textContent = n;
@@ -87,20 +105,56 @@ function drawWave(){
   ctx.strokeStyle = 'rgba(90,101,120,.15)'; ctx.lineWidth = 1;
   for (let l = 0; l <= 15; l++){ const y = Y(l / 15); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
   const vals = [];
+  ctx.font = `bold ${12 * dpr}px sans-serif`; ctx.textAlign = 'center';
   for (let i = 0; i < n; i++){
-    const xr = (i + .5) / n, q = Math.round(amp(xr) * 15);
+    const xr = (i + .5) / n, q = Math.round(amp(xr) * 15), x = xr * w;
     vals.push(q);
-    ctx.fillStyle = 'rgba(255,194,51,.5)'; ctx.fillRect(i / n * w + 1, Y(q / 15), w / n - 2, h - pad - Y(q / 15));
-    ctx.fillStyle = '#e07b00'; ctx.beginPath(); ctx.arc(xr * w, Y(amp(xr)), 5 * dpr, 0, 7); ctx.fill();
+    if (stage >= 2){
+      ctx.fillStyle = 'rgba(255,194,51,.5)'; ctx.fillRect(i / n * w + 1, Y(q / 15), w / n - 2, h - pad - Y(q / 15));
+      ctx.fillStyle = '#7a5600'; ctx.fillText(stage >= 3 ? bin(q, 4) : q, x, Y(q / 15) + 16 * dpr);
+    }
+    if (stage >= 1){
+      ctx.strokeStyle = 'rgba(224,123,0,.35)'; ctx.lineWidth = 1 * dpr; ctx.beginPath(); ctx.moveTo(x, h - pad); ctx.lineTo(x, Y(amp(xr))); ctx.stroke();
+      ctx.fillStyle = '#e07b00'; ctx.beginPath(); ctx.arc(x, Y(amp(xr)), 5 * dpr, 0, 7); ctx.fill();
+    }
   }
-  ctx.strokeStyle = '#3b6cf6'; ctx.lineWidth = 3 * dpr; ctx.beginPath();
+  ctx.strokeStyle = stage >= 2 ? 'rgba(59,108,246,.45)' : '#3b6cf6'; ctx.lineWidth = 3 * dpr; ctx.beginPath();
   for (let x = 0; x <= w; x += 2){ const y = Y(amp(x / w)); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
   ctx.stroke();
-  $('#waveTable').innerHTML = `<table class="tbl"><tr><th>표본</th>${vals.map((_, i) => `<td>${i + 1}</td>`).join('')}</tr>
+  const MSG = [
+    '파란 곡선은 시간에 따라 연속적으로 변하는 소리의 크기(아날로그)예요. 이대로는 컴퓨터에 저장할 수 없어요.',
+    `① 표본화: 일정한 간격으로 소리의 크기를 ${n}번 추출했어요(주황 점). 간격이 짧을수록(표본이 많을수록) 원래 소리에 가까워요.`,
+    '② 양자화: 추출한 값을 0~15 사이의 정수로 바꿨어요(노란 막대). 곡선과 막대 사이의 작은 차이가 생기는 것도 보이나요?',
+    '③ 부호화: 정수를 4비트 이진수로 바꿨어요. 이제 컴퓨터에 저장할 수 있어요!'];
+  $('#waveTable').innerHTML = `<p style="margin:8px 0">${MSG[stage]}</p>` + (stage >= 2 ? `<table class="tbl"><tr><th>표본</th>${vals.map((_, i) => `<td>${i + 1}</td>`).join('')}</tr>
     <tr><th>양자화</th>${vals.map(v => `<td>${v}</td>`).join('')}</tr>
-    <tr><th>부호화</th>${vals.map(v => `<td class="mono">${bin(v, 4)}</td>`).join('')}</tr></table>
-    <p class="hint" style="margin:6px 0 0">저장할 데이터: ${n}개 × 4비트 = <b>${n * 4}비트</b></p>`;
+    ${stage >= 3 ? `<tr><th>부호화</th>${vals.map(v => `<td class="mono">${bin(v, 4)}</td>`).join('')}</tr>` : ''}</table>` : '')
+    + (stage >= 3 ? `<p class="hint" style="margin:6px 0 0">저장할 데이터: ${n}개 × 4비트 = <b>${n * 4}비트</b></p>` : '');
 }
+
+/* 귀로 비교하기: 멜로디를 만들고 표본화(값 유지)·양자화(단계 줄이기)한 뒤 재생 */
+let aRate = 44100, aBits = 16, actx;
+const segPick = (sel, set) => $$(sel + ' button').forEach(b => b.onclick = () => { $$(sel + ' button').forEach(x => x.classList.toggle('active', x === b)); set(+b.dataset.v); aInfoUpd(); });
+segPick('#aRate', v => aRate = v); segPick('#aBits', v => aBits = v);
+function aInfoUpd(){ $('#aInfo').textContent = `1초 데이터: ${aRate.toLocaleString()}번 × ${aBits}비트 = ${(aRate * aBits).toLocaleString()}비트`; }
+aInfoUpd();
+$('#aPlay').onclick = () => {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const sr = actx.sampleRate, notes = [262, 294, 330, 392, 330, 262], dur = .28, len = Math.floor(sr * dur * notes.length);
+    const buf = actx.createBuffer(1, len, sr), d = buf.getChannelData(0);
+    const hold = Math.max(1, Math.round(sr / aRate)), levels = 2 ** aBits;
+    let held = 0;
+    for (let i = 0; i < len; i++){
+      const k = Math.floor(i / (sr * dur)), t = i / sr, local = (i % (sr * dur)) / (sr * dur);
+      const env = Math.min(1, local * 20) * Math.min(1, (1 - local) * 8);
+      const s = .45 * env * (Math.sin(2 * Math.PI * notes[k] * t) + .3 * Math.sin(4 * Math.PI * notes[k] * t)) / 1.3;
+      if (i % hold === 0) held = Math.round((s + 1) / 2 * (levels - 1)) / (levels - 1) * 2 - 1;   // 표본화 + 양자화
+      d[i] = held;
+    }
+    const src = actx.createBufferSource(); src.buffer = buf; src.connect(actx.destination); src.start();
+  } catch (e) { $('#aInfo').textContent = '이 기기에서는 소리를 재생할 수 없어요.'; }
+};
 $('#samples').addEventListener('input', drawWave);
 addEventListener('resize', drawWave);
 drawWave();

@@ -41,6 +41,7 @@
       <button data-m="decode">🔐 암호 풀기</button>
     </div>
     <div class="card">
+      <h3>✏️ 1비트 픽셀 그림</h3>
       <div id="decodeBar" hidden style="margin-bottom:12px">
         <p style="margin:0 0 8px">오른쪽 암호를 보고 <b>1인 칸만</b> 칠해 숨은 그림을 찾아보세요.</p>
         <div class="ctrl">
@@ -66,17 +67,6 @@
     </div>
 
     <div class="card">
-      <h3>🎨 픽셀 하나에 비트를 더 쓰면?</h3>
-      <p>픽셀 하나를 몇 비트로 표현하느냐에 따라 나타낼 수 있는 색의 수가 달라져요.</p>
-      <div class="seg" id="depth">
-        <button data-b="1" class="active">1비트</button><button data-b="4">4비트</button><button data-b="8">8비트</button><button data-b="24">24비트</button>
-      </div>
-      <p>2<sup id="depthB">1</sup> = <span class="pill" id="depthN">2</span>가지 색 · 8×8 그림 용량 <span class="pill" id="depthSize">64비트</span></p>
-      <div class="sw" id="swatches"></div>
-      <p class="hint">24비트는 빨강(R)·초록(G)·파랑(B)에 8비트씩 써서 16,777,216가지 색을 표현해요(트루 컬러). <b>해상도</b>(가로 픽셀 수 × 세로 픽셀 수)가 높을수록 더 선명한 이미지를 표현할 수 있어요.</p>
-    </div>
-
-    <div class="card">
       <h3>🖍️ 2비트로 4가지 색 칠하기</h3>
       <p>픽셀 하나에 <b>2비트</b>를 쓰면 00, 01, 10, 11 → <b>4가지 색</b>을 나타낼 수 있어요. 붓 색을 고르고 칸을 칠해 보세요.</p>
       <div class="ctrl" id="pal4"></div>
@@ -93,8 +83,35 @@
     </div>
 
     <div class="card">
-      <h3>🌈 빛의 3원색(RGB) 섞기</h3>
-      <p>24비트 색은 빨강(R)·초록(G)·파랑(B)에 각각 <b>8비트(0~255)</b>를 써요. 막대를 움직여 색을 만들어 보세요. 웹에서는 이 값을 <b>16진수</b>로 #RRGGBB처럼 적어요.</p>
+      <h3>🎨 픽셀 하나에 비트를 더 쓰면?</h3>
+      <p>픽셀 하나를 몇 비트로 표현하느냐에 따라 나타낼 수 있는 색의 수가 달라져요.</p>
+      <div class="seg" id="depth">
+        <button data-b="1" class="active">1비트</button><button data-b="4">4비트</button><button data-b="8">8비트</button><button data-b="24">24비트</button>
+      </div>
+      <p>2<sup id="depthB">1</sup> = <span class="pill" id="depthN">2</span>가지 색 · 8×8 그림 용량 <span class="pill" id="depthSize">64비트</span></p>
+      <div class="sw" id="swatches"></div>
+      <p class="hint">24비트는 빨강(R)·초록(G)·파랑(B)에 8비트씩 써서 16,777,216가지 색을 표현해요(트루 컬러). 비트 수가 클수록 표현할 수 있는 색이 많아져 화질이 좋아지지만, 용량도 커져요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🔍 해상도를 바꿔 보기</h3>
+      <p><b>해상도</b>는 비트맵 이미지의 <b>가로 픽셀 수 × 세로 픽셀 수</b>예요. 같은 그림을 해상도만 바꿔서 저장하면 어떻게 달라질까요?</p>
+      <div class="seg" id="resSeg">
+        <button data-r="8">8×8</button><button data-r="16" class="active">16×16</button><button data-r="32">32×32</button><button data-r="64">64×64</button>
+      </div>
+      <div class="row" style="align-items:center">
+        <canvas id="resCv" style="width:200px;height:200px;image-rendering:pixelated;border:2px solid var(--line);border-radius:14px;flex:0 0 auto"></canvas>
+        <div style="flex:1 1 260px">
+          <p style="margin:0">픽셀 수 <span class="pill" id="resPx"></span></p>
+          <p>용량(24비트 색) <span class="pill" id="resSize"></span></p>
+          <p class="hint">💬 해상도가 높을수록 선명해지지만 용량은 어떻게 되나요? 8×8에서 64×64로 바꾸면 픽셀 수는 몇 배가 될까요?<br>📱 FHD 화면은 1920×1080 = 2,073,600개의 픽셀로 이루어져 있어요.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🌈 빛의 3원색(RGB) 섞기 <span class="tag-more">심화</span></h3>
+      <p>24비트 색은 빨강(R)·초록(G)·파랑(B)에 각각 <b>8비트(0~255)</b>를 써요. 막대를 움직여 색을 만들어 보세요. 웹 페이지에서는 이 세 값을 <b>16진수</b>로 바꿔 #RRGGBB처럼 적기도 해요.</p>
       <div class="row" style="align-items:center">
         <div id="rgbBox" style="flex:0 0 150px;height:150px;border-radius:18px;border:2px solid var(--line)"></div>
         <div style="flex:1 1 280px" id="rgbCtrl"></div>
@@ -114,11 +131,12 @@
   <section class="step sum">
     <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
     <div class="card">
-      <p>이미지는 <b>픽셀</b>마다 색을 이진수로 저장해요. 픽셀 하나에 쓰는 비트가 n개면 <b>2<sup>n</sup>가지 색</b>을 나타낼 수 있고, 비트가 많을수록 용량도 커져요.</p>
+      <p>이미지는 <b>픽셀</b>마다 색을 이진수로 저장해요. 픽셀 하나에 쓰는 비트가 n개면 <b>2<sup>n</sup>가지 색</b>을 나타내고, <b>해상도</b>가 높을수록 선명해요. 이미지 용량 = 픽셀 하나의 용량 × 전체 픽셀 수예요.</p>
     </div>
   </section>
   <p class="src">미래엔 중학교 정보 47쪽 내용을 바탕으로 재구성 · 2비트 4색, RGB 참고: 씨마스 중학교 정보 56~57쪽</p>
 </main>
+<script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
 <script>
 const PUZZLES = [
@@ -214,6 +232,26 @@ function render4(){
 $('#clear4').onclick = () => { px4.fill(0); render4(); };
 render4();
 
+/* 해상도: 같은 그림(웃는 얼굴)을 N×N 픽셀로 저장 */
+function drawRes(n){
+  const cv = $('#resCv'); cv.width = cv.height = n;
+  const c = cv.getContext('2d');
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++){
+    const u = (x + .5) / n * 2 - 1, v = (y + .5) / n * 2 - 1, r = Math.hypot(u, v);
+    let col = '#ffffff';
+    if (r < .9) col = '#ffc233';
+    if (r < .9 && r > .8) col = '#e0a000';
+    if (Math.hypot(u + .32, v + .25) < .13 || Math.hypot(u - .32, v + .25) < .13) col = '#1f2a3d';
+    if (v > .15 && Math.abs(Math.hypot(u, v - .05) - .48) < .08) col = '#1f2a3d';
+    c.fillStyle = col; c.fillRect(x, y, 1, 1);
+  }
+  const bits = n * n * 24;
+  $('#resPx').textContent = `${n} × ${n} = ${(n * n).toLocaleString()}개`;
+  $('#resSize').textContent = `${(n * n).toLocaleString()} × 24비트 = ${(bits / 8).toLocaleString()}바이트`;
+}
+$$('#resSeg button').forEach(b => b.onclick = () => { $$('#resSeg button').forEach(x => x.classList.toggle('active', x === b)); drawRes(+b.dataset.r); });
+drawRes(16);
+
 /* RGB */
 const rgb = [255, 122, 162], RGBN = [['R','빨강','#e04848'],['G','초록','#1f9d55'],['B','파랑','#3b6cf6']];
 $('#rgbCtrl').innerHTML = RGBN.map(([k, n, col], i) => `<div class="ctrl" style="margin:4px 0"><b style="color:${col};width:54px">${k} ${n}</b>
@@ -236,7 +274,7 @@ renderQuiz($('#quiz'), [
   {q:'8×8 흑백 픽셀 그림을 저장하려면 몇 비트가 필요할까요?', o:['8비트','16비트','64비트','256비트'], a:2, e:'픽셀 1개 = 1비트, 8×8 = 64개 → 64비트(8바이트)'},
   {q:'픽셀 하나를 8비트로 표현하면 몇 가지 색을 나타낼 수 있을까요?', o:['8가지','16가지','64가지','256가지'], a:3, e:'2⁸ = 256가지 색'},
   {q:'같은 크기의 그림을 1비트 대신 24비트 색으로 저장하면 용량은?', o:['줄어든다','같다','24배가 된다'], a:2, e:'픽셀마다 24비트를 쓰므로 용량이 24배가 돼요. 색이 풍부할수록 용량이 커져요.'},
-  {q:'RGB 값이 모두 255인 #FFFFFF는 무슨 색일까요?', o:['검정','흰색','빨강'], a:1, e:'빛의 3원색을 모두 가장 밝게 섞으면 흰색, 모두 0이면 검정이에요.'},
+  {q:'해상도에 대한 설명으로 알맞은 것은?', o:['가로 픽셀 수 × 세로 픽셀 수로 나타낸다','높을수록 이미지가 흐려진다','해상도가 높아지면 용량이 줄어든다'], a:0, e:'해상도가 높을수록 픽셀이 많아 선명하지만, 픽셀 수만큼 용량도 커져요.'},
 ]);
 </script>
 </body>

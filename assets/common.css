@@ -52,6 +52,7 @@ h1::after{content:"";display:block;width:64px;height:8px;margin-top:8px;border-r
 
 .card{background:var(--panel);border:2px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:0 4px 0 #eef1f7}
 .card h3{margin:0 0 .5em;font-size:1.1rem}
+.card>:first-child{margin-top:0}
 .card>:last-child{margin-bottom:0}
 .row{display:flex;gap:16px;flex-wrap:wrap}
 .row>.card{flex:1 1 300px}
@@ -98,6 +99,19 @@ table.tbl td,table.tbl th{border:1px solid var(--line);padding:4px 12px;text-ali
 .choice .opt{padding:6px 12px;font-size:.92rem}
 .score{margin-top:14px;text-align:center;font-weight:800;font-size:1.2rem;display:none}
 .score.show{display:block}
+
+/* 단계별 펼치기 */
+.locked{display:none!important}
+.prog{height:4px;background:var(--bg)}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--mint));transition:width .4s}
+.nextbar{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 26px;text-align:center}
+.next-btn{font-size:1.05rem;padding:12px 22px;border-radius:999px}
+.nextbar .done{font-family:var(--cute);font-size:1.4rem}
+.nextbar a.btn{text-decoration:none;display:inline-block}
+.card.pop{animation:pop .6s ease}
+@keyframes pop{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
+.tag-more{display:inline-block;vertical-align:middle;margin-left:6px;font-size:.7rem;font-weight:800;color:#a24bd6;background:#f4e8fc;border-radius:999px;padding:1px 9px}
+.tag-opt{display:inline-block;vertical-align:middle;margin-left:6px;font-size:.7rem;font-weight:800;color:#0d7d71;background:var(--mint-soft);border-radius:999px;padding:1px 9px}
 
 .src{font-size:.8rem;color:var(--muted);text-align:right;margin-top:24px}
 .src a{color:inherit}

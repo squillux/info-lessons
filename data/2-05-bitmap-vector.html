@@ -50,7 +50,7 @@
 
     <div class="card">
       <h3>🗂️ 파일 형식 분류하기</h3>
-      <p>파일을 눌러 <b style="color:var(--brand)">비트맵</b> → <b style="color:#c2416a">벡터</b> → 미분류 순서로 바꿔 보세요.</p>
+      <p>파일 이름 끝의 <b>확장자</b>(예: image<b>.png</b>)를 보면 파일 형식을 알 수 있어요. 파일을 눌러 <b style="color:var(--brand)">비트맵</b> → <b style="color:#c2416a">벡터</b> → 미분류 순서로 바꿔 보세요.</p>
       <div class="files" id="files"></div>
       <div class="ctrl"><button class="btn" id="fileCheck">채점하기</button><button class="btn line" id="fileReset">다시 하기</button></div>
       <div class="feedback" id="fileFb"></div>
@@ -70,11 +70,12 @@
   <section class="step sum">
     <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
     <div class="card">
-      <p><b>비트맵</b>은 픽셀로 표현해 사진처럼 섬세하지만 확대하면 <b>계단 현상</b>이 생기고, <b>벡터</b>는 수학적 연산으로 표현해 확대해도 깨지지 않아요.</p>
+      <p><b>비트맵</b>은 픽셀로 표현해 사진처럼 실제와 가까운 그림에 쓰지만 확대하면 <b>계단 현상</b>이 생겨요. <b>벡터</b>는 수학적 연산으로 표현해 확대해도 깨지지 않고, 로고·아이콘처럼 색이 단순한 그림에 써요.</p>
     </div>
   </section>
   <p class="src">미래엔 중학교 정보 47쪽 내용을 바탕으로 재구성</p>
 </main>
+<script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
 <script>
 (function(){
