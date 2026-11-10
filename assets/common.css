@@ -46,9 +46,9 @@ h1::after{content:"";display:block;width:64px;height:8px;margin-top:8px;border-r
 .step:nth-of-type(3) .step-h .no{background:var(--pink);box-shadow:3px 3px 0 var(--pink-soft)}
 .step:nth-of-type(4) .step-h .no{background:var(--mint);box-shadow:3px 3px 0 var(--mint-soft)}
 .step.think .card{background:var(--yellow-soft);border-color:#f7dd8f}
-.step.think .card p::before{content:"🤔 "}
+.step.think .card>p:first-child::before{content:"🤔 "}
 .step.sum .card{background:var(--mint-soft);border-color:#b5e6df}
-.step.sum .card p::before{content:"📌 "}
+.step.sum .card>p:first-child::before{content:"📌 "}
 
 .card{background:var(--panel);border:2px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:0 4px 0 #eef1f7}
 .card h3{margin:0 0 .5em;font-size:1.1rem}
@@ -91,6 +91,11 @@ table.tbl td,table.tbl th{border:1px solid var(--line);padding:4px 12px;text-ali
 .opt.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 .explain{margin-top:6px;font-size:.9rem;color:var(--muted);display:none}
 .explain.show{display:block}
+.choice{padding:12px 0;border-bottom:1px dashed var(--line)}
+.choice:first-child{padding-top:0}
+.choice:last-of-type{border-bottom:0}
+.choice p{margin:0 0 8px;font-weight:600}
+.choice .opt{padding:6px 12px;font-size:.92rem}
 .score{margin-top:14px;text-align:center;font-weight:800;font-size:1.2rem;display:none}
 .score.show{display:block}
 

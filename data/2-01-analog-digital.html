@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아날로그와 디지털</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+#graph{width:100%;height:220px;background:var(--bg);border-radius:14px;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 14px;font-weight:600}
+.chip.on{border-color:var(--mint);background:var(--mint-soft);color:#0d7d71}
+.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.benefits div{background:var(--brand-soft);border-radius:14px;padding:10px 14px;font-weight:600}
+</style>
+</head>
+<body data-unit="2" data-title="아날로그와 디지털" data-sub="중1 Ⅱ단원 · 데이터의 디지털 표현 · 미래엔 44~45, 57쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 디지털 표현</span>
+  <h1>아날로그와 디지털</h1>
+  <p class="lead"><b>데이터</b>는 관찰, 측정, 실험, 조사 등으로 얻은 값이에요. 표현 형태에 따라 <b>아날로그 데이터</b>와 <b>디지털 데이터</b>로 나눌 수 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>오늘 하루 내가 사용한 데이터를 모두 골라 보세요. 이 데이터들은 어디에 저장되어 있을까요?</p>
+      <div class="chips" id="today"></div>
+      <p class="hint" id="todayN" style="margin-top:10px"></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📈 연속된 값을 끊어서 나타내기</h3>
+      <p>파란 곡선은 하루 동안 <b>연속적으로</b> 변하는 기온(아날로그)이에요. 측정 간격을 바꾸면 끊어진 값(디지털)이 어떻게 달라지는지 보세요.</p>
+      <canvas id="graph"></canvas>
+      <div class="ctrl" style="margin-top:10px">
+        <label for="step">측정 간격</label>
+        <input type="range" id="step" min="1" max="6" value="4" style="flex:1;min-width:160px">
+        <span class="pill" id="stepN"></span>
+      </div>
+      <p class="hint">💬 간격을 좁힐수록 노란 계단은 곡선과 어떻게 달라지나요? 디지털 데이터는 <b>정해진 값으로만</b> 표현하기 때문에 명확하고, 저장과 가공이 쉬워요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🗂️ 아날로그일까, 디지털일까?</h3>
+      <div id="sort"></div>
+    </div>
+
+    <div class="card">
+      <h3>👍 디지털로 바꾸면 무엇이 좋아질까?</h3>
+      <div class="benefits" style="margin-bottom:14px">
+        <div>💾 많은 양의 데이터를 저장</div>
+        <div>🔍 쉽고 빠르게 검색</div>
+        <div>📤 편집·복사·공유·전송이 쉬움</div>
+        <div>🎮 음악·영상·게임 등 다른 형태로 변환</div>
+        <div>🔒 삭제된 데이터 복구, 암호화로 보호</div>
+      </div>
+      <p>아날로그 방식의 불편함을 디지털이 어떻게 해결하는지 골라 보세요.</p>
+      <div id="match"></div>
+      <p class="hint">💬 아날로그만의 좋은 점도 있을까요? (예: 손 편지의 따뜻함, LP 음반의 소리)</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>아날로그 데이터</b>는 연속적인 값, <b>디지털 데이터</b>는 끊어서 나타낸 불연속적인 값이에요. 디지털로 바꾸면 저장, 검색, 편집, 공유, 변환이 쉬워져요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 44~45, 57쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/common.js"></script>
+<script>
+const TODAY = ['📱 메신저 대화','🌤️ 날씨 앱','🗺️ 지도 길 찾기','🎵 음악 스트리밍','📷 사진 촬영','🏃 걸음 수 기록','📺 동영상 시청','🎮 게임','📚 전자책'];
+const on = new Set();
+$('#today').innerHTML = TODAY.map((t, i) => `<button class="chip" data-i="${i}">${t}</button>`).join('');
+$$('#today .chip').forEach(b => b.onclick = () => {
+  const i = +b.dataset.i; on.has(i) ? on.delete(i) : on.add(i); b.classList.toggle('on');
+  $('#todayN').textContent = on.size ? `${on.size}가지! 모두 0과 1로 이루어진 디지털 데이터예요.` : '';
+});
+
+/* 기온 그래프 */
+function draw(){
+  const cv = $('#graph'), s = [8, 6, 4, 3, 2, 1][+$('#step').value - 1], dpr = devicePixelRatio || 1;
+  $('#stepN').textContent = s + '시간마다';
+  if (!cv.clientWidth) return;
+  const w = cv.width = cv.clientWidth * dpr, h = cv.height = cv.clientHeight * dpr, pad = 16 * dpr;
+  const ctx = cv.getContext('2d');
+  const T = t => 14 + 8 * Math.sin((t - 9) / 24 * Math.PI * 2) + 1.5 * Math.sin(t / 3);   // 0~24시 기온
+  const X = t => pad + t / 24 * (w - pad * 2), Y = v => h - pad - (v - 2) / 24 * (h - pad * 2);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(90,101,120,.7)'; ctx.font = `${11 * dpr}px sans-serif`;
+  for (let t = 0; t <= 24; t += 6) ctx.fillText(t + '시', X(t) - 8 * dpr, h - 2 * dpr);
+  ctx.fillStyle = 'rgba(255,194,51,.55)'; ctx.strokeStyle = '#e0a000'; ctx.lineWidth = 2 * dpr;
+  for (let t = 0; t < 24; t += s){
+    const v = Math.round(T(t));
+    ctx.fillRect(X(t), Y(v), X(Math.min(24, t + s)) - X(t), h - pad - Y(v));
+    ctx.beginPath(); ctx.moveTo(X(t), Y(v)); ctx.lineTo(X(Math.min(24, t + s)), Y(v)); ctx.stroke();
+    ctx.fillStyle = '#7a5600'; ctx.fillText(v + '°', X(t) + 3 * dpr, Y(v) - 4 * dpr); ctx.fillStyle = 'rgba(255,194,51,.55)';
+  }
+  ctx.strokeStyle = '#3b6cf6'; ctx.lineWidth = 3 * dpr; ctx.beginPath();
+  for (let t = 0; t <= 24; t += .1){ t ? ctx.lineTo(X(t), Y(T(t))) : ctx.moveTo(X(t), Y(T(t))); }
+  ctx.stroke();
+}
+$('#step').addEventListener('input', draw);
+addEventListener('resize', draw);
+draw();
+
+renderChoice($('#sort'), [
+  {icon:'🌡️', t:'유리관 속 빨간 액체가 오르내리는 온도계', a:0, e:'눈금 사이 어디든 멈출 수 있는 연속적인 값이에요.'},
+  {icon:'⌚', t:'숫자로 "10:25"를 보여 주는 스마트워치', a:1, e:'정해진 숫자로 끊어서 나타내요.'},
+  {icon:'💿', t:'바늘이 홈의 굴곡을 따라 소리를 내는 LP 음반', a:0, e:'소리의 파형이 그대로 홈에 새겨진 연속적인 데이터예요.'},
+  {icon:'🎧', t:'스마트폰에 저장된 음악 파일', a:1, e:'소리를 표본화·양자화·부호화해 0과 1로 저장해요.'},
+  {icon:'🕰️', t:'바늘이 쉬지 않고 움직이는 아날로그 시계', a:0, e:'바늘이 연속적으로 움직여요.'},
+  {icon:'🖼️', t:'태블릿으로 그린 그림 파일', a:1, e:'픽셀마다 색을 이진수로 저장해요.'},
+], ['아날로그', '디지털']);
+
+renderChoice($('#match'), [
+  {t:'종이에 쓴 보고서는 한 문장만 고치려 해도 다시 써야 해요.', a:2, e:'문서 파일은 고치고 복사하고 친구와 공유하기 쉬워요.'},
+  {t:'공연장에 가야만 그 음악을 들을 수 있어요.', a:3, e:'녹음해 디지털 파일로 바꾸면 언제든 다른 기기·서비스에서 들을 수 있어요.'},
+  {t:'사진 앨범 수십 권에서 작년 여름 사진을 찾기 힘들어요.', a:1, e:'날짜나 장소로 바로 검색할 수 있어요.'},
+  {t:'일기장을 잃어버리면 내용을 되찾을 수 없어요.', a:4, e:'백업한 데이터는 복구할 수 있고, 비밀번호로 보호할 수도 있어요.'},
+  {t:'책장이 모자라 더 이상 책을 보관할 수 없어요.', a:0, e:'전자책 수천 권도 작은 기기 하나에 저장할 수 있어요.'},
+], ['💾 대량 저장', '🔍 검색', '📤 편집·공유', '🎮 형태 변환', '🔒 복구·보호']);
+
+renderQuiz($('#quiz'), [
+  {q:'바람의 세기, 소리의 크기처럼 연속적으로 변하는 값은?', o:['아날로그 데이터','디지털 데이터'], a:0, e:'연속적으로 변하는 물리량은 아날로그 데이터예요.'},
+  {q:'디지털 데이터의 특징으로 알맞지 않은 것은?', o:['검색이 쉽다','복사·공유가 쉽다','측정할 때마다 값이 달라지기 쉽다','다른 형태로 변환할 수 있다'], a:2, e:'디지털 데이터는 정해진 값으로만 표현해서 명확해요. 측정할 때마다 달라지기 쉬운 건 아날로그 데이터의 특징이에요.'},
+  {q:'측정 간격을 좁게 하면 디지털 데이터는 어떻게 될까요?', o:['원래 값에 더 가까워진다','원래 값과 더 달라진다'], a:0, e:'자주 측정할수록 원래의 연속적인 변화에 가까워져요. 대신 데이터의 양은 늘어나요.'},
+]);
+</script>
+</body>
+</html>

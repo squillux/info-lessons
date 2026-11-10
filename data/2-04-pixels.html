@@ -75,6 +75,35 @@
       <div class="sw" id="swatches"></div>
       <p class="hint">24비트는 빨강(R)·초록(G)·파랑(B)에 8비트씩 써서 16,777,216가지 색을 표현해요(트루 컬러). <b>해상도</b>(가로 픽셀 수 × 세로 픽셀 수)가 높을수록 더 선명한 이미지를 표현할 수 있어요.</p>
     </div>
+
+    <div class="card">
+      <h3>🖍️ 2비트로 4가지 색 칠하기</h3>
+      <p>픽셀 하나에 <b>2비트</b>를 쓰면 00, 01, 10, 11 → <b>4가지 색</b>을 나타낼 수 있어요. 붓 색을 고르고 칸을 칠해 보세요.</p>
+      <div class="ctrl" id="pal4"></div>
+      <div class="pixel-wrap" style="margin-top:12px">
+        <div class="grid" id="grid4"></div>
+        <div>
+          <div class="hint">한 줄 = 8픽셀 × 2비트 = 16비트</div>
+          <div class="codes" id="codes4"></div>
+        </div>
+      </div>
+      <div class="ctrl" style="margin-top:12px"><button class="btn line" id="clear4">지우기</button>
+        <span class="hint">전체 용량: 64픽셀 × 2비트 = <b>128비트 = 16바이트</b> (흑백 그림의 2배)</span></div>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 씨마스 중학교 정보 56쪽</p>
+    </div>
+
+    <div class="card">
+      <h3>🌈 빛의 3원색(RGB) 섞기</h3>
+      <p>24비트 색은 빨강(R)·초록(G)·파랑(B)에 각각 <b>8비트(0~255)</b>를 써요. 막대를 움직여 색을 만들어 보세요. 웹에서는 이 값을 <b>16진수</b>로 #RRGGBB처럼 적어요.</p>
+      <div class="row" style="align-items:center">
+        <div id="rgbBox" style="flex:0 0 150px;height:150px;border-radius:18px;border:2px solid var(--line)"></div>
+        <div style="flex:1 1 280px" id="rgbCtrl"></div>
+      </div>
+      <p style="margin-top:12px">16진수 코드 <span class="pill mono" id="hexOut" style="font-size:1.2rem">#FF7AA2</span></p>
+      <div class="ctrl" id="rgbPresets"></div>
+      <p class="hint">💬 R, G, B를 모두 0으로 하면? 모두 255로 하면? 빨강과 초록을 섞으면 무슨 색이 될까요?</p>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 씨마스 중학교 정보 57쪽</p>
+    </div>
   </section>
 
   <section class="step">
@@ -88,7 +117,7 @@
       <p>이미지는 <b>픽셀</b>마다 색을 이진수로 저장해요. 픽셀 하나에 쓰는 비트가 n개면 <b>2<sup>n</sup>가지 색</b>을 나타낼 수 있고, 비트가 많을수록 용량도 커져요.</p>
     </div>
   </section>
-  <p class="src">미래엔 중학교 정보 47쪽 내용을 바탕으로 재구성</p>
+  <p class="src">미래엔 중학교 정보 47쪽 내용을 바탕으로 재구성 · 2비트 4색, RGB 참고: 씨마스 중학교 정보 56~57쪽</p>
 </main>
 <script src="../assets/common.js"></script>
 <script>
@@ -110,13 +139,13 @@ grid.addEventListener('pointerdown', e => {
 grid.addEventListener('pointermove', e => {
   if (!painting) return;
   const el = document.elementFromPoint(e.clientX, e.clientY);
-  if (el && el.classList.contains('px')) setPx(+el.dataset.i, paintVal);
+  if (el && el.parentNode === grid) setPx(+el.dataset.i, paintVal);
 });
 ['pointerup', 'pointercancel'].forEach(t => grid.addEventListener(t, () => painting = false));
 function setPx(i, v){ if (px[i] === v) return; px[i] = v; renderPx(); }
 const rowStr = r => px.slice(r * 8, r * 8 + 8).join('');
 function renderPx(checked){
-  $$('.px').forEach((c, i) => { c.classList.toggle('on', !!px[i]); c.classList.remove('wrong'); });
+  $$('#grid .px').forEach((c, i) => { c.classList.toggle('on', !!px[i]); c.classList.remove('wrong'); });
   const codes = $('#codes'); codes.innerHTML = '';
   for (let r = 0; r < 8; r++){
     const s = mode === 'draw' ? rowStr(r) : PUZZLES[puzzle][r];
@@ -141,7 +170,7 @@ $('#checkPx').onclick = () => {
   const ans = PUZZLES[puzzle].join('');
   renderPx(true);
   let wrong = 0;
-  $$('.px').forEach((c, i) => { if (String(px[i]) !== ans[i]){ wrong++; c.classList.add('wrong'); } });
+  $$('#grid .px').forEach((c, i) => { if (String(px[i]) !== ans[i]){ wrong++; c.classList.add('wrong'); } });
   feedback($('#pxFb'), !wrong, !wrong
     ? `🎉 정답! 숨은 그림은 '${NAMES[puzzle]}'이에요. 64비트(8바이트)로 저장되는 그림이랍니다.`
     : `빨간 테두리 칸 ${wrong}개가 암호와 달라요. 빨간 줄의 암호를 다시 확인해 보세요.`);
@@ -164,11 +193,50 @@ $$('#depth button').forEach(btn => btn.onclick = () => {
 });
 drawDepth(1);
 
+/* 2비트 4색 */
+const PAL = [['00','#ffffff','흰색'],['01','#ffc233','노랑'],['10','#ff7aa2','분홍'],['11','#3b6cf6','파랑']];
+let brush = 3, px4 = Array(64).fill(0);
+$('#pal4').innerHTML = PAL.map(([c, col, n], i) => `<button class="btn line" data-p="${i}" style="display:flex;gap:6px;align-items:center"><span style="width:20px;height:20px;border-radius:5px;border:1px solid var(--line);background:${col}"></span>${n} <span class="mono">${c}</span></button>`).join('');
+const markBrush = () => $$('#pal4 button').forEach((b, i) => b.style.outline = i === brush ? '3px solid var(--brand)' : '');
+$$('#pal4 button').forEach(b => b.onclick = () => { brush = +b.dataset.p; markBrush(); });
+markBrush();
+const g4 = $('#grid4');
+for (let i = 0; i < 64; i++){ const d = document.createElement('div'); d.className = 'px'; d.dataset.i = i; g4.appendChild(d); }
+let paint4 = false;
+const set4 = i => { if (px4[i] === brush) return; px4[i] = brush; render4(); };
+g4.addEventListener('pointerdown', e => { const c = e.target.closest('.px'); if (!c) return; paint4 = true; set4(+c.dataset.i); g4.setPointerCapture?.(e.pointerId); });
+g4.addEventListener('pointermove', e => { if (!paint4) return; const el = document.elementFromPoint(e.clientX, e.clientY); if (el && el.parentNode === g4) set4(+el.dataset.i); });
+['pointerup', 'pointercancel'].forEach(t => g4.addEventListener(t, () => paint4 = false));
+function render4(){
+  [...g4.children].forEach((c, i) => c.style.background = PAL[px4[i]][1]);
+  $('#codes4').innerHTML = Array.from({length: 8}, (_, r) => `<div class="code"><span class="n">${r + 1}</span><span class="mono" style="font-size:.8rem">${px4.slice(r * 8, r * 8 + 8).map(v => PAL[v][0]).join(' ')}</span></div>`).join('');
+}
+$('#clear4').onclick = () => { px4.fill(0); render4(); };
+render4();
+
+/* RGB */
+const rgb = [255, 122, 162], RGBN = [['R','빨강','#e04848'],['G','초록','#1f9d55'],['B','파랑','#3b6cf6']];
+$('#rgbCtrl').innerHTML = RGBN.map(([k, n, col], i) => `<div class="ctrl" style="margin:4px 0"><b style="color:${col};width:54px">${k} ${n}</b>
+  <input type="range" min="0" max="255" value="${rgb[i]}" data-c="${i}" style="flex:1;min-width:120px;accent-color:${col}">
+  <span class="pill" style="width:48px;text-align:center" id="rgbV${i}"></span><span class="mono hint" id="rgbB${i}"></span></div>`).join('');
+const hex2 = v => v.toString(16).toUpperCase().padStart(2, '0');
+function renderRGB(){
+  rgb.forEach((v, i) => { $('#rgbV' + i).textContent = v; $('#rgbB' + i).textContent = bin(v, 8); $(`[data-c="${i}"]`).value = v; });
+  const hex = '#' + rgb.map(hex2).join('');
+  $('#rgbBox').style.background = hex; $('#hexOut').textContent = hex;
+}
+$$('#rgbCtrl input').forEach(s => s.oninput = () => { rgb[+s.dataset.c] = +s.value; renderRGB(); });
+const PRE = [['빨강',[255,0,0]],['초록',[0,255,0]],['파랑',[0,0,255]],['노랑',[255,255,0]],['검정',[0,0,0]],['흰색',[255,255,255]]];
+$('#rgbPresets').innerHTML = PRE.map(([n], i) => `<button class="btn ghost" data-pre="${i}">${n}</button>`).join('');
+$$('[data-pre]').forEach(b => b.onclick = () => { PRE[+b.dataset.pre][1].forEach((v, i) => rgb[i] = v); renderRGB(); });
+renderRGB();
+
 renderQuiz($('#quiz'), [
   {q:'비트맵 이미지를 구성하는 작은 점을 무엇이라고 할까요?', o:['비트','픽셀','프레임','벡터'], a:1, e:'이미지를 이루는 작은 점을 픽셀(pixel)이라고 해요.'},
   {q:'8×8 흑백 픽셀 그림을 저장하려면 몇 비트가 필요할까요?', o:['8비트','16비트','64비트','256비트'], a:2, e:'픽셀 1개 = 1비트, 8×8 = 64개 → 64비트(8바이트)'},
   {q:'픽셀 하나를 8비트로 표현하면 몇 가지 색을 나타낼 수 있을까요?', o:['8가지','16가지','64가지','256가지'], a:3, e:'2⁸ = 256가지 색'},
   {q:'같은 크기의 그림을 1비트 대신 24비트 색으로 저장하면 용량은?', o:['줄어든다','같다','24배가 된다'], a:2, e:'픽셀마다 24비트를 쓰므로 용량이 24배가 돼요. 색이 풍부할수록 용량이 커져요.'},
+  {q:'RGB 값이 모두 255인 #FFFFFF는 무슨 색일까요?', o:['검정','흰색','빨강'], a:1, e:'빛의 3원색을 모두 가장 밝게 섞으면 흰색, 모두 0이면 검정이에요.'},
 ]);
 </script>
 </body>

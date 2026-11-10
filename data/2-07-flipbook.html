@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>플립북 애니메이션</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.stage{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+#screen{width:200px;height:200px;image-rendering:pixelated;border:3px solid var(--ink);border-radius:14px;background:#fff}
+.strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.strip canvas{width:56px;height:56px;image-rendering:pixelated;border:2px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+.strip canvas.cur{border-color:var(--pink)}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;background:var(--line);padding:2px;border-radius:10px;width:min(100%,260px);touch-action:none;user-select:none}
+.px{aspect-ratio:1;background:#fff;border-radius:3px}
+.px.on{background:var(--ink)}
+.px.ghost{background:#dfe5f2}
+</style>
+</head>
+<body data-unit="2" data-title="플립북 애니메이션" data-sub="중1 Ⅱ단원 · 데이터의 디지털 표현 · 미래엔 48쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 디지털 표현</span>
+  <h1>플립북 애니메이션</h1>
+  <p class="lead"><b>동영상</b>은 여러 장의 이미지를 빠르게 보여 주어 움직이는 것처럼 보이게 한 데이터예요. 동영상을 이루는 한 장면을 <b>프레임</b>, 1초에 보여 주는 프레임 수를 <b>fps</b>라고 해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>교과서 귀퉁이에 조금씩 다른 그림을 그리고 빠르게 넘기면 어떻게 보일까요? 사진은 멈춰 있는데 왜 움직이는 것처럼 보일까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🎞️ fps를 바꿔 보기</h3>
+      <div class="stage">
+        <canvas id="screen" width="16" height="16"></canvas>
+        <div style="flex:1 1 260px">
+          <div class="ctrl"><label for="fps">fps</label><input type="range" id="fps" min="1" max="30" value="2" style="flex:1;min-width:140px"><span class="pill" id="fpsN"></span></div>
+          <div class="ctrl" style="margin-top:8px">
+            <button class="btn" id="play">⏸ 멈춤</button>
+            <span class="hint" id="frameN"></span>
+          </div>
+          <p class="hint">💬 1fps, 5fps, 24fps로 바꿔 보세요. 언제부터 자연스럽게 움직여 보이나요? 이미지가 사라진 뒤에도 잠깐 눈에 남아 있는 <b>잔상 효과</b> 때문에 멈춘 그림이 움직이는 것처럼 보여요.</p>
+        </div>
+      </div>
+      <div class="strip" id="strip"></div>
+    </div>
+
+    <div class="card">
+      <h3>✏️ 나만의 플립북 만들기</h3>
+      <p>프레임 4장을 골라 가며 그림을 조금씩 다르게 그려 보세요. 연한 회색은 바로 앞 프레임의 그림이에요.</p>
+      <div class="ctrl" id="myTabs" style="margin-bottom:10px"></div>
+      <div class="stage">
+        <div class="grid" id="myGrid"></div>
+        <div>
+          <canvas id="myScreen" width="8" height="8" style="width:120px;height:120px;image-rendering:pixelated;border:3px solid var(--ink);border-radius:12px;background:#fff"></canvas>
+          <div class="ctrl" style="margin-top:8px"><button class="btn ghost" id="myPlay">▶ 재생</button><button class="btn line" id="myClear">이 프레임 지우기</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📦 동영상은 왜 용량이 클까?</h3>
+      <p>동영상 용량 ≈ 프레임 한 장의 용량 × fps × 재생 시간(초). 여기에 소리와 자막까지 더해져요.</p>
+      <div class="ctrl">
+        <label>화면</label>
+        <select id="res" class="inp" style="width:auto;font-size:1rem">
+          <option value="64,1">8×8 흑백 (내 플립북)</option>
+          <option value="2073600,24" selected>1920×1080 트루 컬러 (FHD)</option>
+        </select>
+        <label>fps</label><input id="vFps" type="number" class="inp" value="30" min="1" max="60" style="width:80px;font-size:1rem">
+        <label>초</label><input id="vSec" type="number" class="inp" value="60" min="1" max="600" style="width:90px;font-size:1rem">
+      </div>
+      <p id="sizeOut" style="font-size:1.1rem;margin-top:12px"></p>
+      <p class="hint">그래서 동영상은 <b>코덱(codec)</b>이라는 소프트웨어로 압축(coder)했다가, 재생할 때 압축을 풀어(decoder) 사용해요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>동영상은 여러 장의 <b>프레임</b>을 빠르게 보여 주어 <b>잔상 효과</b>로 움직이는 것처럼 보이게 해요. 이미지·소리·자막을 함께 담아 용량이 커서 <b>코덱</b>으로 압축해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 48쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/common.js"></script>
+<script>
+/* 예시 애니메이션: 공이 튀어 오르는 8프레임 (16×16) */
+const FRAMES = [0, 1, 2, 3, 4, 5, 6, 7].map(k => {
+  const t = k / 8, y = 12 - Math.round(10 * Math.abs(Math.sin(t * Math.PI))), x = 2 + Math.round(t * 11);
+  const squash = k === 0;
+  return {x, y, squash};
+});
+function paint(ctx, f){
+  ctx.clearRect(0, 0, 16, 16);
+  ctx.fillStyle = '#c9d2e3'; ctx.fillRect(0, 15, 16, 1);
+  ctx.fillStyle = '#ff7aa2';
+  if (f.squash){ ctx.fillRect(f.x - 2, f.y + 2, 6, 2); ctx.fillRect(f.x - 1, f.y + 1, 4, 1); }   // 바닥에 닿아 납작해진 공
+  else { ctx.fillRect(f.x, f.y, 2, 4); ctx.fillRect(f.x - 1, f.y + 1, 4, 2); }                       // 둥근 공(4×4)
+}
+const scr = $('#screen').getContext('2d');
+$('#strip').innerHTML = FRAMES.map((_, i) => `<canvas width="16" height="16" data-f="${i}" title="${i + 1}번 프레임"></canvas>`).join('');
+$$('#strip canvas').forEach((c, i) => { paint(c.getContext('2d'), FRAMES[i]); c.onclick = () => { playing = false; setPlay(); show(i); }; });
+let fi = 0, playing = true, timer;
+function show(i){ fi = i; paint(scr, FRAMES[i]); $$('#strip canvas').forEach((c, k) => c.classList.toggle('cur', k === i)); $('#frameN').textContent = `${i + 1} / ${FRAMES.length} 프레임`; }
+function tick(){ if (playing) show((fi + 1) % FRAMES.length); timer = setTimeout(tick, 1000 / +$('#fps').value); }
+const setPlay = () => $('#play').textContent = playing ? '⏸ 멈춤' : '▶ 재생';
+$('#play').onclick = () => { playing = !playing; setPlay(); };
+$('#fps').oninput = () => $('#fpsN').textContent = $('#fps').value + 'fps';
+$('#fps').oninput(); show(0); tick();
+
+/* 나만의 플립북 */
+const my = [0, 1, 2, 3].map(() => Array(64).fill(0));
+let cur = 0, myPlaying = false, myTimer, myIdx = 0;
+$('#myTabs').innerHTML = my.map((_, i) => `<button class="btn line" data-t="${i}">${i + 1}번 프레임</button>`).join('');
+$$('#myTabs button').forEach(b => b.onclick = () => { cur = +b.dataset.t; renderMy(); });
+const mg = $('#myGrid');
+for (let i = 0; i < 64; i++){ const d = document.createElement('div'); d.className = 'px'; d.dataset.i = i; mg.appendChild(d); }
+let down = false, val = 1;
+mg.addEventListener('pointerdown', e => { const c = e.target.closest('.px'); if (!c) return; down = true; val = my[cur][c.dataset.i] ? 0 : 1; setMy(+c.dataset.i); mg.setPointerCapture?.(e.pointerId); });
+mg.addEventListener('pointermove', e => { if (!down) return; const el = document.elementFromPoint(e.clientX, e.clientY); if (el && el.parentNode === mg) setMy(+el.dataset.i); });
+['pointerup', 'pointercancel'].forEach(t => mg.addEventListener(t, () => down = false));
+function setMy(i){ if (my[cur][i] === val) return; my[cur][i] = val; renderMy(); }
+function drawMy(k){
+  const c = $('#myScreen').getContext('2d'); c.clearRect(0, 0, 8, 8); c.fillStyle = '#1f2a3d';
+  my[k].forEach((v, i) => v && c.fillRect(i % 8, Math.floor(i / 8), 1, 1));
+}
+function renderMy(){
+  const prev = my[(cur + 3) % 4];
+  [...mg.children].forEach((c, i) => { c.classList.toggle('on', !!my[cur][i]); c.classList.toggle('ghost', !my[cur][i] && !!prev[i] && cur > 0); });
+  $$('#myTabs button').forEach((b, i) => b.style.outline = i === cur ? '3px solid var(--brand)' : '');
+  if (!myPlaying) drawMy(cur);
+}
+$('#myPlay').onclick = () => {
+  myPlaying = !myPlaying; $('#myPlay').textContent = myPlaying ? '⏸ 멈춤' : '▶ 재생';
+  clearInterval(myTimer);
+  if (myPlaying) myTimer = setInterval(() => { myIdx = (myIdx + 1) % 4; drawMy(myIdx); }, 1000 / Math.max(1, +$('#fps').value));
+  else drawMy(cur);
+};
+$('#myClear').onclick = () => { my[cur].fill(0); renderMy(); };
+renderMy();
+
+/* 용량 계산 */
+function human(bits){
+  const B = bits / 8, u = ['바이트','KB','MB','GB','TB']; let v = B, k = 0;
+  while (v >= 1024 && k < u.length - 1){ v /= 1024; k++; }
+  return `${v.toLocaleString(undefined, {maximumFractionDigits: 1})} ${u[k]}`;
+}
+function size(){
+  const [px, bpp] = $('#res').value.split(',').map(Number), fps = Math.max(1, +$('#vFps').value || 1), sec = Math.max(1, +$('#vSec').value || 1);
+  const bits = px * bpp * fps * sec;
+  $('#sizeOut').innerHTML = `프레임 ${(fps * sec).toLocaleString()}장 × 한 장 ${human(px * bpp)} ≈ <b class="pill" style="font-size:1.2rem">${human(bits)}</b> <span class="hint">(압축하지 않았을 때)</span>`;
+}
+['#res', '#vFps', '#vSec'].forEach(s => $(s).addEventListener('input', size));
+size();
+
+renderQuiz($('#quiz'), [
+  {q:'동영상을 구성하는 하나하나의 장면을 무엇이라고 할까요?', o:['픽셀','프레임','비트','코덱'], a:1, e:'동영상을 이루는 한 장면을 프레임이라고 해요.'},
+  {q:'30fps는 무슨 뜻일까요?', o:['1초에 프레임 30장을 보여 준다','30초짜리 동영상이다','픽셀이 30개다'], a:0, e:'fps(frame per second)는 1초에 보여 주는 프레임 수예요.'},
+  {q:'멈춘 그림을 빠르게 바꿔 보여 주면 움직이는 것처럼 보이는 까닭은?', o:['잔상 효과','계단 현상','양자화'], a:0, e:'이미지가 사라진 뒤에도 잠시 남아 보이는 잔상 효과 때문이에요.'},
+  {q:'동영상의 큰 용량을 줄이기 위해 압축하고 푸는 소프트웨어는?', o:['아스키 코드','비디오 코덱','검색 엔진'], a:1, e:'비디오 코덱은 압축(coder)과 압축 해제(decoder)를 해요.'},
+]);
+</script>
+</body>
+</html>

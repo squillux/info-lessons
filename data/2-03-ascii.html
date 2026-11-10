@@ -57,6 +57,13 @@
     </div>
 
     <div class="card">
+      <h3>🏃 모둠 릴레이 암호 게임</h3>
+      <p>태블릿 한 대를 돌려 가며 3명이 차례로 맡아요. <b>출제자</b>가 영어 단어를 정하면 → <b>부호화 담당</b>이 아스키 코드로 바꾸고 → <b>해독 담당</b>이 코드만 보고 다시 글자로 바꿔요. 마지막에 처음 단어와 같은지 확인해 봅시다!</p>
+      <div id="relay"></div>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 비상교육 중학교 정보 85쪽 (모둠 문자 변환 게임의 진행 방식을 아스키 코드로 바꾸어 구성)</p>
+    </div>
+
+    <div class="card">
       <h3>🌏 유니코드</h3>
       <p>아스키 코드는 128개 문자만 표현할 수 있어서 한글, 한자 같은 문자를 담을 수 없어요. 그래서 전 세계 문자를 하나의 체계로 표현하는 <b>유니코드</b>를 만들었어요. 유니코드는 <b>UTF-8, UTF-16, UTF-32</b> 등 여러 방식으로 저장돼요.</p>
       <p class="hint">※ 위 활동의 분홍 카드는 글자의 유니코드 번호를 이진수로 나타낸 값이에요. 실제 저장되는 비트 수는 UTF-8, UTF-16 같은 저장 방식에 따라 달라져요.</p>
@@ -74,7 +81,7 @@
       <p>문자는 약속된 이진수인 <b>문자 코드</b>로 저장해요. <b>아스키 코드</b>는 7비트로 128개 문자를, <b>유니코드</b>는 한글을 포함한 전 세계 문자를 표현해요.</p>
     </div>
   </section>
-  <p class="src">미래엔 중학교 정보 46쪽 내용을 바탕으로 재구성</p>
+  <p class="src">미래엔 중학교 정보 46쪽 내용을 바탕으로 재구성 · 릴레이 게임 참고: 비상교육 중학교 정보 85쪽</p>
 </main>
 <script src="../assets/common.js"></script>
 <script>
@@ -121,6 +128,48 @@ function renderChars(){
 }
 $('#charIn').addEventListener('input', renderChars);
 renderChars();
+
+/* 릴레이 게임 */
+const R = {step: 0, word: '', codes: [], back: ''};
+function relay(){
+  const box = $('#relay');
+  const head = n => `<div class="progress" style="margin-bottom:8px">${[0,1,2,3].map(k => `<i class="${k < n ? 'done' : ''}"></i>`).join('')}</div>`;
+  if (R.step === 0){
+    box.innerHTML = head(0) + `<p><b>① 출제자</b>: 영어 단어를 입력하세요. (A~Z, 2~6글자) 다른 친구는 화면을 보지 마세요!</p>
+      <div class="ctrl"><input id="rWord" class="inp" maxlength="6" autocomplete="off" style="width:180px;text-transform:uppercase"><button class="btn" id="rGo">부호화 담당에게 넘기기 ▶</button></div><div class="feedback" id="rFb"></div>`;
+    $('#rGo').onclick = () => {
+      const w = $('#rWord').value.trim().toUpperCase();
+      if (!/^[A-Z]{2,6}$/.test(w)) return feedback($('#rFb'), false, '영어 대문자/소문자 2~6글자로 입력해 주세요.');
+      R.word = w; R.step = 1; relay();
+    };
+  } else if (R.step === 1){
+    box.innerHTML = head(1) + `<p><b>② 부호화 담당</b>: 단어 <span class="pill mono">${R.word}</span>의 각 글자를 7비트 아스키 코드로 입력하세요. 위의 코드표를 봐도 돼요.</p>
+      <div class="ctrl">${[...R.word].map((c, i) => `<label style="text-align:center"><b>${c}</b><br><input class="inp mono" data-r="${i}" maxlength="7" inputmode="numeric" style="width:120px;font-size:1rem"></label>`).join('')}</div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn" id="rGo">단어를 가리고 해독 담당에게 넘기기 ▶</button></div><div class="feedback" id="rFb"></div>`;
+    $('#rGo').onclick = () => {
+      const codes = $$('[data-r]').map(i => i.value.trim());
+      if (codes.some(c => !/^[01]{7}$/.test(c))) return feedback($('#rFb'), false, '모든 칸에 0과 1로 된 7자리 코드를 입력해 주세요.');
+      R.codes = codes; R.step = 2; relay();
+    };
+  } else if (R.step === 2){
+    box.innerHTML = head(2) + `<p><b>③ 해독 담당</b>: 아래 코드를 글자로 바꿔 입력하세요.</p>
+      <div class="secret mono">${R.codes.map(c => `<span>${c}</span>`).join('')}</div>
+      <div class="ctrl" style="margin-top:10px"><input id="rBack" class="inp" maxlength="6" autocomplete="off" style="width:180px;text-transform:uppercase"><button class="btn" id="rGo">결과 확인 ▶</button></div>`;
+    $('#rGo').onclick = () => { R.back = $('#rBack').value.trim().toUpperCase(); R.step = 3; relay(); };
+  } else {
+    const ok = R.back === R.word;
+    const rows = [...R.word].map((c, i) => {
+      const right = bin(c.charCodeAt(0), 7), enc = R.codes[i], dec = enc ? String.fromCharCode(parseInt(enc, 2)) : '', got = R.back[i] || '';
+      return `<tr><td><b>${c}</b></td><td class="mono" style="color:${enc === right ? 'var(--ok)' : 'var(--bad)'}">${enc}</td><td class="mono">${right}</td><td style="color:${got === c ? 'var(--ok)' : 'var(--bad)'}"><b>${got || '-'}</b></td></tr>`;
+    }).join('');
+    box.innerHTML = head(4) + `<div class="feedback show ${ok ? 'ok' : 'bad'}">${ok ? `🎉 성공! 처음 단어 ${R.word}가 그대로 전달됐어요.` : `처음 단어는 ${R.word}, 전달된 단어는 ${R.back || '(없음)'}. 어느 단계에서 바뀌었는지 찾아보세요.`}</div>
+      <div class="scroll-x"><table class="tbl"><tr><th>처음 글자</th><th>부호화한 코드</th><th>정답 코드</th><th>해독한 글자</th></tr>${rows}</table></div>
+      <p class="hint">초록은 맞음, 빨강은 틀림이에요. 약속(문자 코드표)을 정확히 지켜야 데이터가 바르게 전달돼요.</p>
+      <button class="btn ghost" id="rAgain">역할을 바꿔 다시 하기</button>`;
+    $('#rAgain').onclick = () => { R.step = 0; relay(); };
+  }
+}
+relay();
 
 renderQuiz($('#quiz'), [
   {q:'아스키(ASCII) 코드는 몇 비트로 문자를 나타낼까요?', o:['4비트','7비트','16비트','32비트'], a:1, e:'아스키 코드는 7비트로 128(2⁷)개의 문자를 나타내요.'},

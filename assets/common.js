@@ -53,4 +53,31 @@ function renderQuiz(box, items){
   });
 }
 
+/* 상황 카드 분류: 상황마다 보기 버튼 중 하나를 고르면 바로 채점.
+   items = [{t:상황, a:정답 보기 번호, e:해설}], options = ['보기1', ...] */
+function renderChoice(box, items, options, onDone){
+  const done = {};
+  box.innerHTML = items.map((x, i) => `<div class="choice" data-i="${i}"><p>${x.icon ? x.icon + ' ' : ''}${x.t}</p>
+    <div class="opts">${options.map((o, k) => `<button class="opt" data-k="${k}">${o}</button>`).join('')}</div>
+    <div class="explain"></div></div>`).join('') + '<div class="score"></div>';
+  box.querySelectorAll('.choice').forEach(ce => {
+    const i = +ce.dataset.i, it = items[i];
+    ce.querySelectorAll('.opt').forEach(btn => btn.onclick = () => {
+      const k = +btn.dataset.k, ok = k === it.a;
+      ce.querySelectorAll('.opt').forEach(b => b.classList.remove('right', 'wrong'));
+      btn.classList.add(ok ? 'right' : 'wrong');
+      const ex = ce.querySelector('.explain');
+      ex.textContent = ok ? '⭕ ' + (it.e || '정답!') : '❌ 다시 생각해 보세요.' + (it.hint ? ' 💡 ' + it.hint : '');
+      ex.classList.add('show');
+      if (ok && !(i in done)){
+        done[i] = 1;
+        if (Object.keys(done).length === items.length){
+          const s = box.querySelector('.score'); s.textContent = '🎉 모두 해결했어요!'; s.classList.add('show');
+          onDone && onDone();
+        }
+      }
+    });
+  });
+}
+
 function feedback(el, ok, msg){ el.textContent = msg; el.className = 'feedback show ' + (ok ? 'ok' : 'bad'); }
