@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터로 주장하기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+table.lt{border-collapse:collapse}
+table.lt th,table.lt td{border:1px solid var(--line);padding:5px 12px;text-align:center}
+table.lt th{background:var(--bg)}
+#libChart,#wasteChart{width:100%;max-width:560px;display:block;background:var(--bg);border-radius:14px}
+.claim{background:var(--yellow-soft);border:2px solid #f7dd8f;border-radius:14px;padding:14px;line-height:2.4}
+.claim input{width:64px;text-align:center;font:inherit;font-weight:700;border:2px solid var(--line);border-radius:8px;padding:2px}
+.claim select{font:inherit;border:2px solid var(--line);border-radius:8px;padding:2px}
+.claim .good{border-color:var(--ok);background:var(--ok-soft)}
+.claim .bad{border-color:var(--bad);background:var(--bad-soft)}
+.wbar{cursor:pointer}
+</style>
+</head>
+<body data-unit="2" data-title="데이터로 주장하기" data-sub="중1 Ⅱ단원 · 데이터의 해석 · 미래엔 67쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 해석</span>
+  <h1>데이터로 주장하기</h1>
+  <p class="lead">데이터를 정리하고 시각화한 결과를 <b>근거</b>로 들면 내 의견을 논리적으로 주장할 수 있어요. 그리고 데이터가 말해 주는 것과 말해 주지 않는 것을 구별하는 눈도 필요해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>"우리 학교 도서관에 책을 더 사 주세요!" 이 주장을 교장 선생님께 설득력 있게 전하려면 무엇을 함께 보여 주면 좋을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📚 도서관 데이터를 그래프로</h3>
+      <p>학교알리미 같은 공공 데이터에서 찾은 ‘학교 도서관 현황’을 정리했다고 생각해 봐요(가상 데이터).</p>
+      <div class="scroll-x"><table class="lt" id="libT"></table></div>
+      <svg id="libChart" viewBox="0 0 560 230" style="margin-top:10px"></svg>
+    </div>
+
+    <div class="card">
+      <h3>✍️ 근거가 있는 주장 완성하기</h3>
+      <p>표와 그래프를 보고 빈칸에 알맞은 수를 넣고, 낮다/높다를 고르세요.</p>
+      <div class="claim" id="claim"></div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn" id="claimChk">채점하기</button></div>
+      <div class="feedback" id="claimFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🍱 급식 잔반율 해석하기</h3>
+      <p>급식 메뉴별 평균 잔반율(남긴 비율)이에요(가상 데이터). 막대를 눌러 <b>잔반율 20% 이하</b>인 메뉴를 모두 골라 보세요.</p>
+      <svg id="wasteChart" viewBox="0 0 560 260"></svg>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="wChk">채점하기</button><span class="hint" id="wSel"></span></div>
+      <div class="feedback" id="wFb"></div>
+      <p style="margin-top:14px">이 그래프만 보고 말할 수 있는 것일까요?</p>
+      <div id="judge"></div>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 비상교육 중학교 정보 82쪽 (급식 메뉴별 잔반율 해석 활동)</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>데이터를 정리·시각화한 결과를 <b>근거</b>로 들면 주장이 논리적이고 설득력 있어져요. 단, 데이터가 직접 보여 주는 사실과 추측을 구별하고, 더 필요한 데이터가 무엇인지도 생각해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 67쪽 내용을 바탕으로 재구성 · 잔반율 해석 참고: 비상교육 중학교 정보 82쪽 · 모든 수치는 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const LIB = [['우리 학교', 15.4, 1.2], ['우리 구', 20.1, 3.5], ['우리 시', 26.0, 4.1], ['전국', 33.5, 5.8]];
+$('#libT').innerHTML = `<tr><th>구분</th><th>1인당 장서 수(권)</th><th>1인당 대출 수(권)</th></tr>` + LIB.map(r => `<tr><td>${r[0]}</td><td>${r[1].toFixed(1)}</td><td>${r[2].toFixed(1)}</td></tr>`).join('');
+(function(){
+  let s = '';
+  LIB.forEach(([n, a, b], i) => {
+    const y = 20 + i * 50;
+    s += `<text x="76" y="${y + 20}" font-size="13" text-anchor="end" fill="#1f2a3d">${n}</text>`;
+    s += `<rect x="84" y="${y}" width="${a * 12}" height="16" rx="4" fill="#3b6cf6"/><text x="${90 + a * 12}" y="${y + 13}" font-size="12">${a}</text>`;
+    s += `<rect x="84" y="${y + 18}" width="${b * 12}" height="16" rx="4" fill="#ffc233"/><text x="${90 + b * 12}" y="${y + 31}" font-size="12">${b}</text>`;
+  });
+  s += `<rect x="330" y="200" width="12" height="12" fill="#3b6cf6"/><text x="346" y="210" font-size="12">1인당 장서 수</text><rect x="440" y="200" width="12" height="12" fill="#ffc233"/><text x="456" y="210" font-size="12">1인당 대출 수</text>`;
+  $('#libChart').innerHTML = s;
+})();
+
+/* 주장 완성 */
+const r1 = n => Math.round(n * 10) / 10;
+const BL = [
+  ['우리 학교 1인당 장서 수는 우리 구보다', r1(LIB[1][1] - LIB[0][1]), '낮고'],
+  ['우리 시보다', r1(LIB[2][1] - LIB[0][1]), '낮으며'],
+  ['전국 평균보다', r1(LIB[3][1] - LIB[0][1]), '낮다'],
+  ['또한 1인당 대출 수는 전국 평균보다', r1(LIB[3][2] - LIB[0][2]), '낮다'],
+];
+const pairs = {'낮고':'높고', '낮으며':'높으며', '낮다':'높다'};
+$('#claim').innerHTML = '“' + BL.map(([t, n, w], i) => `${t} <input data-i="${i}" inputmode="decimal">권 <select data-s="${i}"><option value="">고르기</option><option>${w}</option><option>${pairs[w]}</option></select>${i === 2 ? '.' : ','}`).join(' ') +
+  ` 따라서 우리 학교는 장서 수를 <select data-s="4"><option value="">고르기</option><option>늘리고</option><option>유지하고</option></select>, 대출을 <select data-s="5"><option value="">고르기</option><option>늘리는</option><option>유지하는</option></select> 방안을 마련해야 한다.”`;
+$('#claimChk').onclick = () => {
+  let wrong = 0;
+  $$('#claim input').forEach(inp => { const ok = Math.abs(parseFloat(inp.value) - BL[+inp.dataset.i][1]) < 0.05; inp.className = ok ? 'good' : 'bad'; wrong += !ok; });
+  $$('#claim select').forEach(s => { const k = +s.dataset.s, want = k < 4 ? BL[k][2] : k === 4 ? '늘리고' : '늘리는'; const ok = s.value === want; s.className = ok ? 'good' : 'bad'; wrong += !ok; });
+  feedback($('#claimFb'), !wrong, !wrong ? '🎉 숫자 근거가 들어간 설득력 있는 주장이 완성됐어요!' : `빨간 칸 ${wrong}개를 다시 확인해 보세요. 차이 = 큰 값 − 작은 값이에요.`);
+};
+
+/* 잔반율 */
+const W = [['나물무침', 58], ['생선구이', 52], ['김치찌개', 35], ['미역국', 30], ['카레', 22], ['불고기', 15], ['떡볶이', 12], ['치킨', 8]];
+const picked = new Set();
+function drawW(check){
+  const X = i => 50 + i * 63, Y = v => 220 - v * 3;
+  let s = `<line x1="40" y1="220" x2="550" y2="220" stroke="#c9d2e3"/>`;
+  [20, 50].forEach(v => s += `<line x1="40" x2="550" y1="${Y(v)}" y2="${Y(v)}" stroke="${v === 20 ? '#16b8a6' : '#e04848'}" stroke-dasharray="5 4"/><text x="548" y="${Y(v) - 4}" font-size="11" text-anchor="end" fill="${v === 20 ? '#0d7d71' : '#e04848'}">${v}%</text>`);
+  W.forEach(([n, v], i) => {
+    const on = picked.has(i), fill = check ? (v <= 20 ? (on ? '#1f9d55' : '#e04848') : (on ? '#e04848' : '#c9d2e3')) : (on ? '#16b8a6' : '#9aa3b5');
+    s += `<g class="wbar" data-i="${i}"><rect x="${X(i)}" y="${Y(v)}" width="44" height="${220 - Y(v)}" rx="5" fill="${fill}"/><text x="${X(i) + 22}" y="${Y(v) - 5}" font-size="12" text-anchor="middle" font-weight="700">${v}%</text><text x="${X(i) + 22}" y="238" font-size="12" text-anchor="middle">${n}</text></g>`;
+  });
+  $('#wasteChart').innerHTML = s;
+  $$('#wasteChart .wbar').forEach(g => g.onclick = () => { const i = +g.dataset.i; picked.has(i) ? picked.delete(i) : picked.add(i); $('#wFb').className = 'feedback'; drawW(); });
+  $('#wSel').textContent = picked.size ? '고른 메뉴: ' + [...picked].map(i => W[i][0]).join(', ') : '';
+}
+$('#wChk').onclick = () => {
+  const ans = W.map((w, i) => w[1] <= 20 ? i : -1).filter(i => i >= 0), ok = ans.length === picked.size && ans.every(i => picked.has(i));
+  drawW(true);
+  feedback($('#wFb'), ok, ok ? '🎉 불고기, 떡볶이, 치킨이에요. 반대로 50% 이상 남긴 메뉴는 나물무침, 생선구이예요.' : '초록 점선(20%) 아래에 있는 막대만 골라 보세요. 초록=맞음, 빨강=확인 필요');
+};
+drawW();
+
+renderChoice($('#judge'), [
+  {t:'"나물무침은 이번 조사에서 잔반율이 가장 높았다."', a:0, e:'그래프가 직접 보여 주는 사실이에요.'},
+  {t:'"우리 학교 학생들은 채소를 싫어한다."', a:1, e:'나물무침 하나만으로 모든 채소를 판단할 수 없어요. 맛, 양, 조리법 등 다른 이유일 수도 있어요. 더 많은 데이터가 필요해요.'},
+  {t:'"치킨은 잔반율이 10% 미만이다."', a:0, e:'8%로 그래프에서 바로 확인할 수 있어요.'},
+  {t:'"나물무침 조리법을 바꾸면 잔반이 반드시 줄어든다."', a:1, e:'아직 확인하지 않은 예측이에요. 조리법을 바꾼 뒤 다시 조사해 봐야 알 수 있어요.'},
+], ['📊 데이터로 말할 수 있어요', '🤔 더 확인이 필요해요']);
+
+renderQuiz($('#quiz'), [
+  {q:'설득력 있는 주장에 꼭 필요한 것은?', o:['큰 목소리','데이터에 근거한 이유','많은 사람의 찬성'], a:1, e:'데이터를 근거로 들면 주장이 논리적이고 설득력이 생겨요.'},
+  {q:'우리 학교 1인당 장서 수가 15.4권, 전국이 33.5권일 때 알맞은 해석은?', o:['우리 학교가 전국보다 18.1권 적다','우리 학교가 전국보다 18.1권 많다'], a:0, e:'33.5 − 15.4 = 18.1이고 우리 학교가 더 적어요.'},
+  {q:'데이터를 해석할 때 주의할 점은?', o:['데이터가 보여 주는 사실과 추측을 구별한다','일부 데이터로 전체를 단정한다'], a:0, e:'일부 데이터만으로 단정하지 말고, 필요하면 더 많은 데이터를 모아 확인해요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터 해석과 스프레드시트 수식</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.fbar{display:flex;gap:6px;align-items:center;max-width:640px;margin-bottom:8px}
+.fbar .ref{flex:0 0 56px;text-align:center;font-family:ui-monospace,Consolas,monospace;font-weight:800;background:var(--bg);border-radius:8px;padding:8px 0}
+.fbar .fx{font-style:italic;color:var(--muted);font-weight:700}
+.fbar input{flex:1;min-width:0;font-family:ui-monospace,Consolas,monospace;font-size:1.05rem;padding:8px 10px;border:2px solid var(--brand);border-radius:10px}
+table.ss{border-collapse:collapse;font-size:.92rem}
+table.ss th,table.ss td{border:1px solid var(--line);padding:5px 8px;min-width:78px;text-align:right}
+table.ss th{background:var(--bg);color:var(--muted);text-align:center;min-width:34px;font-weight:600}
+table.ss td.lbl{text-align:left;font-weight:700;background:#fafbfe}
+table.ss td.cell{cursor:pointer}
+table.ss td.cell:hover{background:#f3f6ff}
+table.ss td.sel{outline:3px solid var(--brand);outline-offset:-2px}
+table.ss td.f{color:#1a4fd8;font-weight:700}
+table.ss td.err{color:var(--bad)}
+.miss{display:grid;gap:4px;margin-top:10px}
+.miss div{padding:6px 10px;border-radius:10px;background:var(--bg);font-size:.92rem}
+.miss div.done{background:var(--ok-soft);color:var(--ok);font-weight:700}
+.miss code{background:#fff;border-radius:6px;padding:0 6px}
+</style>
+</head>
+<body data-unit="2" data-title="데이터 해석과 스프레드시트 수식" data-sub="중1 Ⅱ단원 · 데이터의 해석 · 미래엔 64~65쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 해석</span>
+  <h1>데이터 해석과 스프레드시트 수식</h1>
+  <p class="lead"><b>데이터 해석</b>은 데이터 분석 결과를 바탕으로 의미 있는 정보를 찾아내는 과정이에요. 해석하려면 먼저 데이터에서 <b>규칙, 추세, 관계</b>를 파악하는 분석이 필요해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>"우리 동네 인구가 줄고 있대!" 이 말이 정말인지 확인하고, 어느 동네가 가장 많이 줄었는지 알아내려면 무엇이 필요할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🔎 규칙, 추세, 관계 찾기</h3>
+      <p>분석 결과를 읽고 무엇을 찾은 것인지 골라 보세요. <b>추세</b>는 어떤 현상이 일정한 방향으로 나아가는 경향이에요.</p>
+      <div id="rtr"></div>
+    </div>
+
+    <div class="card">
+      <h3>🧮 미니 스프레드시트로 분석하기</h3>
+      <p>가상 도시의 구별 인구 데이터예요. 칸을 누르고 위쪽 입력창에 <b>=</b>로 시작하는 수식을 쓴 뒤 <b>Enter</b>를 누르세요.</p>
+      <div class="fbar"><span class="ref" id="ref">D2</span><span class="fx">fx</span><input id="fin" placeholder="예: =C2-B2" autocomplete="off" autocapitalize="characters"><button class="btn" id="fok">입력</button></div>
+      <p class="hint" id="fmsg" style="min-height:1.4em;margin:0 0 6px;color:var(--bad)"></p>
+      <div class="ctrl" style="margin-bottom:8px"><button class="btn ghost" id="fillDown">⬇ 아래로 채우기 (같은 수식을 7행까지)</button><span class="hint">2행에 수식을 쓴 뒤 눌러요.</span></div>
+      <div class="scroll-x"><table class="ss" id="ss"></table></div>
+      <div class="miss" id="miss"></div>
+    </div>
+
+    <div class="card">
+      <h3>💬 분석 결과 해석하기</h3>
+      <p>스프레드시트로 분석한 결과를 보고 답해 보세요.</p>
+      <div id="interp"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>데이터를 해석하려면 구조화된 데이터에서 <b>규칙, 추세, 관계</b>를 분석해야 해요. 스프레드시트의 <b>수식</b>과 <b>AVERAGE, MIN, MAX</b> 같은 함수를 쓰면 분석을 빠르고 정확하게 할 수 있고, 해석한 결과는 <b>의사 결정</b>에 도움이 돼요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 64~65쪽 내용을 바탕으로 재구성 · 지역과 인구는 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#rtr'), [
+  {icon:'🍱', t:'매주 금요일마다 급식 잔반이 가장 많이 나온다.', a:0, e:'일정하게 되풀이되는 규칙이에요.'},
+  {icon:'🌡️', t:'우리 지역의 여름 평균 기온이 10년 동안 조금씩 올라가고 있다.', a:1, e:'일정한 방향으로 나아가는 추세예요. 추세를 알면 앞으로의 변화를 예측할 수 있어요.'},
+  {icon:'🍦', t:'기온이 높은 날일수록 매점 아이스크림이 많이 팔린다.', a:2, e:'두 데이터(기온, 판매량)가 함께 변하는 관계예요.'},
+  {icon:'😷', t:'미세 먼지 농도가 높은 날 보건실 방문 학생이 늘어난다.', a:2, e:'미세 먼지와 보건실 방문 사이의 관계예요.'},
+], ['🔁 규칙', '📈 추세', '🔗 관계']);
+
+/* ---------- 미니 스프레드시트 ---------- */
+const COLS = 'ABCDE'.split('');
+const cells = {};   // 'B2' -> 값 또는 '=수식'
+const DATA = [['가람구', 52340, 51120], ['나루구', 38900, 39650], ['다솜구', 71200, 70050], ['라온구', 45800, 46900], ['마루구', 29700, 28300], ['바다구', 63100, 63400]];
+[['A1','지역'],['B1','작년 인구'],['C1','올해 인구'],['D1','증감'],['E1','증감률(%)'],['A9','평균'],['A10','최솟값'],['A11','최댓값']].forEach(([k, v]) => cells[k] = v);
+DATA.forEach((r, i) => { cells['A' + (i + 2)] = r[0]; cells['B' + (i + 2)] = r[1]; cells['C' + (i + 2)] = r[2]; });
+const EDIT = /^(D[2-7]|E[2-7]|[BC](9|10|11))$/;
+let sel = 'D2';
+function val(ref, depth = 0){
+  const v = cells[ref];
+  if (typeof v === 'string' && v.startsWith('=')) return calc(v, depth + 1);
+  return typeof v === 'number' ? v : NaN;
+}
+function range(a, b){
+  const c1 = a.charCodeAt(0), c2 = b.charCodeAt(0), r1 = +a.slice(1), r2 = +b.slice(1), out = [];
+  for (let c = Math.min(c1, c2); c <= Math.max(c1, c2); c++) for (let r = Math.min(r1, r2); r <= Math.max(r1, r2); r++) out.push(String.fromCharCode(c) + r);
+  return out;
+}
+function calc(src, depth = 0){
+  if (depth > 20) return NaN;
+  let s = src.slice(1).toUpperCase().replace(/\s+/g, '').replace(/[×x]/g, '*').replace(/[–−]/g, '-');
+  s = s.replace(/(AVERAGE|MIN|MAX|SUM)\(([A-E]\d{1,2}):([A-E]\d{1,2})\)/g, (m, f, a, b) => {
+    const vs = range(a, b).map(r => val(r, depth)).filter(v => !isNaN(v));
+    if (!vs.length) return 'NaN';
+    const r = f === 'AVERAGE' ? vs.reduce((x, y) => x + y) / vs.length : f === 'MIN' ? Math.min(...vs) : f === 'MAX' ? Math.max(...vs) : vs.reduce((x, y) => x + y);
+    return '(' + r + ')';
+  });
+  s = s.replace(/[A-E]\d{1,2}/g, r => '(' + val(r, depth) + ')');
+  if (!/^[\d.+\-*/()NaN]+$/.test(s)) return NaN;
+  try { const r = Function('"use strict";return (' + s + ')')(); return typeof r === 'number' && isFinite(r) ? r : NaN; } catch (e) { return NaN; }
+}
+const fmt = v => isNaN(v) ? '#오류' : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString() : v.toLocaleString(undefined, {maximumFractionDigits: 1});
+function renderSS(){
+  let h = `<tr><th></th>${COLS.map(c => `<th>${c}</th>`).join('')}</tr>`;
+  for (let r = 1; r <= 11; r++){
+    if (r === 8){ h += `<tr><th>8</th>${COLS.map(() => '<td></td>').join('')}</tr>`; continue; }
+    h += `<tr><th>${r}</th>` + COLS.map(c => {
+      const k = c + r, v = cells[k];
+      if (r === 1 || c === 'A') return `<td class="lbl">${v || ''}</td>`;
+      const isF = typeof v === 'string' && v.startsWith('='), shown = isF ? fmt(calc(v)) : v === undefined ? '' : fmt(v);
+      return `<td class="cell${k === sel ? ' sel' : ''}${isF ? ' f' : ''}${shown === '#오류' ? ' err' : ''}" data-k="${k}" title="${isF ? v : ''}">${shown}</td>`;
+    }).join('') + '</tr>';
+  }
+  $('#ss').innerHTML = h;
+  $$('#ss td.cell').forEach(td => td.onclick = () => { sel = td.dataset.k; $('#ref').textContent = sel; const v = cells[sel]; $('#fin').value = typeof v === 'string' ? v : ''; renderSS(); $('#fin').focus(); });
+  checkMissions();
+}
+function commit(){
+  if (!EDIT.test(sel)) return feedbackInline('이 칸은 원래 데이터예요. D, E열이나 9~11행 칸을 눌러 수식을 써 보세요.');
+  const t = $('#fin').value.trim();
+  if (!t){ delete cells[sel]; renderSS(); return; }
+  if (!t.startsWith('=')) return feedbackInline('수식은 = 기호로 시작해요. 예: =C2-B2');
+  cells[sel] = t.toUpperCase().replace(/\s+/g, '');
+  renderSS();
+}
+function feedbackInline(msg){ $('#fmsg').textContent = '⚠️ ' + msg; setTimeout(() => $('#fmsg').textContent = '', 4000); }
+$('#fok').onclick = commit;
+$('#fin').addEventListener('keydown', e => { if (e.key === 'Enter') commit(); });
+$('#fillDown').onclick = () => {
+  ['D', 'E'].forEach(c => {
+    const f = cells[c + '2'];
+    if (typeof f !== 'string' || !f.startsWith('=')) return;
+    for (let r = 3; r <= 7; r++) cells[c + r] = f.replace(/([A-E])2(?!\d)/g, '$1' + r);
+  });
+  renderSS();
+};
+const near = (a, b) => !isNaN(a) && Math.abs(a - b) < 0.06;
+const MISS = [
+  ['D2에 <code>=C2-B2</code>로 가람구의 인구 증감 구하기', () => near(calc(cells.D2 || ''), DATA[0][2] - DATA[0][1])],
+  ['아래로 채우기로 모든 구의 증감 구하기 (D3~D7)', () => DATA.every((d, i) => near(calc(cells['D' + (i + 2)] || ''), d[2] - d[1]))],
+  ['E2에 <code>=(C2/B2)*100-100</code>으로 증감률 구하고 아래로 채우기', () => DATA.every((d, i) => near(calc(cells['E' + (i + 2)] || ''), d[2] / d[1] * 100 - 100))],
+  ['B9에 <code>=AVERAGE(B2:B7)</code>로 작년 평균 인구 구하기', () => near(calc(cells.B9 || ''), DATA.reduce((s, d) => s + d[1], 0) / 6)],
+  ['B10, B11에 <code>MIN</code>, <code>MAX</code> 함수로 가장 적은·많은 인구 구하기', () => near(calc(cells.B10 || ''), Math.min(...DATA.map(d => d[1]))) && near(calc(cells.B11 || ''), Math.max(...DATA.map(d => d[1])))],
+];
+function checkMissions(){
+  $('#miss').innerHTML = MISS.map(([t, f], i) => `<div class="${f() ? 'done' : ''}">${f() ? '✅' : '⬜'} ${i + 1}. ${t}</div>`).join('');
+}
+renderSS();
+
+renderChoice($('#interp'), [
+  {t:'인구가 가장 많이 줄어든 구는? (D열을 보세요)', a:2, e:'마루구는 1,400명 줄어 감소 폭이 가장 커요. 증감률도 약 -4.7%로 가장 낮아요.'},
+  {t:'인구가 늘어난 구는 몇 곳일까요?', a:4, e:'나루구, 라온구, 바다구 세 곳이 늘었어요. (D열이 양수)'},
+], ['가람구', '다솜구', '마루구', '바다구', '3곳']);
+
+renderQuiz($('#quiz'), [
+  {q:'스프레드시트에서 B2부터 B7까지의 평균을 구하는 수식은?', o:['=AVERAGE(B2:B7)','=MAX(B2:B7)','=B2+B7'], a:0, e:'AVERAGE는 평균, MIN은 최솟값, MAX는 최댓값을 구하는 함수예요.'},
+  {q:'어떤 현상이 일정한 방향으로 나아가는 경향을 무엇이라고 할까요?', o:['추세','규칙','관계'], a:0, e:'추세를 파악하면 데이터의 변화를 예측하는 데 도움이 돼요.'},
+  {q:'데이터를 해석하면 좋은 점은?', o:['의사 결정을 내리거나 문제를 해결하는 데 도움이 된다','데이터를 모을 필요가 없어진다'], a:0, e:'해석한 정보를 바탕으로 여러 대안 중 하나를 고르는 의사 결정을 할 수 있어요.'},
+]);
+</script>
+</body>
+</html>

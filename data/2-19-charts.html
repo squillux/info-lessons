@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>어떤 차트가 좋을까?</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+#chart{width:100%;max-width:520px;display:block;background:var(--bg);border-radius:14px}
+.cloud{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;justify-content:center;min-height:140px;padding:16px;background:var(--bg);border-radius:14px;line-height:1.1}
+.cloud span{font-family:var(--cute)}
+textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid var(--line);border-radius:12px}
+#bubble{width:100%;max-width:520px;display:block;background:var(--bg);border-radius:14px}
+.kinds{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:12px}
+.kinds div{background:var(--brand-soft);border-radius:12px;padding:8px 12px;font-size:.9rem}
+</style>
+</head>
+<body data-unit="2" data-title="어떤 차트가 좋을까?" data-sub="중1 Ⅱ단원 · 데이터의 해석 · 미래엔 66쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 해석</span>
+  <h1>어떤 차트가 좋을까?</h1>
+  <p class="lead"><b>데이터 시각화</b>는 데이터 사이의 관계를 알기 쉽게 하고 분석 결과를 효율적으로 전달하기 위해 시각적으로 표현하는 거예요. 데이터의 종류와 목적에 맞는 방법을 골라야 해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>체육 대회 종목 투표 결과를 숫자 표로만 보여 줄 때와 그래프로 보여 줄 때, 어느 쪽이 한눈에 들어오나요? 그래프는 아무거나 써도 될까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📊 같은 데이터, 다른 그래프</h3>
+      <p>체육 대회에서 출전하고 싶은 종목 투표 결과(가상)예요. 그래프 종류를 바꿔 보며 어떤 것이 <b>종목끼리 비교</b>하기 좋은지 살펴보세요.</p>
+      <div class="seg" id="kind"><button data-k="bar" class="active">막대그래프</button><button data-k="pie">원그래프</button><button data-k="line">꺾은선그래프</button></div>
+      <svg id="chart" viewBox="0 0 520 260"></svg>
+      <p id="kindMsg" class="hint"></p>
+    </div>
+
+    <div class="card">
+      <h3>🫧 버블 차트: 세 가지 데이터를 한 번에</h3>
+      <p>가로축은 수학 점수, 세로축은 영어 점수, 원의 크기는 하루 독서 시간이에요(가상 데이터). 원을 눌러 보세요.</p>
+      <svg id="bubble" viewBox="0 0 520 300"></svg>
+      <p id="bubbleOut" class="hint">원을 눌러 보세요.</p>
+    </div>
+
+    <div class="card">
+      <h3>☁️ 워드 클라우드 만들기</h3>
+      <p>글에서 자주 나온 단어일수록 크게 보여 줘요. 우리 반을 소개하는 문장을 써 보세요.</p>
+      <textarea id="wtext">우리 반은 웃음이 많은 반이에요. 친구들이 서로 돕고 웃음이 끊이지 않아요. 체육 대회에서 우리 반은 줄다리기 우승을 했어요. 줄다리기 연습을 열심히 한 우리 반 친구들 최고! 정보 시간에는 친구들과 함께 코딩을 해요.</textarea>
+      <div class="ctrl" style="margin:8px 0"><button class="btn" id="wgo">☁️ 만들기</button></div>
+      <div class="cloud" id="cloud"></div>
+    </div>
+
+    <div class="card">
+      <h3>🎯 목적에 맞는 시각화 고르기</h3>
+      <div class="kinds">
+        <div><b>막대그래프</b> 막대 길이로 항목끼리 크기 비교</div>
+        <div><b>꺾은선그래프</b> 시간에 따른 변화(추세)</div>
+        <div><b>원그래프</b> 전체에서 각 항목이 차지하는 비율</div>
+        <div><b>버블 차트</b> X축·Y축·원의 크기로 세 가지 데이터</div>
+        <div><b>워드 클라우드</b> 글자 크기로 단어의 빈도</div>
+        <div><b>인포그래픽</b> 글·그림·그래프를 엮어 한 장에 요약</div>
+      </div>
+      <div id="pick"></div>
+      <p class="src" style="text-align:left;margin-top:8px">꺾은선그래프·산점도 활용 참고: 씨마스 중학교 정보 75쪽</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>데이터 시각화</b>는 분석 결과를 한눈에 전달하는 방법이에요. 비교는 <b>막대그래프</b>, 세 가지 변수는 <b>버블 차트</b>, 단어 빈도는 <b>워드 클라우드</b>, 종합 요약은 <b>인포그래픽</b>처럼 데이터와 목적에 맞게 골라요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 66쪽 내용을 바탕으로 재구성 · 꺾은선그래프 참고: 씨마스 중학교 정보 75쪽 · 모든 수치는 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const V = [['계주', 9], ['줄다리기', 7], ['2인 3각', 4], ['축구', 6], ['피구', 3]];
+const PAL = ['#3b6cf6', '#16b8a6', '#ffc233', '#ff7aa2', '#9aa3b5'];
+const MSG = {
+  bar: '✅ 막대 길이로 종목끼리 크기를 바로 비교할 수 있어요. 이 데이터에 가장 알맞아요.',
+  pie: '🙂 전체 투표에서 각 종목이 차지하는 비율을 보기에 좋아요. 다만 비슷한 크기끼리 비교하기는 막대보다 어려워요.',
+  line: '🤔 꺾은선은 시간에 따른 변화를 볼 때 써요. 종목은 순서가 있는 시간이 아니라서 선으로 잇는 것은 어색해요.'
+};
+function draw(k){
+  const max = 10, X = i => 70 + i * 92, Y = v => 220 - v * 19;
+  let s = `<line x1="40" y1="220" x2="510" y2="220" stroke="#c9d2e3"/>`;
+  if (k === 'bar' || k === 'line'){
+    for (let v = 0; v <= max; v += 2) s += `<text x="32" y="${Y(v) + 4}" font-size="11" text-anchor="end" fill="#5a6578">${v}</text><line x1="40" x2="510" y1="${Y(v)}" y2="${Y(v)}" stroke="#e3e8f2"/>`;
+    V.forEach(([n], i) => s += `<text x="${X(i)}" y="240" font-size="13" text-anchor="middle" fill="#1f2a3d">${n}</text>`);
+  }
+  if (k === 'bar') V.forEach(([n, v], i) => s += `<rect x="${X(i) - 24}" y="${Y(v)}" width="48" height="${220 - Y(v)}" rx="6" fill="${PAL[0]}"/><text x="${X(i)}" y="${Y(v) - 6}" font-size="13" font-weight="700" text-anchor="middle">${v}</text>`);
+  if (k === 'line') s += `<polyline points="${V.map(([, v], i) => X(i) + ',' + Y(v)).join(' ')}" fill="none" stroke="${PAL[1]}" stroke-width="3"/>` + V.map(([, v], i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="5" fill="${PAL[1]}"/>`).join('');
+  if (k === 'pie'){
+    const tot = V.reduce((a, [, v]) => a + v, 0); let a0 = -Math.PI / 2; s = '';
+    V.forEach(([n, v], i) => {
+      const a1 = a0 + v / tot * 2 * Math.PI, cx = 170, cy = 130, r = 105, big = a1 - a0 > Math.PI ? 1 : 0;
+      s += `<path d="M${cx} ${cy} L${cx + r * Math.cos(a0)} ${cy + r * Math.sin(a0)} A${r} ${r} 0 ${big} 1 ${cx + r * Math.cos(a1)} ${cy + r * Math.sin(a1)} Z" fill="${PAL[i]}" stroke="#fff" stroke-width="2"/>`;
+      s += `<rect x="320" y="${50 + i * 32}" width="16" height="16" rx="4" fill="${PAL[i]}"/><text x="344" y="${63 + i * 32}" font-size="14">${n} ${Math.round(v / tot * 100)}%</text>`;
+      a0 = a1;
+    });
+  }
+  $('#chart').innerHTML = s; $('#kindMsg').textContent = MSG[k];
+}
+$$('#kind button').forEach(b => b.onclick = () => { $$('#kind button').forEach(x => x.classList.toggle('active', x === b)); draw(b.dataset.k); });
+draw('bar');
+
+/* 버블 차트 */
+const ST = [['가', 85, 78, 60], ['나', 62, 70, 20], ['다', 92, 88, 90], ['라', 70, 55, 30], ['마', 78, 82, 50], ['바', 55, 60, 10], ['사', 88, 72, 40]];
+(function(){
+  const X = v => 50 + (v - 50) * 9.4, Y = v => 270 - (v - 50) * 5.2;
+  let s = `<line x1="45" y1="270" x2="510" y2="270" stroke="#c9d2e3"/><line x1="45" y1="10" x2="45" y2="270" stroke="#c9d2e3"/><text x="500" y="292" font-size="12" text-anchor="end" fill="#5a6578">수학 점수 →</text><text x="50" y="20" font-size="12" fill="#5a6578">↑ 영어 점수</text>`;
+  ST.forEach(([n, m, e, t], i) => s += `<circle class="bb" data-i="${i}" cx="${X(m)}" cy="${Y(e)}" r="${8 + t / 4}" fill="#3b6cf6" fill-opacity=".45" stroke="#3b6cf6" style="cursor:pointer"/><text x="${X(m)}" y="${Y(e) + 4}" font-size="12" text-anchor="middle" pointer-events="none">${n}</text>`);
+  $('#bubble').innerHTML = s;
+  $$('#bubble .bb').forEach(c => c.onclick = () => { const [n, m, e, t] = ST[+c.dataset.i]; $('#bubbleOut').innerHTML = `학생 <b>${n}</b>: 수학 ${m}점 · 영어 ${e}점 · 하루 독서 ${t}분 → 세 가지 데이터를 원 하나로 나타냈어요.`; });
+})();
+
+/* 워드 클라우드 */
+function cloud(){
+  const words = $('#wtext').value.replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(w => w.length >= 2)
+    .map(w => { const strip = x => x.replace(/(은|는|이|가|을|를|에서|에는|에|과|와|의|도|이에요|예요|해요|했어요|들|들과)$/, ''); const a = strip(w), b = strip(a); return b.length >= 2 ? b : a; }).filter(w => w.length >= 2);
+  const cnt = {}; words.forEach(w => cnt[w] = (cnt[w] || 0) + 1);
+  const list = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 18), max = list.length ? list[0][1] : 1;
+  const shuffled = list.slice().sort(() => Math.random() - .5);
+  $('#cloud').innerHTML = shuffled.map(([w, c]) => `<span style="font-size:${(0.9 + 1.8 * c / max).toFixed(2)}rem;color:${PAL[c === max ? 0 : c > 1 ? 1 : 4]}" title="${c}번">${w.replace(/[<>&]/g, '')}</span>`).join('') || '<span class="hint">두 글자 이상의 단어를 입력하세요.</span>';
+}
+$('#wgo').onclick = cloud; cloud();
+
+renderChoice($('#pick'), [
+  {icon:'🏃', t:'반별 줄넘기 기록을 비교하고 싶어요.', a:0, e:'항목끼리 크기 비교에는 막대그래프가 좋아요.'},
+  {icon:'🌫️', t:'최근 10년 동안 우리 지역 미세 먼지 농도가 어떻게 변했는지 보여 주고 싶어요.', a:1, e:'시간에 따른 변화(추세)는 꺾은선그래프가 좋아요.'},
+  {icon:'🍕', t:'전교생 중 좋아하는 간식별 학생 비율을 보여 주고 싶어요.', a:2, e:'전체에서 차지하는 비율은 원그래프가 좋아요.'},
+  {icon:'📚', t:'학생별 수학 점수, 영어 점수, 독서 시간을 한 번에 보여 주고 싶어요.', a:3, e:'세 가지 데이터를 동시에 나타내는 버블 차트가 좋아요.'},
+  {icon:'💬', t:'학급 회의록에서 가장 많이 나온 단어를 보여 주고 싶어요.', a:4, e:'단어 빈도는 워드 클라우드가 좋아요.'},
+  {icon:'🏫', t:'학교 소개를 숫자, 그림, 그래프로 한 장에 요약하고 싶어요.', a:5, e:'여러 시각화 방법을 엮은 인포그래픽이 좋아요.'},
+], ['막대', '꺾은선', '원', '버블', '워드 클라우드', '인포그래픽']);
+
+renderQuiz($('#quiz'), [
+  {q:'X축, Y축, 원의 크기로 세 가지 데이터를 동시에 나타내는 시각화 방법은?', o:['막대그래프','버블 차트','워드 클라우드'], a:1, e:'버블의 위치는 두 변수, 크기는 세 번째 변수를 나타내요.'},
+  {q:'데이터를 시각화할 때 가장 중요한 것은?', o:['가장 화려한 그래프를 고른다','데이터의 종류와 목적에 맞는 방법을 고른다','항상 원그래프를 쓴다'], a:1, e:'같은 데이터라도 무엇을 보여 주고 싶은지에 따라 알맞은 방법이 달라요.'},
+]);
+</script>
+</body>
+</html>
