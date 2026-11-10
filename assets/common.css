@@ -14,7 +14,7 @@ html{font-size:var(--fs)}
 body{margin:0;background:var(--page);color:var(--ink);
   font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.6;
   -webkit-tap-highlight-color:transparent}
-body.big{--fs:21px}
+html.big{--fs:21px}
 button{font:inherit;cursor:pointer;color:inherit}
 input{font:inherit}
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.06em}
@@ -121,4 +121,13 @@ table.tbl td,table.tbl th{border:1px solid var(--line);padding:4px 12px;text-ali
   .tool span{display:none}
   .ttl small{display:none}
 }
-@media print{header.top{display:none}}
+/* 키보드·펜 입력 시 현재 선택 위치 표시 */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--on);outline-offset:2px}
+/* 인쇄(학습지): 펼치지 않은 활동도 모두 인쇄, 버튼 막대는 숨김 */
+@media print{
+  header.top,.nextbar{display:none!important}
+  .locked{display:block!important}
+  section.step.locked{display:block!important}
+  .card{box-shadow:none;break-inside:avoid}
+  body{--fs:14px}
+}

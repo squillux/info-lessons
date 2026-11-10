@@ -19,10 +19,13 @@ const bin = (n, w) => n.toString(2).padStart(w, '0');
   h.querySelector('.ttl b').textContent = d.title || document.title;
   h.querySelector('.ttl small').textContent = d.sub || '';
   document.body.prepend(h);
-  try { if (localStorage.getItem('big')) document.body.classList.add('big'); } catch (e) {}
+  const root = document.documentElement;   // 글자 크기는 html 기준(rem)이므로 html에 적용
+  try { if (localStorage.getItem('big')) root.classList.add('big'); } catch (e) {}
+  const bigLabel = () => $('#bigBtn').innerHTML = root.classList.contains('big') ? '가<b>−</b> <span>보통</span>' : '가<b>+</b> <span>크게</span>';
+  bigLabel();
   $('#bigBtn').onclick = () => {
-    document.body.classList.toggle('big');
-    try { localStorage.setItem('big', document.body.classList.contains('big') ? '1' : ''); } catch (e) {}
+    root.classList.toggle('big'); bigLabel();
+    try { localStorage.setItem('big', root.classList.contains('big') ? '1' : ''); } catch (e) {}
     window.dispatchEvent(new Event('resize'));
   };
   $('#fsBtn').onclick = () => {
@@ -89,7 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   const save = () => { try { sessionStorage.setItem(key, shown); } catch (e) {} };
-  $('#allBtn').onclick = () => { shown = units.length; save(); render(); };
+  let before = 0;   // 펼치기 전 진행 위치 (접기로 되돌아가기)
+  const allLabel = () => $('#allBtn').innerHTML = shown === units.length && before ? '☰ <span>접기</span>' : '☰ <span>펼치기</span>';
+  $('#allBtn').onclick = () => {
+    if (shown === units.length && before){ shown = before; before = 0; }
+    else if (shown < units.length){ before = shown; shown = units.length; }
+    save(); render(); allLabel();
+  };
   render();
 });
 

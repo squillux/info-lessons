@@ -26,7 +26,16 @@ main{max-width:1080px}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 a.card{display:block;margin:0;color:inherit;text-decoration:none;transition:transform .12s,border-color .12s}
 a.card:hover{transform:translateY(-3px);border-color:var(--brand)}
-a.card h2{font-family:var(--cute);font-weight:400;font-size:1.3rem;margin:8px 0 4px}
+a.card{position:relative;padding-top:18px}
+a.card .ic{position:absolute;right:16px;top:14px;width:52px;height:52px;border-radius:16px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.7rem;transition:transform .15s}
+a.card:hover .ic{transform:rotate(-8deg) scale(1.08)}
+a.card .num{font-family:ui-monospace,Consolas,monospace;font-size:.75rem;font-weight:800;color:var(--muted);display:block;margin-bottom:4px}
+a.card h2{font-family:var(--cute);font-weight:400;font-size:1.3rem;margin:8px 60px 4px 0}
+.sub-h .cnt{font-weight:600;color:var(--muted);font-size:.85rem}
+details.guide{margin:0 4px 14px;background:var(--mint-soft);border-radius:14px;padding:10px 16px;font-size:.92rem}
+details.guide summary{cursor:pointer;font-weight:800;color:#0d7d71}
+details.guide ul{margin:8px 0 2px;padding-left:1.2em}
+details.guide li{margin:3px 0}
 a.card p{margin:0;color:var(--muted);font-size:.92rem}
 a.card .badge{font-size:.75rem}
 a.card.lesson{border-style:dashed;background:var(--yellow-soft);border-color:#f7dd8f}
@@ -52,6 +61,16 @@ footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;font-size:.8rem;color:
     </div>
   </div>
 
+  <details class="guide">
+    <summary>👩‍🏫 선생님을 위한 사용 안내</summary>
+    <ul>
+      <li>활동은 <b>생각 열기 → 조작 활동 → 확인 미션 → 한 줄 정리</b> 순서이고, 학생이 <b>[다음 ▶]</b>을 누를 때마다 하나씩 열려요.</li>
+      <li>수업 전에 전체를 보려면 활동 페이지 오른쪽 위 <b>☰ 펼치기</b>, 다시 누르면 <b>접기</b>예요.</li>
+      <li>전자칠판에서는 <b>가+ 크게</b>와 <b>전체 화면</b>을 쓰세요. 인쇄하면 모든 활동이 펼쳐져 학습지처럼 나와요.</li>
+      <li>단원별 주소를 나눠 줄 수 있어요. 예: 이 페이지 주소 끝의 <code>?unit=2</code></li>
+      <li>학생 이름이나 답을 저장하지 않아요. <b>심화</b>는 교과서 밖 내용, <b>더 해 보기</b>는 선택 활동이에요.</li>
+    </ul>
+  </details>
   <nav class="units" id="units"></nav>
   <div class="unit-desc" id="unitDesc"></div>
   <div id="list"></div>
@@ -73,9 +92,11 @@ function show(u){
     list.innerHTML = `<div class="empty"><b>🛠️ 준비 중이에요</b>이 단원의 활동은 곧 올라옵니다.</div>`;
   } else {
     const groups = [...new Set(items.map(c => c.sub))];
-    list.innerHTML = groups.map(g => `<div class="sub-h"><span class="mono">${g}</span>${esc(subList[g] || '')}</div>
-      <div class="cards">${items.filter(c => c.sub === g).map(c => `<a class="card${c.lesson ? ' lesson' : ''}" href="${esc(c.href)}">
-        <span class="badge">${esc(c.badge)}</span><h2>${esc(c.title)}</h2><p>${esc(c.desc)}</p></a>`).join('')}</div>`).join('');
+    let n = 0;
+    list.innerHTML = groups.map(g => { const gi = items.filter(c => c.sub === g); return `<div class="sub-h"><span class="mono">${g}</span>${esc(subList[g] || '')} <span class="cnt">· 활동 ${gi.filter(c => !c.lesson).length}개</span></div>
+      <div class="cards">${gi.map(c => `<a class="card${c.lesson ? ' lesson' : ''}" href="${esc(c.href)}">
+        <span class="ic" aria-hidden="true">${c.icon || '📘'}</span><span class="num">${c.lesson ? 'LESSON' : 'NO. ' + String(++n).padStart(2, '0')}</span>
+        <span class="badge">${esc(c.badge)}</span><h2>${esc(c.title)}</h2><p>${esc(c.desc)}</p></a>`).join('')}</div>`; }).join('');
   }
   history.replaceState(null, '', '?unit=' + info.unit);
 }

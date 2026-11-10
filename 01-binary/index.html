@@ -18,7 +18,7 @@ html{font-size:var(--fs)}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.6;
   -webkit-tap-highlight-color:transparent}
-body.big{--fs:21px}
+html.big{--fs:21px}
 button{font:inherit;cursor:pointer}
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.08em}
 
@@ -449,10 +449,10 @@ const startIdx = sections.findIndex(s => '#' + s.id === location.hash);
 go(startIdx < 0 ? 0 : startIdx);
 
 $('#bigBtn').onclick = () => {
-  document.body.classList.toggle('big');
-  try { localStorage.setItem('big', document.body.classList.contains('big') ? '1' : ''); } catch (e) {}
+  document.documentElement.classList.toggle('big');
+  try { localStorage.setItem('big', document.documentElement.classList.contains('big') ? '1' : ''); } catch (e) {}
 };
-try { if (localStorage.getItem('big')) document.body.classList.add('big'); } catch (e) {}
+try { if (localStorage.getItem('big')) document.documentElement.classList.add('big'); } catch (e) {}
 $('#fsBtn').onclick = () => {
   if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
   else document.exitFullscreen?.();
