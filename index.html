@@ -3,35 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>중1 정보 수업 자료</title>
+<title>정보 개념 체험관</title>
+<meta name="description" content="중학교 정보 교과서 개념을 하나씩 직접 체험하는 인터랙티브 활동 모음">
+<link rel="stylesheet" href="assets/common.css">
 <style>
-:root{--bg:#f4f6fb;--panel:#fff;--ink:#1d2433;--muted:#5b6478;--line:#dde2ec;--brand:#2f5bea;--brand-soft:#e6ecff}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.6}
-main{max-width:860px;margin:0 auto;padding:40px 16px}
-h1{margin:0 0 4px;font-size:1.8rem}
-p.sub{color:var(--muted);margin:0 0 28px}
-.list{display:grid;gap:12px}
-a.item,div.item{display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 20px;color:inherit;text-decoration:none}
-a.item:hover{border-color:var(--brand)}
-.no{flex:0 0 44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center}
-.item b{display:block;font-size:1.05rem}
-.item span{color:var(--muted);font-size:.9rem}
-div.item{opacity:.55}
-.soon{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+main{max-width:1080px}
+.hero{display:flex;align-items:center;gap:18px;margin:10px 0 18px;flex-wrap:wrap}
+.logo{width:64px;height:64px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;flex:0 0 auto}
+.logo i{border-radius:3px;background:var(--line)}
+.logo i.b{background:var(--brand)}.logo i.m{background:var(--mint)}.logo i.y{background:var(--on)}.logo i.p{background:var(--pink)}
+.hero h1{margin:0}
+.hero h1::after{display:none}
+.hero p{margin:2px 0 0;color:var(--muted)}
+.units{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:6px;background:var(--bg);border-radius:16px}
+.unit-btn{border:0;background:none;border-radius:12px;padding:8px 14px;font-weight:700;color:var(--muted)}
+.unit-btn.on{background:var(--panel);color:var(--brand);box-shadow:0 2px 0 var(--line)}
+.unit-btn .n{font-family:ui-monospace,Consolas,monospace;margin-right:4px}
+.unit-desc{margin:14px 4px 18px;color:var(--muted)}
+.unit-desc b{font-family:var(--cute);font-weight:400;font-size:1.4rem;color:var(--ink);display:block}
+.sub-h{display:flex;align-items:center;gap:8px;margin:22px 4px 10px;font-weight:800;color:var(--ink)}
+.sub-h .mono{background:var(--ink);color:#7dffb0;border-radius:6px;padding:0 8px;font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+a.card{display:block;margin:0;color:inherit;text-decoration:none;transition:transform .12s,border-color .12s}
+a.card:hover{transform:translateY(-3px);border-color:var(--brand)}
+a.card h2{font-family:var(--cute);font-weight:400;font-size:1.3rem;margin:8px 0 4px}
+a.card p{margin:0;color:var(--muted);font-size:.92rem}
+a.card .badge{font-size:.75rem}
+a.card.lesson{border-style:dashed;background:var(--yellow-soft);border-color:#f7dd8f}
+a.card.lesson .badge{background:#fff;color:#a06d00}
+a.card.lesson .badge::before{content:"⏱ "}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--bg);border-radius:var(--radius)}
+.empty b{display:block;font-family:var(--cute);font-weight:400;font-size:1.3rem;color:var(--ink)}
+footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;font-size:.8rem;color:var(--muted)}
 </style>
 </head>
 <body>
 <main>
-  <h1>중학교 1학년 정보 수업 자료</h1>
-  <p class="sub">한 차시(45분) 분량의 인터랙티브 수업 페이지 모음 · 2022 개정 교육과정</p>
-  <div class="list">
-    <a class="item" href="01-binary/"><div class="no">01</div><div><b>0과 1로 세상 표현하기</b><span>데이터 · 비트와 바이트, 이진수 카드, 픽셀 그림, 문자 코드</span></div></a>
-    <div class="item"><div class="no">02</div><div><b>업다운 게임으로 배우는 탐색 알고리즘</b><span>알고리즘과 프로그래밍</span></div><span class="soon">준비 중</span></div>
-    <div class="item"><div class="no">03</div><div><b>AI는 어떻게 구분할까?</b><span>인공지능 · 분류 모델 체험</span></div><span class="soon">준비 중</span></div>
-    <div class="item"><div class="no">04</div><div><b>내 정보 지키기</b><span>디지털 문화 · 개인정보와 안전한 비밀번호</span></div><span class="soon">준비 중</span></div>
-    <div class="item"><div class="no">05</div><div><b>컴퓨터의 구성 요소</b><span>컴퓨팅 시스템 · 입력, 처리, 출력, 저장</span></div><span class="soon">준비 중</span></div>
+  <div class="hero">
+    <div class="logo" aria-hidden="true">
+      <i class="b"></i><i></i><i class="m"></i><i class="b"></i>
+      <i></i><i class="y"></i><i class="b"></i><i></i>
+      <i class="m"></i><i class="b"></i><i></i><i class="p"></i>
+      <i class="b"></i><i></i><i class="p"></i><i class="y"></i>
+    </div>
+    <div>
+      <h1>정보 개념 체험관</h1>
+      <p>중학교 정보 교과서의 개념을 하나씩 직접 눌러 보며 익혀요 · 미래엔 교과서 기준</p>
+    </div>
   </div>
+
+  <nav class="units" id="units"></nav>
+  <div class="unit-desc" id="unitDesc"></div>
+  <div id="list"></div>
 </main>
+<footer>
+  미래엔 중학교 정보 교과서 내용을 바탕으로 새로 구성한 활동이에요. 다른 출판사 교과서를 참고한 활동에는 출판사를 표시했어요. 학생 정보는 저장하지 않아요.
+</footer>
+<script>
+/* 대단원 목록 */
+const unitList = [
+  {unit: 1, name: '컴퓨팅 시스템', desc: '컴퓨팅 시스템의 구성과 동작, 피지컬 컴퓨팅'},
+  {unit: 2, name: '데이터', desc: '데이터의 디지털 표현, 수집과 관리, 구조화와 해석'},
+  {unit: 3, name: '알고리즘과 프로그래밍', desc: '문제 분석과 추상화, 알고리즘 설계, 프로그래밍'},
+  {unit: 4, name: '인공지능', desc: '인공지능의 개념과 시스템, 활용과 윤리'},
+  {unit: 5, name: '디지털 문화', desc: '디지털 사회와 직업, 정보 윤리, 개인 정보와 저작권'},
+];
+
+/* 소단원 제목 */
+const subList = {
+  '2-1-1': '데이터의 표현과 관리 · 01 데이터의 디지털 표현',
+  '2-1-2': '데이터의 표현과 관리 · 02 데이터의 수집과 관리',
+  '2-2-1': '데이터의 구조화와 해석 · 01 데이터의 구조화',
+  '2-2-2': '데이터의 구조화와 해석 · 02 데이터의 해석',
+  '2-2-3': '데이터의 구조화와 해석 · 03 우리 반 체력 분석하기',
+};
+
+/* 활동 목록: 교과서 쪽수 순서로 추가 (lesson: true = 45분 종합 수업) */
+const contentsList = [
+  {unit: 2, sub: '2-1-1', badge: '중1 Ⅱ단원 · 디지털 표현', title: '비트와 이진수 카드', desc: '전구를 켜며 2ⁿ을 발견하고, 카드를 뒤집고 2로 나누어 수를 이진수로 나타내요. (교과서 46, 48쪽)', href: 'data/2-02-bits.html'},
+  {unit: 2, sub: '2-1-1', badge: '중1 Ⅱ단원 · 디지털 표현', title: '문자 코드 암호 해독', desc: '7비트 아스키 코드 암호를 풀고, 내 이니셜과 한글을 문자 코드로 바꿔 봐요. (교과서 46쪽)', href: 'data/2-03-ascii.html'},
+  {unit: 2, sub: '2-1-1', badge: '중1 Ⅱ단원 · 디지털 표현', title: '픽셀 그림과 색', desc: '8×8 픽셀 그림을 그리고 암호를 풀어요. 색 비트 수에 따라 색과 용량이 어떻게 달라질까요? (교과서 47쪽)', href: 'data/2-04-pixels.html'},
+  {unit: 2, sub: '2-1-1', badge: '중1 Ⅱ단원 · 디지털 표현', title: '비트맵과 벡터 확대', desc: '두 그림을 확대해 계단 현상을 비교하고, 파일 형식과 상황에 맞는 방식을 골라요. (교과서 47쪽)', href: 'data/2-05-bitmap-vector.html'},
+  {unit: 2, sub: '2-1-1', badge: '중1 Ⅱ단원 · 디지털 표현', title: '소리를 숫자로', desc: '소리 파형을 표본화, 양자화, 부호화하고 표본 수에 따른 음질과 용량을 비교해요. (교과서 48쪽)', href: 'data/2-06-sound.html'},
+  {unit: 2, sub: '2-1-1', lesson: true, badge: '45분 종합 수업', title: '0과 1로 세상 표현하기', desc: '아날로그와 디지털, 비트, 이진수, 픽셀, 문자, 소리를 한 차시에 모두 다루는 수업 페이지예요. (교과서 45~48쪽)', href: '01-binary/'},
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const roman = ['', 'Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ'];
+function show(u){
+  const info = unitList.find(x => x.unit === u) || unitList[1];
+  document.querySelectorAll('.unit-btn').forEach(b => b.classList.toggle('on', +b.dataset.u === info.unit));
+  document.getElementById('unitDesc').innerHTML = `<b>${roman[info.unit]} ${esc(info.name)}</b>${esc(info.desc)}`;
+  const items = contentsList.filter(c => c.unit === info.unit);
+  const list = document.getElementById('list');
+  if (!items.length){
+    list.innerHTML = `<div class="empty"><b>🛠️ 준비 중이에요</b>이 단원의 활동은 곧 올라옵니다.</div>`;
+  } else {
+    const groups = [...new Set(items.map(c => c.sub))];
+    list.innerHTML = groups.map(g => `<div class="sub-h"><span class="mono">${g}</span>${esc(subList[g] || '')}</div>
+      <div class="cards">${items.filter(c => c.sub === g).map(c => `<a class="card${c.lesson ? ' lesson' : ''}" href="${esc(c.href)}">
+        <span class="badge">${esc(c.badge)}</span><h2>${esc(c.title)}</h2><p>${esc(c.desc)}</p></a>`).join('')}</div>`).join('');
+  }
+  history.replaceState(null, '', '?unit=' + info.unit);
+}
+document.getElementById('units').innerHTML = unitList.map(u => `<button class="unit-btn" data-u="${u.unit}"><span class="n">${roman[u.unit]}</span>${esc(u.name)}</button>`).join('');
+document.querySelectorAll('.unit-btn').forEach(b => b.onclick = () => show(+b.dataset.u));
+show(+new URLSearchParams(location.search).get('unit') || 2);
+</script>
 </body>
 </html>

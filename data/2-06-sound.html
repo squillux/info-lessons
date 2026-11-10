@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>소리를 숫자로</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+#wave{width:100%;height:220px;background:var(--bg);border-radius:14px;display:block}
+.flow{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.flow div{flex:1 1 180px;border-radius:14px;padding:10px 14px;border:2px solid var(--line)}
+.flow div:nth-child(1){background:var(--yellow-soft);border-color:#f7dd8f}
+.flow div:nth-child(2){background:var(--brand-soft);border-color:#c9d6ff}
+.flow div:nth-child(3){background:var(--mint-soft);border-color:#b5e6df}
+.enc{display:flex;gap:10px;flex-wrap:wrap}
+.enc label{display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700}
+.enc input{width:84px;text-align:center;font-size:1.05rem;padding:6px;border:2px solid var(--line);border-radius:10px}
+.enc input.good{border-color:var(--ok);background:var(--ok-soft)}
+.enc input.bad{border-color:var(--bad);background:var(--bad-soft)}
+</style>
+</head>
+<body data-unit="2" data-title="소리를 숫자로" data-sub="중1 Ⅱ단원 · 데이터의 디지털 표현 · 미래엔 48쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 디지털 표현</span>
+  <h1>소리를 숫자로</h1>
+  <p class="lead">소리는 시간에 따라 연속적으로 변하는 <b>아날로그 데이터</b>예요. 컴퓨터에 저장하려면 <b>표본화 → 양자화 → 부호화</b> 과정을 거쳐 이진수로 바꿔요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>스마트폰에 저장된 노래 파일 안에는 무엇이 들어 있을까요? 공기의 떨림인 소리를 어떻게 0과 1로 바꿀 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🎵 소리 파형을 이진수로</h3>
+      <canvas id="wave"></canvas>
+      <div class="ctrl" style="margin-top:10px">
+        <label for="samples">표본 개수</label>
+        <input type="range" id="samples" min="4" max="16" value="6" style="flex:1;min-width:160px">
+        <span class="pill" id="sampleN">6</span>
+      </div>
+      <div class="flow">
+        <div><b>① 표본화</b><br>일정한 간격으로 소리의 크기를 추출해요(주황 점).</div>
+        <div><b>② 양자화</b><br>추출한 값을 0~15 사이의 정수로 바꿔요(노란 막대).</div>
+        <div><b>③ 부호화</b><br>바꾼 정수를 이진수(4비트)로 표현해요.</div>
+      </div>
+      <div id="waveTable" class="scroll-x"></div>
+      <p class="hint">💬 표본 개수를 4개와 16개로 바꿔 보세요. 노란 막대가 원래 파형과 더 비슷해지는 쪽은? 그 대신 무엇이 늘어나나요?</p>
+    </div>
+
+    <div class="card">
+      <h3>✍️ 직접 부호화해 보기</h3>
+      <p>양자화한 값을 4비트 이진수로 바꿔 입력하세요. (8 4 2 1 자리를 떠올려 보세요!)</p>
+      <div class="enc" id="enc"></div>
+      <div class="ctrl" style="margin-top:12px"><button class="btn" id="encCheck">채점하기</button><button class="btn line" id="encNew">새 문제</button></div>
+      <div class="feedback" id="encFb"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>소리는 <b>표본화</b>(값 추출) → <b>양자화</b>(정수로 변환) → <b>부호화</b>(이진수로 표현) 과정으로 디지털화해요. 표본이 많을수록 원래 소리에 가깝지만 용량이 커져요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 48쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/common.js"></script>
+<script>
+function drawWave(){
+  const cv = $('#wave'), n = +$('#samples').value, dpr = devicePixelRatio || 1;
+  $('#sampleN').textContent = n;
+  if (!cv.clientWidth) return;
+  const w = cv.width = cv.clientWidth * dpr, h = cv.height = cv.clientHeight * dpr, pad = 12 * dpr, ph = h - pad * 2;
+  const ctx = cv.getContext('2d');
+  const amp = x => 0.5 + Math.sin(x * Math.PI * 2) * 0.32 + Math.sin(x * Math.PI * 5) * 0.12;
+  const Y = v => pad + (1 - v) * ph;
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = 'rgba(90,101,120,.15)'; ctx.lineWidth = 1;
+  for (let l = 0; l <= 15; l++){ const y = Y(l / 15); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+  const vals = [];
+  for (let i = 0; i < n; i++){
+    const xr = (i + .5) / n, q = Math.round(amp(xr) * 15);
+    vals.push(q);
+    ctx.fillStyle = 'rgba(255,194,51,.5)'; ctx.fillRect(i / n * w + 1, Y(q / 15), w / n - 2, h - pad - Y(q / 15));
+    ctx.fillStyle = '#e07b00'; ctx.beginPath(); ctx.arc(xr * w, Y(amp(xr)), 5 * dpr, 0, 7); ctx.fill();
+  }
+  ctx.strokeStyle = '#3b6cf6'; ctx.lineWidth = 3 * dpr; ctx.beginPath();
+  for (let x = 0; x <= w; x += 2){ const y = Y(amp(x / w)); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  ctx.stroke();
+  $('#waveTable').innerHTML = `<table class="tbl"><tr><th>표본</th>${vals.map((_, i) => `<td>${i + 1}</td>`).join('')}</tr>
+    <tr><th>양자화</th>${vals.map(v => `<td>${v}</td>`).join('')}</tr>
+    <tr><th>부호화</th>${vals.map(v => `<td class="mono">${bin(v, 4)}</td>`).join('')}</tr></table>
+    <p class="hint" style="margin:6px 0 0">저장할 데이터: ${n}개 × 4비트 = <b>${n * 4}비트</b></p>`;
+}
+$('#samples').addEventListener('input', drawWave);
+addEventListener('resize', drawWave);
+drawWave();
+
+let encVals = [];
+function newEnc(){
+  encVals = Array.from({length: 5}, () => 1 + Math.floor(Math.random() * 15));
+  $('#enc').innerHTML = encVals.map((v, i) => `<label>${v}<input class="mono" maxlength="4" inputmode="numeric" data-i="${i}" placeholder="????"></label>`).join('');
+  $('#encFb').className = 'feedback';
+}
+$('#encCheck').onclick = () => {
+  let ok = 0;
+  $$('#enc input').forEach(inp => {
+    const good = inp.value.trim() === bin(encVals[+inp.dataset.i], 4);
+    inp.className = 'mono ' + (good ? 'good' : 'bad'); ok += good;
+  });
+  feedback($('#encFb'), ok === encVals.length, ok === encVals.length ? '🎉 모두 정답! 이 다섯 값은 5 × 4 = 20비트로 저장돼요.' : `${ok} / ${encVals.length} 정답. 빨간 칸을 다시 확인해 보세요. (예: 6 = 4 + 2 → 0110)`);
+};
+$('#encNew').onclick = newEnc;
+newEnc();
+
+renderQuiz($('#quiz'), [
+  {q:'소리 데이터를 디지털로 바꾸는 과정의 순서로 알맞은 것은?', o:['양자화 → 표본화 → 부호화','표본화 → 양자화 → 부호화','부호화 → 표본화 → 양자화'], a:1, e:'값 추출(표본화) → 정수로 변환(양자화) → 이진수로 표현(부호화)'},
+  {q:'일정한 간격으로 소리의 크기를 추출하는 단계는?', o:['표본화','양자화','부호화'], a:0, e:'표본화는 연속된 소리에서 일정한 간격으로 값을 뽑는 단계예요.'},
+  {q:'표본 개수를 늘리면 어떻게 될까요?', o:['음질이 나빠지고 용량이 줄어든다','원래 소리에 가까워지고 용량이 커진다','아무 변화가 없다'], a:1, e:'표본이 많을수록 원래 파형에 가까워지지만 저장할 데이터가 늘어나요.'},
+]);
+</script>
+</body>
+</html>

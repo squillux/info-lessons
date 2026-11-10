@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비트와 이진수 카드</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.bulbs{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0}
+.bulb{width:64px;height:84px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bulb .glass{width:52px;height:52px;border-radius:50%;background:#e5e8ef;border:3px solid #c9cfdb;transition:.15s}
+.bulb .base{width:24px;height:14px;background:#9aa3b5;border-radius:3px}
+.bulb .lbl{font-size:.8rem;font-weight:700;color:var(--muted)}
+.bulb.on .glass{background:var(--on);border-color:#e09b00;box-shadow:0 0 22px rgba(255,183,3,.75)}
+.bitcards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 16px}
+.bitcard{width:118px;border:0;padding:0;background:none;perspective:600px}
+.bitcard .inner{position:relative;height:150px;transition:transform .35s;transform-style:preserve-3d}
+.bitcard.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid var(--line)}
+.face.back{background:#2b3245;color:#8b93a7;font-size:2.4rem;font-weight:800;border-color:#2b3245}
+.face.front{background:#fff8e6;border-color:var(--on);transform:rotateY(180deg)}
+.dots{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:96px;min-height:56px;align-content:center}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--on-ink)}
+.face.front b{font-size:1.6rem}
+.bitlabel{font-size:.8rem;color:var(--muted);text-align:center;margin-top:4px}
+.bitcard.on .bitlabel{color:var(--on-ink);font-weight:700}
+.readout{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;text-align:center}
+.readout .card{flex:0 1 240px;margin:0}
+.mission{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+@media (max-width:600px){
+  .bitcard{width:calc(20% - 10px);min-width:58px}
+  .bitcard .inner{height:110px}
+  .face.back{font-size:1.6rem}
+  .dots i{width:7px;height:7px}
+  .face.front b{font-size:1.1rem}
+}
+</style>
+</head>
+<body data-unit="2" data-title="비트와 이진수 카드" data-sub="중1 Ⅱ단원 · 데이터의 디지털 표현 · 미래엔 46, 48쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 디지털 표현</span>
+  <h1>비트와 이진수 카드</h1>
+  <p class="lead">컴퓨터 안에서는 전압이 높으면 1, 낮으면 0으로 나타내요. 0과 1만으로 수를 어떻게 표현하는지 직접 확인해 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>전구 1개로는 "예 / 아니요" 두 가지만 알릴 수 있어요.<br><b>오늘 급식 디저트 4가지 중 무엇이 나오는지</b> 친구에게 전구로 알리려면 전구가 몇 개 필요할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+
+    <div class="card">
+      <h3>💡 전구 = 비트(bit)</h3>
+      <p>디지털 데이터의 최소 저장 단위를 <b>비트(bit: binary digit)</b>라고 해요. 1비트는 0과 1 중 하나를 나타내요. 전구를 더하거나 빼면서 신호가 몇 가지 생기는지 확인해 보세요.</p>
+      <div class="ctrl">
+        <button class="btn ghost" id="bulbMinus">전구 빼기 −</button>
+        <button class="btn ghost" id="bulbPlus">전구 더하기 +</button>
+      </div>
+      <div class="bulbs" id="bulbs"></div>
+      <p>전구 <span class="pill" id="bulbN">1</span>개 → 만들 수 있는 신호 <span class="pill" id="bulbWays">2</span>가지 <span class="hint" id="bulbFormula"></span></p>
+      <div id="comboBox" class="scroll-x"></div>
+      <p class="hint">👉 전구가 하나 늘 때마다 신호의 가짓수는 어떻게 변하나요? 비트 8개를 묶어 <b>1바이트(byte)</b>라고 해요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🃏 이진수 카드로 수 만들기</h3>
+      <p>카드를 누르면 뒤집혀요. 점이 보이는 앞면은 <b>1</b>, 뒷면은 <b>0</b>이에요. 보이는 점의 개수를 모두 더하면 10진수가 돼요.</p>
+      <div class="bitcards" id="bitcards"></div>
+      <div class="readout">
+        <div class="card"><div class="hint">2진수</div><div class="big-num mono" id="binOut">00000</div></div>
+        <div class="card"><div class="hint">10진수(점의 개수)</div><div class="big-num" id="decOut">0</div></div>
+      </div>
+      <p class="hint" style="text-align:center;margin:.8em 0" id="sumOut">켜진 카드가 없어요.</p>
+      <div style="text-align:center"><button class="btn line" id="resetCards">모두 뒤집기(0으로)</button></div>
+    </div>
+
+    <div class="card">
+      <h3>🧩 미션: 카드로 이 수를 만들어 보세요</h3>
+      <div class="mission">
+        <span>목표 수</span><span class="big-num" id="target">5</span>
+        <button class="btn" id="checkMission">확인</button>
+        <button class="btn ghost" id="nextMission">다음 미션</button>
+        <div class="progress" id="missionProg"></div>
+      </div>
+      <div class="feedback" id="missionFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>➗ 2로 나누어 이진수 구하기</h3>
+      <p>10진수를 <b>2로 계속 나누면서 나머지</b>를 적고, 나머지를 <b>아래에서 위로</b> 읽으면 이진수가 돼요. 미션을 맞히면 그 수의 과정이 여기에 나타나요.</p>
+      <div class="ctrl">
+        <label for="divIn">10진수</label>
+        <input id="divIn" class="inp" type="number" min="1" max="255" value="19" style="width:110px">
+        <button class="btn" id="divStep">한 단계씩 ▶</button>
+        <button class="btn ghost" id="divAll">전체 보기</button>
+      </div>
+      <div id="divBox" style="margin-top:12px"></div>
+      <p class="hint">💬 내 생일 날짜(일)를 이진수로 나타내 보세요. 카드 5장으로 31일까지 모두 나타낼 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>비트</b>는 0 또는 1을 나타내는 최소 단위이고, 비트가 n개면 <b>2<sup>n</sup>가지</b>를 표현해요. 10진수는 <b>2로 나눈 나머지를 거꾸로 읽어</b> 이진수로 바꿔요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 46, 48쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/common.js"></script>
+<script>
+/* 전구 */
+let bulbCount = 1;
+function drawBulbs(){
+  const box = $('#bulbs');
+  const prev = [...box.children].map(b => b.classList.contains('on'));
+  box.innerHTML = '';
+  for (let i = 0; i < bulbCount; i++){
+    const b = document.createElement('button');
+    b.className = 'bulb' + (prev[i] ? ' on' : '');
+    b.setAttribute('aria-label', `전구 ${i + 1}`);
+    b.innerHTML = `<span class="glass"></span><span class="base"></span><span class="lbl">${prev[i] ? '1' : '0'}</span>`;
+    b.onclick = () => { b.classList.toggle('on'); b.querySelector('.lbl').textContent = b.classList.contains('on') ? '1' : '0'; };
+    box.appendChild(b);
+  }
+  $('#bulbN').textContent = bulbCount;
+  $('#bulbWays').textContent = 2 ** bulbCount;
+  $('#bulbFormula').textContent = bulbCount > 1 ? `(${Array(bulbCount).fill(2).join(' × ')} = ${2 ** bulbCount})` : '';
+  $('#bulbMinus').disabled = bulbCount <= 1;
+  $('#bulbPlus').disabled = bulbCount >= 8;
+  const cb = $('#comboBox');
+  if (bulbCount <= 3){
+    let rows = '';
+    for (let n = 0; n < 2 ** bulbCount; n++)
+      rows += `<tr><td>${n + 1}</td><td class="mono">${bin(n, bulbCount).replace(/1/g, '💡').replace(/0/g, '⚫')}</td><td class="mono">${bin(n, bulbCount)}</td></tr>`;
+    cb.innerHTML = `<table class="tbl"><tr><th>신호</th><th>전구</th><th>0과 1</th></tr>${rows}</table>`;
+  } else {
+    cb.innerHTML = `<p class="hint">전구가 ${bulbCount}개면 경우가 ${2 ** bulbCount}가지라 표로 다 보여 주기 어려워요!</p>`;
+  }
+}
+$('#bulbPlus').onclick = () => { bulbCount++; drawBulbs(); };
+$('#bulbMinus').onclick = () => { bulbCount--; drawBulbs(); };
+drawBulbs();
+
+/* 이진수 카드 */
+const VALUES = [16, 8, 4, 2, 1];
+const bitState = [0, 0, 0, 0, 0];
+VALUES.forEach((v, i) => {
+  const b = document.createElement('button');
+  b.className = 'bitcard';
+  b.setAttribute('aria-label', `${v} 카드`);
+  b.innerHTML = `<div class="inner"><div class="face back">0</div>
+    <div class="face front"><div class="dots">${'<i></i>'.repeat(v)}</div><b>${v}</b></div></div>
+    <div class="bitlabel">${v}의 자리</div>`;
+  b.onclick = () => { bitState[i] ^= 1; updateCards(); };
+  $('#bitcards').appendChild(b);
+});
+const cardValue = () => VALUES.reduce((s, v, i) => s + v * bitState[i], 0);
+function updateCards(){
+  $$('.bitcard').forEach((c, i) => c.classList.toggle('on', !!bitState[i]));
+  $('#binOut').textContent = bitState.join('');
+  const val = cardValue();
+  $('#decOut').textContent = val;
+  const parts = VALUES.filter((v, i) => bitState[i]);
+  $('#sumOut').textContent = parts.length ? `${parts.join(' + ')} = ${val}` : '켜진 카드가 없어요.';
+  $('#missionFb').className = 'feedback';
+}
+$('#resetCards').onclick = () => { bitState.fill(0); updateCards(); };
+
+const MISSIONS = [5, 10, 19, 27, 31];
+let mi = 0; const solved = new Set();
+function showMission(){
+  $('#target').textContent = MISSIONS[mi];
+  $('#missionProg').innerHTML = MISSIONS.map((_, k) => `<i class="${solved.has(k) ? 'done' : ''}"></i>`).join('');
+  $('#missionFb').className = 'feedback';
+}
+$('#checkMission').onclick = () => {
+  const fb = $('#missionFb'), t = MISSIONS[mi], v = cardValue();
+  if (v === t){
+    solved.add(mi); showMission();
+    $('#divIn').value = t; divShown = 99; renderDiv();
+    feedback(fb, true, solved.size === MISSIONS.length
+      ? `🎉 정답! ${t} = ${bin(t, 5)}₍₂₎ 모든 미션 완료! 31은 카드 5장으로 만들 수 있는 가장 큰 수예요.`
+      : `⭕ 정답! ${t}은(는) 2진수로 ${bin(t, 5)}이에요.`);
+  } else {
+    feedback(fb, false, v < t ? `지금은 ${v}이에요. ${t - v}만큼 더 필요해요. 큰 카드부터 생각해 볼까요?` : `지금은 ${v}이에요. ${v - t}만큼 너무 많아요.`);
+  }
+};
+$('#nextMission').onclick = () => { mi = (mi + 1) % MISSIONS.length; bitState.fill(0); updateCards(); showMission(); };
+updateCards(); showMission();
+
+/* 2로 나누기 */
+let divShown = 0;
+function divSteps(n){ const s = []; while (n > 0){ s.push({n, r: n % 2}); n = Math.floor(n / 2); } return s; }
+function renderDiv(){
+  const n = Math.max(1, Math.min(255, Math.floor(+$('#divIn').value || 1)));
+  const steps = divSteps(n), k = Math.min(divShown, steps.length), done = k === steps.length;
+  let rows = steps.slice(0, k).map(s => `<tr><td>2 )</td><td class="mono" style="text-align:right">${s.n}</td><td class="hint">… 나머지</td><td class="mono" style="color:var(--brand);font-weight:800">${s.r}</td></tr>`).join('');
+  if (done) rows += `<tr><td></td><td class="mono" style="text-align:right">0</td><td></td><td>⬆</td></tr>`;
+  const b = n.toString(2);
+  $('#divBox').innerHTML = (k ? `<table class="tbl">${rows}</table>` : '') + (done
+    ? `<p style="margin:10px 0 0">나머지를 아래에서 위로 읽으면 → <span class="pill mono" style="font-size:1.2rem">${b}</span>₍₂₎ <span class="hint">(${[...b].map((d, i) => d === '1' ? 2 ** (b.length - 1 - i) : null).filter(x => x !== null).join(' + ')} = ${n})</span></p>`
+    : `<p class="hint" style="margin:8px 0 0">몫이 0이 될 때까지 2로 나눠요.</p>`);
+  $('#divStep').disabled = done;
+}
+$('#divStep').onclick = () => { divShown++; renderDiv(); };
+$('#divAll').onclick = () => { divShown = 99; renderDiv(); };
+$('#divIn').addEventListener('input', () => { divShown = 0; renderDiv(); });
+renderDiv();
+
+renderQuiz($('#quiz'), [
+  {q:'비트(bit) 1개로 나타낼 수 있는 상태는 몇 가지일까요?', o:['1가지','2가지','8가지','10가지'], a:1, e:'비트는 0 또는 1, 두 가지 상태를 나타내요.'},
+  {q:'생각 열기 질문: 디저트 4가지를 구분하려면 전구가 최소 몇 개 필요할까요?', o:['1개','2개','3개','4개'], a:1, e:'전구 2개면 00, 01, 10, 11 → 2² = 4가지 신호를 만들 수 있어요.'},
+  {q:'2진수 1011을 10진수로 바꾸면?', o:['9','11','13','1011'], a:1, e:'8 + 0 + 2 + 1 = 11'},
+  {q:'10진수 6을 2진수로 바꾸면?', o:['110','101','011','1100'], a:0, e:'6 ÷ 2 = 3 … 0, 3 ÷ 2 = 1 … 1, 1 ÷ 2 = 0 … 1 → 아래에서 위로 읽으면 110'},
+  {q:'1바이트(byte)는 몇 비트일까요?', o:['2비트','4비트','8비트','10비트'], a:2, e:'비트 8개를 묶어 1바이트라고 해요.'},
+]);
+</script>
+</body>
+</html>

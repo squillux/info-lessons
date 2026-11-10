@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비트맵과 벡터 확대</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.view{width:200px;height:200px;margin:0 auto;overflow:hidden;border:2px solid var(--line);border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.file{border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:8px 14px;font-weight:700}
+.file.bmp{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.file.vec{border-color:var(--pink);background:var(--pink-soft);color:#c2416a}
+.file.wrong{outline:3px solid var(--bad);outline-offset:2px}
+.case{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px dashed var(--line)}
+.case:last-child{border-bottom:0}
+.case p{margin:0;flex:1 1 260px}
+</style>
+</head>
+<body data-unit="2" data-title="비트맵과 벡터 확대" data-sub="중1 Ⅱ단원 · 데이터의 디지털 표현 · 미래엔 47쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 디지털 표현</span>
+  <h1>비트맵과 벡터 확대</h1>
+  <p class="lead"><b>비트맵 방식</b>은 이미지를 <b>픽셀</b>로, <b>벡터 방식</b>은 점·선·면을 <b>수학적 연산</b>으로 표현해요. 두 방식을 확대해서 비교해 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>작은 아이콘 사진을 현수막 크기로 키우면 흐릿하고 울퉁불퉁해져요. 그런데 어떤 로고는 아무리 키워도 매끄러워요. 무엇이 다를까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🔍 확대해 보기</h3>
+      <div class="ctrl"><label for="zoom">확대</label><input type="range" id="zoom" min="1" max="8" value="1" style="flex:1;min-width:160px"><span class="pill" id="zoomN">1배</span></div>
+      <div class="row" style="margin-top:12px">
+        <div style="flex:1 1 220px;text-align:center">
+          <div class="view"><canvas id="bmp" width="16" height="16" style="image-rendering:pixelated;width:50px;height:50px"></canvas></div>
+          <p style="margin:6px 0 0"><b>비트맵 방식</b><br><span class="hint">확대하면 계단 현상이 생겨요</span></p>
+        </div>
+        <div style="flex:1 1 220px;text-align:center">
+          <div class="view"><svg id="vec" viewBox="0 0 16 16" style="width:50px;height:50px"><circle cx="8" cy="8" r="6.5" fill="#e04848"/><rect x="7.4" y="0.2" width="1.2" height="3" rx=".5" fill="#6b4b2a"/></svg></div>
+          <p style="margin:6px 0 0"><b>벡터 방식</b><br><span class="hint">확대해도 매끄러워요</span></p>
+        </div>
+      </div>
+      <p class="hint"><b>계단 현상</b>: 비트맵 그림을 확대하면 픽셀의 네모 모양이 커져서 계단처럼 각지게 보이는 현상이에요. 벡터 그림은 "중심 (8, 8), 반지름 6.5인 빨간 원"처럼 <b>계산식</b>으로 저장되어, 크기를 바꿀 때마다 다시 계산해서 그려요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🗂️ 파일 형식 분류하기</h3>
+      <p>파일을 눌러 <b style="color:var(--brand)">비트맵</b> → <b style="color:#c2416a">벡터</b> → 미분류 순서로 바꿔 보세요.</p>
+      <div class="files" id="files"></div>
+      <div class="ctrl"><button class="btn" id="fileCheck">채점하기</button><button class="btn line" id="fileReset">다시 하기</button></div>
+      <div class="feedback" id="fileFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🤔 어떤 방식이 알맞을까?</h3>
+      <div id="cases"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>비트맵</b>은 픽셀로 표현해 사진처럼 섬세하지만 확대하면 <b>계단 현상</b>이 생기고, <b>벡터</b>는 수학적 연산으로 표현해 확대해도 깨지지 않아요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 47쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/common.js"></script>
+<script>
+(function(){
+  const c = $('#bmp').getContext('2d');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++){
+    const inApple = (x + .5 - 8) ** 2 + (y + .5 - 8) ** 2 <= 6.5 ** 2, stem = x >= 7 && x <= 8 && y <= 2;
+    if (inApple || stem){ c.fillStyle = stem ? '#6b4b2a' : '#e04848'; c.fillRect(x, y, 1, 1); }
+  }
+  $('#zoom').addEventListener('input', e => {
+    const z = +e.target.value, s = 50 * z + 'px';
+    $('#zoomN').textContent = z + '배';
+    for (const el of [$('#bmp'), $('#vec')]){ el.style.width = s; el.style.height = s; }
+  });
+})();
+
+/* 파일 형식 분류 */
+const FILES = [['photo.jpg','bmp'],['logo.svg','vec'],['icon.png','bmp'],['poster.ai','vec'],['scan.bmp','bmp'],['moving.gif','bmp'],['map.pdf','vec']];
+const fstate = FILES.map(() => '');
+function renderFiles(){
+  $('#files').innerHTML = FILES.map(([n], i) => `<button class="file ${fstate[i]}" data-i="${i}">${n}</button>`).join('');
+  $$('.file').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i; fstate[i] = fstate[i] === '' ? 'bmp' : fstate[i] === 'bmp' ? 'vec' : '';
+    renderFiles(); $('#fileFb').className = 'feedback';
+  });
+}
+$('#fileCheck').onclick = () => {
+  let wrong = 0;
+  $$('.file').forEach((b, i) => { if (fstate[i] !== FILES[i][1]){ wrong++; b.classList.add('wrong'); } });
+  feedback($('#fileFb'), !wrong, !wrong ? '🎉 모두 맞혔어요! jpg·png·bmp·gif는 비트맵, ai·svg·pdf는 벡터 방식에 주로 쓰여요.' : `빨간 테두리 파일 ${wrong}개를 다시 생각해 보세요.`);
+};
+$('#fileReset').onclick = () => { fstate.fill(''); renderFiles(); $('#fileFb').className = 'feedback'; };
+renderFiles();
+
+/* 상황별 선택 */
+const CASES = [
+  ['동아리 로고를 만들어 스티커부터 현수막까지 여러 크기로 쓰려고 해요.', 'vec', '크기를 자유롭게 바꿔도 깨지지 않는 벡터 방식이 알맞아요.'],
+  ['체험 학습에서 찍은 풍경 사진을 저장하려고 해요.', 'bmp', '색이 섬세하게 변하는 사진은 픽셀로 표현하는 비트맵 방식이 알맞아요.'],
+  ['학교 안내 지도에 넣을 간단한 화살표 아이콘을 만들려고 해요.', 'vec', '단순한 도형은 벡터 방식으로 만들면 용량이 작고 확대해도 선명해요.'],
+];
+$('#cases').innerHTML = CASES.map(([t], i) => `<div class="case"><p>${i + 1}. ${t}</p>
+  <button class="btn ghost" data-c="${i}" data-v="bmp">비트맵</button><button class="btn ghost" data-c="${i}" data-v="vec">벡터</button>
+  <div class="feedback" id="caseFb${i}" style="flex-basis:100%"></div></div>`).join('');
+$$('[data-c]').forEach(b => b.onclick = () => {
+  const [, ans, why] = CASES[+b.dataset.c];
+  feedback($('#caseFb' + b.dataset.c), b.dataset.v === ans, (b.dataset.v === ans ? '⭕ ' : '❌ ') + why);
+});
+
+renderQuiz($('#quiz'), [
+  {q:'확대했을 때 계단 현상이 생기는 이미지 방식은?', o:['비트맵 방식','벡터 방식'], a:0, e:'비트맵은 픽셀로 이루어져 확대하면 네모난 픽셀이 커 보여요.'},
+  {q:'다음 중 벡터 방식에 주로 쓰이는 파일 형식은?', o:['jpg','png','svg','gif'], a:2, e:'svg, ai는 대표적인 벡터 형식이에요.'},
+  {q:'벡터 방식이 이미지를 표현하는 방법은?', o:['작은 점(픽셀)을 모아서','점·선·면을 수학적 연산으로','소리를 표본화해서'], a:1, e:'벡터는 좌표와 계산식으로 도형을 표현해요.'},
+]);
+</script>
+</body>
+</html>
