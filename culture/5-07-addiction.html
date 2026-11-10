@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사이버 중독 예방하기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.checks label{display:block;padding:6px 0;border-bottom:1px dashed var(--line)}
+.meter{height:16px;background:var(--bg);border-radius:999px;overflow:hidden;margin:10px 0}
+.meter i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s}
+.case{background:var(--bg);border-radius:14px;padding:10px 14px;margin:8px 0}
+</style>
+</head>
+<body data-unit="5" data-title="사이버 중독 예방하기" data-sub="중1 Ⅴ단원 · 디지털 윤리의 실천 · 미래엔 206~209쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 디지털 윤리</span>
+  <h1>사이버 중독 예방하기</h1>
+  <p class="lead">스마트폰과 인터넷은 생활에 꼭 필요하지만, 너무 많이 쓰면 스스로 조절하기 어려운 <b>중독</b> 증상이 나타날 수 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>"5분만 더…" 하다가 1시간이 훌쩍 지난 적이 있나요? 그때 무엇을 하고 있었나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🩺 어떤 중독 증상일까?</h3>
+      <div id="sym"></div>
+    </div>
+
+    <div class="card">
+      <h3>🙌 예방을 위한 노력: 개인일까, 사회일까?</h3>
+      <div id="eff"></div>
+    </div>
+
+    <div class="card">
+      <h3>📖 사례별 실천 방안 찾기</h3>
+      <div id="cases"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔍 나의 디지털 생활 점검 <span class="tag-opt">더 해 보기</span></h3>
+      <p>나에게 해당하는 것을 체크해 보세요. 결과는 화면에만 보이고 저장되지 않아요.</p>
+      <div class="checks" id="self"></div>
+      <div class="meter"><i id="bar"></i></div>
+      <p id="selfMsg" class="hint"></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>스마트폰 중독, 인터넷 중독, 게임 과몰입은 일상생활에 심각한 지장을 줄 수 있어요. <b>개인</b>은 사용 시간을 정하고 지키며, <b>사회</b>는 예방 교육과 상담 서비스를 제공하는 노력이 필요해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 206~209쪽 내용을 바탕으로 재구성 · 사례는 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#sym'), [
+  {icon:'🚶', t:'걸어가면서도 화면에서 눈을 떼지 못해 사람과 부딪힐 뻔했어요.', a:0, e:'스마트폰 중독: 스마트폰이 없으면 불안하고, 걸으면서도 화면을 봐요.'},
+  {icon:'🌐', t:'가상 세계의 일과 현실을 헷갈리고, 온라인에서 더 공격적으로 변해요.', a:1, e:'인터넷 중독: 현실과 가상을 구별하기 어렵고, 현실의 관계보다 온라인 관계가 더 편해져요.'},
+  {icon:'🎮', t:'밤새 게임을 하느라 지각과 결석이 늘었어요.', a:2, e:'게임 과몰입: 잠을 줄여 가며 게임을 하고, 아이템 구입으로 돈 문제도 생겨요.'},
+], ['📱 스마트폰 중독', '💻 인터넷 중독', '🎮 게임 과몰입']);
+
+renderChoice($('#eff'), [
+  {icon:'⏰', t:'스마트폰 사용 시간을 정하고 알림을 맞춰 지켜요.', a:0},
+  {icon:'🛏️', t:'잘 때는 스마트폰과 충전기를 침실 밖에 둬요.', a:0},
+  {icon:'🏢', t:'지역에 사이버 중독 예방 센터를 만들어 운영해요.', a:1},
+  {icon:'🧑‍🏫', t:'학교에서 정기적으로 사이버 중독 예방 교육을 해요.', a:1},
+  {icon:'🕹️', t:'게임 회사가 오래 접속하면 쉬라는 안내를 띄워요.', a:1},
+].map(x => ({...x, e: x.a ? '사회(기관·학교·기업) 차원의 노력이에요.' : '내가 스스로 실천하는 개인의 노력이에요.'})), ['🙋 개인의 노력', '🏛️ 사회의 노력']);
+
+const CASES = [
+  ['민준', '게임 속 친구들과는 잘 지내지만 반 친구들과는 말하기가 어색해요.', ['게임 대신 친구들과 함께할 수 있는 운동이나 동아리 활동을 시작해요.', '게임 시간을 늘려 게임 친구를 더 사귀어요.'], 0],
+  ['서연', 'SNS에 올린 사진에 \'좋아요\'가 적으면 하루 종일 우울하고 계속 확인하게 돼요.', ['더 자극적인 사진을 올려 관심을 끌어요.', 'SNS 알림을 끄고 확인하는 시간을 하루 한두 번으로 정해요.'], 1],
+];
+$('#cases').innerHTML = CASES.map(([n, s], i) => `<div class="case"><b>${n}의 이야기</b><p style="margin:4px 0">${s}</p><div id="c${i}"></div></div>`).join('');
+CASES.forEach(([n, s, opts, a], i) => renderChoice($('#c' + i), [{t:'알맞은 실천 방안은?', a, e:'자신을 지키는 건강한 실천 방안이에요.'}], opts));
+
+const SELF = ['스마트폰이 없으면 불안하다.', '하려던 일을 미루고 스마트폰을 본다.', '잠들기 직전까지 화면을 본다.', '정해 둔 사용 시간을 넘길 때가 많다.', '가족과 식사할 때도 화면을 본다.', '게임이나 영상 때문에 잠이 부족하다.'];
+$('#self').innerHTML = SELF.map(s => `<label><input type="checkbox"> ${s}</label>`).join('');
+const upd = () => { const n = $$('#self input:checked').length; $('#bar').style.width = n / SELF.length * 100 + '%'; $('#bar').style.background = n >= 4 ? 'var(--pink)' : n >= 2 ? 'var(--on)' : 'var(--mint)';
+  $('#selfMsg').textContent = n >= 4 ? '🚨 사용 습관을 점검해 볼 때예요. 오늘부터 사용 시간을 정해 보세요.' : n >= 2 ? '⚠️ 조금 주의가 필요해요. 하나씩 줄여 봐요.' : '🙂 건강한 디지털 생활을 하고 있어요!'; };
+$$('#self input').forEach(i => i.onchange = upd); upd();
+
+renderQuiz($('#quiz'), [
+  {q:'사이버 중독 예방을 위한 개인의 노력으로 알맞은 것은?', o:['잠들기 직전까지 스마트폰을 본다','사용 시간을 정하고 지킨다','게임 시간을 매일 늘린다'], a:1, e:'스스로 사용 시간을 정해 지키는 것이 개인이 할 수 있는 노력이에요.'},
+  {q:'사회 차원의 사이버 중독 예방 노력은?', o:['학교에서 정기적으로 예방 교육을 한다','충전기를 침실 밖에 둔다','걸을 때 스마트폰을 쓰지 않는다'], a:0, e:'학교·기관·기업이 함께 노력하는 것이 사회적 노력이에요.'},
+]);
+</script>
+</body>
+</html>

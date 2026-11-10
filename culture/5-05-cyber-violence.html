@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사이버 폭력 멈춰!</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.feat{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.feat div{background:var(--bg);border-radius:14px;padding:12px;text-align:center}
+.feat b{display:block;font-size:1.6rem}
+.chat{background:#b9cfe6;border-radius:18px;padding:12px;display:grid;gap:8px;max-width:520px}
+.msg{display:flex;gap:8px;align-items:flex-start}
+.msg .who{font-size:.8rem;color:#33445a;min-width:3.5em}
+.msg button{all:unset;cursor:pointer;background:#fff;border-radius:4px 14px 14px 14px;padding:8px 12px;max-width:80%;border:2px solid transparent}
+.msg button.hit{border-color:var(--pink);background:var(--pink-soft)}
+.msg button.miss{border-color:var(--line)}
+.msg button:focus-visible{outline:3px solid var(--brand)}
+</style>
+</head>
+<body data-unit="5" data-title="사이버 폭력 멈춰!" data-sub="중1 Ⅴ단원 · 디지털 윤리의 실천 · 미래엔 204쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 디지털 윤리</span>
+  <h1>사이버 폭력 멈춰!</h1>
+  <p class="lead"><b>사이버 폭력</b>이란 사이버 공간에서 폭력, 음란 정보 등으로 다른 사람에게 신체적·정신적·재산상의 피해를 주는 행위예요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>교실에서 한 말은 시간이 지나면 사라지지만, 단체 대화방에 쓴 말은 어떻게 될까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>⚡ 사이버 폭력은 왜 더 위험할까?</h3>
+      <div class="feat">
+        <div><b>🎭</b>익명성 때문에 쉽게 일어나요</div>
+        <div><b>🕛</b>시간과 공간의 제한이 없어요</div>
+        <div><b>📢</b>소문이 매우 빠르게 퍼져요</div>
+        <div><b>🗄️</b>기록이 오래 남아 지우기 어려워요</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📱 단체 대화방 속 사이버 폭력 찾기</h3>
+      <p>가상의 대화방이에요. 사이버 폭력에 해당하는 말풍선을 모두 눌러 보세요.</p>
+      <div class="chat" id="chat"></div>
+      <div class="feedback" id="chatFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🏷️ 사이버 폭력의 유형</h3>
+      <div id="type"></div>
+    </div>
+
+    <div class="card">
+      <h3>🙋 내가 목격했다면?</h3>
+      <div id="act"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>사이버 폭력은 <b>익명성</b>과 <b>빠른 확산</b> 때문에 쉽게 일어나고 피해가 커요. 글을 올리기 전에 신중하게 생각하고, 사이버 공간에서도 상대를 존중하며, 피해를 보거나 목격하면 증거를 남기고 도움을 요청해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 204쪽 내용을 바탕으로 재구성 · 대화와 이름은 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const CHAT = [
+  ['하늘', '내일 체육복 챙겨 오는 거 맞지?', 0],
+  ['바다', '응 3교시 체육이야~', 0],
+  ['구름', '근데 별이 오늘 발표할 때 목소리 완전 웃겼음ㅋㅋㅋ 녹음한 거 올림', 1, '허락 없이 녹음을 올려 놀리는 것은 사이버 폭력이에요.'],
+  ['산', '별이는 이 방에서 빼자. 아무도 말 걸지 마', 1, '특정인을 대화방에서 빼거나 무시하자고 하는 것은 사이버 따돌림이에요.'],
+  ['구름', '별이 집 주소도 알아 ㅋㅋ ○○아파트', 1, '다른 사람의 신상 정보를 퍼뜨리는 것도 큰 피해를 줘요.'],
+  ['바다', '그만하자. 별이가 보면 속상할 거야', 0],
+];
+let found = 0; const need = CHAT.filter(c => c[2]).length;
+$('#chat').innerHTML = CHAT.map(([w, t, bad], i) => `<div class="msg"><span class="who">${w}</span><button data-i="${i}">${t}</button></div>`).join('');
+$$('#chat button').forEach(b => b.onclick = () => {
+  const c = CHAT[+b.dataset.i];
+  if (b.classList.contains('hit')) return;
+  if (c[2]){ b.classList.add('hit'); found++; feedback($('#chatFb'), true, `⭕ ${c[3]} (${found} / ${need})` + (found === need ? ' 🎉 모두 찾았어요! 마지막 바다처럼 멈추자고 말하는 용기도 중요해요.' : '')); }
+  else { b.classList.add('miss'); feedback($('#chatFb'), false, '이 말은 사이버 폭력이 아니에요. 다른 말풍선을 찾아보세요.'); }
+});
+
+renderChoice($('#type'), [
+  {icon:'📝', t:'사실이 아닌 내용을 게시판에 올려 친구가 나쁜 사람인 것처럼 보이게 했어요.', a:0, e:'사이버 명예 훼손: 상대의 명예를 떨어뜨려 인격권을 침해해요.'},
+  {icon:'🤬', t:'게임 채팅에서 상대에게 욕설을 퍼부었어요.', a:1, e:'사이버 언어폭력: 문자·사진·동영상으로 욕하거나 위협해요.'},
+  {icon:'🎞️', t:'친구가 넘어지는 영상을 몰래 찍어 여러 단체 방에 퍼뜨렸어요.', a:2, e:'사이버 영상 유포: 상대가 원하지 않는 사진이나 영상을 퍼뜨려요.'},
+  {icon:'👣', t:'싫다는데도 하루에 수십 번씩 메시지를 보내며 따라다녀요.', a:3, e:'사이버 스토킹: 원치 않는 연락을 반복해 공포심을 줘요.'},
+  {icon:'🚪', t:'친구를 대화방에 초대한 뒤 모두 한꺼번에 나가 버렸어요.', a:4, e:'사이버 따돌림: 사이버 공간에서 특정인을 괴롭히거나 소외시켜요.'},
+], ['명예 훼손', '언어폭력', '영상 유포', '스토킹', '따돌림']);
+
+renderChoice($('#act'), [
+  {icon:'👀', t:'친구가 단체 대화방에서 계속 놀림을 받고 있어요. 나는 어떻게 할까요?', a:2, e:'놀림을 멈추자고 말하고, 대화 내용을 캡처해 보호자나 선생님께 알려요. 학교폭력 신고는 117이에요.'},
+  {icon:'😢', t:'내가 사이버 폭력을 당했다면?', a:2, e:'혼자 참지 말고 증거(캡처)를 남긴 뒤 믿을 수 있는 어른에게 도움을 요청해요.'},
+], ['같이 웃으며 넘어간다', '모른 척하고 대화방을 나간다', '증거를 남기고 어른에게 알려 도움을 요청한다']);
+
+renderQuiz($('#quiz'), [
+  {q:'사이버 폭력의 특징이 아닌 것은?', o:['익명성 때문에 쉽게 발생한다','기록이 금방 사라진다','빠르게 퍼진다'], a:1, e:'사이버 공간의 기록은 오래 남아 피해가 계속될 수 있어요.'},
+  {q:'원하지 않는 메시지를 반복해서 보내 공포심을 주는 행위는?', o:['사이버 스토킹','사이버 명예 훼손','사이버 영상 유포'], a:0, e:'반복적인 원치 않는 연락은 사이버 스토킹이에요.'},
+]);
+</script>
+</body>
+</html>

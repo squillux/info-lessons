@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디지털 사회와 스마트 시티</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.tcard{border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px;text-align:center;min-height:110px}
+.tcard .ic{font-size:2rem}
+.tcard b{display:block;margin:4px 0}
+.tcard p{margin:0;font-size:.85rem;color:var(--muted);display:none;text-align:left}
+.tcard.open{border-color:var(--mint);background:var(--mint-soft)}
+.tcard.open p{display:block}
+.idea{display:grid;gap:8px}
+.idea select,.idea textarea{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;width:100%;background:var(--panel);color:var(--ink)}
+.idea-out{background:var(--bg);border-radius:12px;padding:12px 14px;min-height:48px}
+</style>
+</head>
+<body data-unit="5" data-title="디지털 사회와 스마트 시티" data-sub="중1 Ⅴ단원 · 디지털 사회의 의미와 특성 · 미래엔 191~194쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 디지털 사회</span>
+  <h1>디지털 사회와 스마트 시티</h1>
+  <p class="lead">디지털 기술이 사회·경제·문화 곳곳에 큰 영향을 미치는 사회를 <b>디지털 사회</b>라고 해요. 우리 동네가 어떻게 바뀌고 있는지 살펴봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>부모님이 중학생이던 시절에는 버스를 탈 때 동전이나 종이 승차권을 냈다고 해요. 지금 우리는 어떻게 버스를 타나요? 그 사이에 무엇이 바뀌었을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🔎 디지털 사회의 네 가지 모습</h3>
+      <p>장면을 읽고 어떤 특성에 해당하는지 골라 보세요.</p>
+      <div id="feat"></div>
+    </div>
+
+    <div class="card">
+      <h3>🏙️ 스마트 시티의 디지털 기술</h3>
+      <p>디지털 기술로 도시의 문제를 해결하는 도시를 <b>스마트 시티</b>라고 해요. 카드를 눌러 기술을 살펴보세요.</p>
+      <div class="tools-grid" id="tech"></div>
+      <p class="hint" id="techN"></p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 어떤 기술일까?</h3>
+      <div id="match"></div>
+    </div>
+
+    <div class="card">
+      <h3>🤝 정보 격차 줄이기</h3>
+      <p>디지털 기기나 서비스를 쓸 수 있는 사람과 그렇지 못한 사람 사이에 생기는 차이를 <b>정보 격차</b>라고 해요. 각 노력은 누가 하는 것일까요?</p>
+      <div id="gap"></div>
+    </div>
+
+    <div class="card">
+      <h3>💡 우리 생활에 디지털 기술 적용하기 <span class="tag-opt">더 해 보기</span></h3>
+      <p>기술 하나를 골라, 학교생활에서 적용할 수 있는 일을 떠올려 보세요. (적은 내용은 저장되지 않아요.)</p>
+      <div class="idea">
+        <select id="ideaTech"></select>
+        <textarea id="ideaTxt" rows="2" placeholder="예: 학교 행사 사진을 모아 친구들과 함께 볼 수 있어요."></textarea>
+        <div class="idea-out" id="ideaOut"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>디지털 사회</b>는 디지털 기술이 생활 곳곳에 영향을 미치는 사회예요. 온라인과 오프라인의 경계가 사라지고, 사람과 사물이 연결되며, 데이터가 많아지고, 서비스가 자동화돼요. 모두가 혜택을 누리려면 <b>정보 격차</b>를 줄이는 노력이 필요해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 191~194쪽 내용을 바탕으로 재구성 · 장면은 모두 가상 사례</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#feat'), [
+  {icon:'🧑‍💻', t:'학교에 가지 않고 집에서 온라인으로 수업을 듣고, 메타버스 교실에서 친구를 만나요.', a:0, e:'온라인과 오프라인의 경계가 사라지고 있어요.'},
+  {icon:'🏠', t:'외출한 뒤 스마트폰으로 집의 에어컨을 켜고, 냉장고가 우유가 떨어졌다고 알려 줘요.', a:1, e:'사물 인터넷으로 사람과 사물이 인터넷에 연결돼요.'},
+  {icon:'📹', t:'스마트폰, CCTV, 교통 카드에서 매일 엄청난 양의 기록이 쌓여요.', a:2, e:'다양한 기기에서 대용량의 데이터가 만들어져요.'},
+  {icon:'🛒', t:'계산원 없이 상품을 들고 나가면 자동으로 결제되는 매장이 생겼어요.', a:3, e:'다양한 서비스가 자동화되고 있어요.'},
+], ['온·오프라인 경계가 사라짐', '사람과 사물이 연결됨', '대용량 데이터가 만들어짐', '서비스가 자동화됨']);
+
+const TECH = [
+  ['🛸', '드론', '사람 없이 원격으로 조종하거나 스스로 나는 무인 비행기예요. 택배 배송, 촬영, 구조에 쓰여요.'],
+  ['🚗', '자율 주행 자동차', '운전자가 조작하지 않아도 주변을 인식해 스스로 달리는 자동차예요.'],
+  ['🚦', '인공지능', '사람의 학습·판단 능력을 컴퓨터로 구현한 기술이에요. 교통량에 맞춰 신호를 바꿀 수 있어요.'],
+  ['📡', '사물 인터넷(IoT)', '여러 사물이 인터넷으로 연결되어 정보를 주고받는 기술이에요.'],
+  ['🔗', '블록체인', '거래 기록을 여러 컴퓨터에 나누어 저장해 함부로 고칠 수 없게 하는 기술이에요.'],
+  ['⌚', '웨어러블 컴퓨터', '시계·안경·옷처럼 몸에 착용하는 컴퓨터예요. 심박 수 같은 건강 정보를 실시간으로 모아요.'],
+  ['🕶️', '증강 현실(AR)', '실제 세계 위에 가상의 정보나 물체를 겹쳐 보여 주는 기술이에요.'],
+  ['🌐', '메타버스', '현실과 가상이 섞인 3차원 가상 세계에서 사회·경제·문화 활동을 하는 공간이에요.'],
+  ['💳', '핀테크', '금융과 기술을 합친 말로, 스마트폰 간편 결제처럼 IT로 제공하는 금융 서비스예요.'],
+];
+const opened = new Set();
+$('#tech').innerHTML = TECH.map(([ic, n, d], i) => `<button class="tcard" data-i="${i}"><div class="ic">${ic}</div><b>${n}</b><p>${d}</p></button>`).join('');
+$$('.tcard').forEach(c => c.onclick = () => { c.classList.toggle('open'); opened.add(+c.dataset.i); $('#techN').textContent = opened.size === TECH.length ? '✅ 모두 살펴봤어요!' : `${opened.size} / ${TECH.length} 살펴봄`; });
+
+renderChoice($('#match'), [
+  {icon:'📦', t:'산간 마을에 사는 할머니께 약을 하늘로 배송해요.', a:0, e:'드론은 길이 험한 곳에도 빠르게 물건을 나를 수 있어요.'},
+  {icon:'🏥', t:'손목에 찬 기기가 심장 박동을 재다가 이상하면 병원에 알려 줘요.', a:1, e:'웨어러블 컴퓨터는 건강 정보를 실시간으로 모아요.'},
+  {icon:'🧾', t:'중고 거래 기록을 여러 컴퓨터에 나누어 저장해 누구도 몰래 바꿀 수 없어요.', a:2, e:'블록체인은 기록을 나누어 저장해 위조를 막아요.'},
+  {icon:'🦖', t:'박물관에서 태블릿을 비추면 화석 위에 살아 움직이는 공룡이 겹쳐 보여요.', a:3, e:'증강 현실은 실제 장면 위에 가상의 정보를 겹쳐 보여 줘요.'},
+], ['🛸 드론', '⌚ 웨어러블', '🔗 블록체인', '🕶️ 증강 현실']);
+
+renderChoice($('#gap'), [
+  {icon:'🏛️', t:'누구나 무료로 들을 수 있는 디지털 교육 기회를 꾸준히 제공해요.', a:0, e:'국가와 사회는 디지털 교육 기회를 제공해요.'},
+  {icon:'🏭', t:'키오스크에 큰 글씨, 음성 안내, 낮은 화면 모드를 처음부터 넣어 만들어요.', a:1, e:'기업은 처음 설계할 때부터 누구나 쓰기 쉽게 만들어요.'},
+  {icon:'🙋', t:'새로운 앱이 나오면 관심을 갖고 직접 써 보며 경험을 쌓아요.', a:2, e:'개인은 변화에 관심을 갖고 다양한 경험을 해 봐요.'},
+  {icon:'👵', t:'할머니께 스마트폰으로 기차표 예매하는 방법을 알려 드려요.', a:2, e:'주변 사람을 돕는 것도 개인이 할 수 있는 노력이에요.'},
+], ['국가·사회', '기업', '개인']);
+
+$('#ideaTech').innerHTML = TECH.map(t => `<option>${t[0]} ${t[1]}</option>`).join('');
+const upd = () => { const v = $('#ideaTxt').value.trim(); $('#ideaOut').innerHTML = v ? `<b>${$('#ideaTech').value}</b>을(를) 활용하면 → ${v.replace(/[<>&]/g, '')}` : '<span class="hint">여기에 내 아이디어가 정리돼요.</span>'; };
+$('#ideaTech').onchange = $('#ideaTxt').oninput = upd; upd();
+
+renderQuiz($('#quiz'), [
+  {q:'디지털 기술이 사회·경제·문화 등 다양한 분야에 큰 영향을 미치는 사회는?', o:['산업 사회','디지털 사회','농경 사회'], a:1, e:'디지털 사회에서는 생활의 많은 부분이 디지털 정보를 중심으로 이루어져요.'},
+  {q:'디지털 기술로 도시의 교통·환경·안전 문제를 해결하는 도시는?', o:['스마트 시티','신도시','위성 도시'], a:0, e:'스마트 시티에는 사물 인터넷, 인공지능, 드론 등 여러 기술이 쓰여요.'},
+  {q:'정보 격차를 줄이기 위한 기업의 노력으로 알맞은 것은?', o:['디지털 기기를 비싸게 판다','처음 설계할 때부터 누구나 쓰기 쉽게 만든다','새 기능을 설명 없이 추가한다'], a:1, e:'누구나 쉽게 쓸 수 있도록 설계하는 것이 기업의 역할이에요.'},
+]);
+</script>
+</body>
+</html>

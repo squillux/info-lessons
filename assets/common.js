@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const next = (() => {
     if (typeof contentsList === 'undefined') return null;
     const me = location.pathname.split('/').pop();
-    const list = contentsList.filter(c => !c.lesson);
+    const list = contentsList.filter(c => !c.lesson && String(c.unit) === String(document.body.dataset.unit));   // 같은 단원 안에서만 이어 가기
     const i = list.findIndex(c => c.href.split('/').pop() === me);
     return i >= 0 && list[i + 1] ? list[i + 1] : null;
   })();

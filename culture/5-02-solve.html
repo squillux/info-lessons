@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디지털 기술로 사회 문제 해결하기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.plan{display:grid;gap:10px}
+.plan label{font-weight:700}
+.plan select,.plan textarea,.plan input{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;width:100%;background:var(--panel);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-weight:700;color:var(--ink)}
+.chips button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.board{border:3px dashed var(--brand);border-radius:18px;padding:14px 16px;background:#fff}
+.board h4{margin:0 0 8px;font-family:var(--cute);font-weight:400;font-size:1.3rem;color:var(--brand)}
+.board p{margin:6px 0}
+.checks label{display:block;padding:4px 0}
+</style>
+</head>
+<body data-unit="5" data-title="디지털 기술로 사회 문제 해결하기" data-sub="중1 Ⅴ단원 · 디지털 사회의 의미와 특성 · 미래엔 195쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 디지털 사회</span>
+  <h1>디지털 기술로 사회 문제 해결하기</h1>
+  <p class="lead">우리 사회에는 아직 해결하지 못한 문제가 많아요. 디지털 기술을 활용하면 어떤 문제를 풀 수 있을지 모둠별로 토의해 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>우리 동네나 학교에서 "이건 정말 불편해!"라고 느낀 일이 있나요? 그 문제를 디지털 기술로 해결할 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧭 분야별 문제와 어울리는 기술</h3>
+      <p>문제를 읽고 가장 도움이 될 기술을 골라 보세요. (가상 사례)</p>
+      <div id="match"></div>
+    </div>
+
+    <div class="card">
+      <h3>🛠️ 우리 모둠 해결안 만들기</h3>
+      <p>분야와 문제를 정하고, 쓸 기술을 고른 뒤 해결 방법을 적어 보세요. 아래에 발표용 보드가 만들어져요. (저장되지 않으니 발표 후 캡처하거나 인쇄하세요.)</p>
+      <div class="plan">
+        <label>① 분야 <select id="field"><option>의료</option><option>농업</option><option>방송</option><option>교통</option><option>환경</option><option>안전</option><option>학교생활</option></select></label>
+        <label>② 개선이 필요한 문제 <textarea id="prob" rows="2" placeholder="예: 등굣길 횡단보도에서 신호를 기다리는 학생이 많아 위험해요."></textarea></label>
+        <div><label>③ 활용할 디지털 기술 (여러 개 가능)</label><div class="chips" id="techs"></div></div>
+        <label>④ 해결 방법 <textarea id="how" rows="3" placeholder="예: 사람 수를 인식하는 인공지능 신호등이 등교 시간에 보행 신호를 길게 바꿔 줘요."></textarea></label>
+      </div>
+      <div class="board" id="board" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <h3>✅ 활동 평가하기</h3>
+      <p>발표를 마친 뒤 스스로 점검해 보세요.</p>
+      <div class="checks" id="checks"></div>
+      <p class="hint" id="chkMsg"></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>사회 문제를 해결하려면 <b>문제를 정확히 정하고</b>, 그 문제에 <b>알맞은 디지털 기술</b>을 골라 <b>구체적인 해결 방법</b>을 제시해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 195쪽 활동을 바탕으로 재구성 · 사례는 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#match'), [
+  {icon:'🚑', t:'[의료] 응급 환자가 생겼을 때 빈 응급실을 찾느라 구급차가 여러 병원을 돌아다녀요.', a:0, e:'병원의 응급실 정보를 네트워크로 실시간 공유하면 가장 가까운 빈 병상을 바로 찾을 수 있어요.'},
+  {icon:'🐗', t:'[농업] 밤마다 멧돼지가 밭에 들어와 농작물을 망가뜨려요.', a:1, e:'카메라와 인공지능이 동물을 알아보고 소리·빛으로 쫓아내게 할 수 있어요.'},
+  {icon:'💬', t:'[방송] 인터넷 방송 채팅창에 악성 댓글이 너무 많이 올라와요.', a:1, e:'인공지능이 악성 댓글을 찾아 자동으로 가리게 할 수 있어요.'},
+  {icon:'🌱', t:'[환경] 비닐하우스 온도와 습도를 사람이 하루 종일 확인하기 어려워요.', a:2, e:'센서가 온도·습도를 재서 스마트폰으로 알려 주고, 창문을 자동으로 열 수 있어요.'},
+], ['🌐 네트워크로 정보 공유', '🤖 인공지능', '📡 사물 인터넷 센서']);
+
+const TECH = ['인공지능', '사물 인터넷', '빅데이터', '드론', '자율 주행', '블록체인', '증강 현실', '메타버스', '웨어러블', '클라우드'];
+const chosen = new Set();
+$('#techs').innerHTML = TECH.map(t => `<button data-t="${t}">${t}</button>`).join('');
+$$('#techs button').forEach(b => b.onclick = () => { chosen.has(b.dataset.t) ? chosen.delete(b.dataset.t) : chosen.add(b.dataset.t); b.classList.toggle('on'); draw(); });
+const esc = s => s.replace(/[<>&]/g, '');
+function draw(){
+  const p = esc($('#prob').value.trim()), h = esc($('#how').value.trim());
+  $('#board').innerHTML = `<h4>📢 우리 모둠의 해결안 · ${$('#field').value}</h4>
+    <p><b>문제</b> ${p || '<span class="hint">②를 적어 주세요</span>'}</p>
+    <p><b>기술</b> ${chosen.size ? [...chosen].map(t => `<span class="pill">${t}</span>`).join(' ') : '<span class="hint">③에서 골라 주세요</span>'}</p>
+    <p><b>방법</b> ${h || '<span class="hint">④를 적어 주세요</span>'}</p>`;
+}
+['#field', '#prob', '#how'].forEach(s => $(s).oninput = $(s).onchange = draw); draw();
+
+const CH = ['현재 우리 사회의 문제 중 디지털 기술로 해결할 수 있는 문제를 찾았다.', '문제를 해결하기 위한 디지털 기술을 골라 해결 방법을 제시했다.', '다른 모둠의 발표를 듣고 좋은 점을 찾았다.'];
+$('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
+$$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 멋져요! 모두 해냈어요.' : `${n} / ${CH.length}`; });
+
+renderQuiz($('#quiz'), [
+  {q:'디지털 기술로 사회 문제를 해결할 때 가장 먼저 할 일은?', o:['가장 최신 기술부터 고른다','해결할 문제를 구체적으로 정한다','기기를 구입한다'], a:1, e:'문제를 정확히 정해야 알맞은 기술을 고를 수 있어요.'},
+  {q:'온도·습도 같은 주변 정보를 재서 인터넷으로 보내는 데 알맞은 기술은?', o:['사물 인터넷 센서','블록체인','증강 현실'], a:0, e:'사물 인터넷은 센서가 모은 정보를 인터넷으로 주고받게 해요.'},
+]);
+</script>
+</body>
+</html>

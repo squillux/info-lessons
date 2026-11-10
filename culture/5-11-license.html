@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디지털 저작물과 CCL 조합기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.toggles{display:grid;gap:8px;max-width:560px}
+.toggles label{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:8px 12px;background:#fff}
+.toggles label.on{border-color:var(--brand);background:var(--brand-soft)}
+.toggles label.dis{opacity:.4}
+.toggles .ic{font-size:1.5rem;width:2em;text-align:center}
+.ccl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0;padding:12px;border:3px solid var(--ink);border-radius:14px;max-width:560px;background:#fff}
+.ccl .badge-c{font-weight:800;background:var(--ink);color:#fff;border-radius:8px;padding:2px 10px}
+.ccl .pill{background:var(--bg)}
+.can{display:grid;gap:6px}
+.can div{border-radius:12px;padding:8px 12px;background:var(--bg)}
+.can .y{background:var(--mint-soft)}
+.can .n{background:var(--pink-soft)}
+</style>
+</head>
+<body data-unit="5" data-title="디지털 저작물과 CCL 조합기" data-sub="중1 Ⅴ단원 · 저작권 보호 · 미래엔 215쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 저작권 보호</span>
+  <h1>디지털 저작물과 CCL 조합기</h1>
+  <p class="lead"><b>디지털 저작물</b>은 컴퓨팅 시스템으로 만든 문서, 그림, 음악, 영화, 소프트웨어 등이에요. 저작자가 미리 "이 조건이면 써도 돼요"라고 표시해 두면 누구나 편하게 이용할 수 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>발표 자료에 넣을 사진이 필요해요. 매번 사진 주인에게 연락해서 허락받아야 한다면 어떨까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>💾 소프트웨어의 사용 범위</h3>
+      <div id="sw"></div>
+    </div>
+
+    <div class="card">
+      <h3>🏛️ 공공누리</h3>
+      <p>국가나 공공 기관이 만든 저작물을 조건에 따라 자유롭게 쓰게 하는 우리나라 제도예요. 상황에 맞는 유형을 골라 보세요.</p>
+      <div id="kogl"></div>
+    </div>
+
+    <div class="card">
+      <h3>🎛️ CCL 조합기</h3>
+      <p><b>저작물 이용 허락 표시(CCL)</b>는 국제적으로 쓰는 자유 이용 허락 표시예요. 내가 그린 그림에 붙일 조건을 골라 보세요.</p>
+      <div class="toggles" id="tg"></div>
+      <div class="ccl" id="ccl"></div>
+      <div class="can" id="can"></div>
+    </div>
+
+    <div class="card">
+      <h3>🧐 이 자료, 이렇게 써도 될까?</h3>
+      <div id="use"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>소프트웨어는 <b>상용·셰어웨어·프리웨어·오픈 소스</b>로 사용 범위가 달라요. <b>공공누리</b>와 <b>CCL</b>은 저작자가 정한 조건 안에서 저작물을 자유롭게 이용하게 해 줘요. CCL의 저작자 표시는 항상 지켜야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 215쪽 내용을 바탕으로 재구성 · CCL 표시는 글자로 단순화해 나타냄</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#sw'), [
+  {icon:'💳', t:'회사가 이익을 얻으려고 만들어 판매하는 소프트웨어', a:0, e:'상용 소프트웨어'},
+  {icon:'⏱️', t:'30일 동안 무료로 써 보고, 계속 쓰려면 사야 하는 소프트웨어', a:1, e:'셰어웨어: 일정 기간 써 본 뒤 원하면 구매해요.'},
+  {icon:'🎁', t:'저작권은 개발자에게 있지만 누구나 무료로 쓸 수 있게 배포한 소프트웨어', a:2, e:'프리웨어'},
+  {icon:'🧑‍💻', t:'소스 코드가 공개되어 누구나 사용·수정·배포할 수 있는 소프트웨어', a:3, e:'오픈 소스 소프트웨어'},
+], ['상용', '셰어웨어', '프리웨어', '오픈 소스']);
+
+renderChoice($('#kogl'), [
+  {icon:'1️⃣', t:'출처만 표시하면 돈을 버는 데 써도 되고 고쳐 써도 돼요.', a:0, e:'제1유형: 출처 표시'},
+  {icon:'2️⃣', t:'출처를 표시하고, 돈을 버는 데는 쓰면 안 돼요.', a:1, e:'제2유형: 출처 표시 + 상업적 이용 금지'},
+  {icon:'3️⃣', t:'출처를 표시하고, 내용을 고치면 안 돼요.', a:2, e:'제3유형: 출처 표시 + 변경 금지'},
+  {icon:'4️⃣', t:'출처를 표시하고, 상업적 이용도 변경도 안 돼요.', a:3, e:'제4유형: 출처 표시 + 상업적 이용 금지 + 변경 금지'},
+], ['제1유형', '제2유형', '제3유형', '제4유형']);
+
+const C = [
+  ['by', '👤', '저작자 표시 (BY)', '저작자의 이름, 출처 등을 반드시 표시해야 해요. (항상 포함)'],
+  ['nc', '🚫💲', '비영리 (NC)', '돈을 버는 목적으로는 쓸 수 없어요.'],
+  ['nd', '🟰', '변경 금지 (ND)', '저작물을 바꾸거나 2차적 저작물을 만들 수 없어요.'],
+  ['sa', '🔄', '동일 조건 변경 허락 (SA)', '바꿔도 되지만, 새 저작물에도 같은 조건을 붙여야 해요.'],
+];
+const st = {by: true, nc: false, nd: false, sa: false};
+function drawT(){
+  $('#tg').innerHTML = C.map(([k, ic, n, d]) => `<label class="${st[k] ? 'on' : ''} ${(k === 'sa' && st.nd) || (k === 'nd' && st.sa) ? 'dis' : ''}"><input type="checkbox" data-k="${k}" ${st[k] ? 'checked' : ''} ${k === 'by' || (k === 'sa' && st.nd) || (k === 'nd' && st.sa) ? 'disabled' : ''}><span class="ic">${ic}</span><span><b>${n}</b><br><small>${d}</small></span></label>`).join('');
+  $$('#tg input').forEach(i => i.onchange = () => { st[i.dataset.k] = i.checked; drawT(); });
+  const on = C.filter(c => st[c[0]]);
+  $('#ccl').innerHTML = `<span class="badge-c">CC</span>${on.map(c => `<span class="pill">${c[1]} ${c[0].toUpperCase()}</span>`).join('')}<span class="hint">CC ${on.map(c => c[0].toUpperCase()).join('-')}</span>`;
+  const rows = [
+    ['출처를 밝히고 학교 발표 자료에 넣기', true],
+    ['출처를 밝히고 판매용 굿즈에 인쇄하기', !st.nc],
+    ['색을 바꾸고 말풍선을 넣어 새 작품으로 만들기', !st.nd],
+    ['새 작품을 아무 조건 없이 공개하기', !st.nd && !st.sa],
+  ];
+  $('#can').innerHTML = rows.map(([t, ok]) => `<div class="${ok ? 'y' : 'n'}">${ok ? '✅' : '⛔'} ${t}</div>`).join('') + (st.nd ? '' : st.sa ? '<p class="hint">🔄 바꾼 작품에도 같은 CCL 조건을 붙여야 해요.</p>' : '');
+}
+drawT();
+
+renderChoice($('#use'), [
+  {icon:'📸', t:'[CC BY-NC] 사진을 출처를 밝히고 학급 신문에 실었어요.', a:0, e:'비영리 목적으로 저작자를 표시했으니 괜찮아요.'},
+  {icon:'🧢', t:'[CC BY-NC] 그림을 모자에 인쇄해 팔았어요.', a:1, e:'비영리(NC) 조건이 있으므로 판매할 수 없어요.'},
+  {icon:'🎨', t:'[CC BY-ND] 그림에 내 캐릭터를 합성해 SNS에 올렸어요.', a:1, e:'변경 금지(ND) 조건이 있으므로 고칠 수 없어요.'},
+  {icon:'🎶', t:'[CC BY-SA] 음악을 편곡해 같은 CC BY-SA 조건으로 공개했어요.', a:0, e:'동일 조건 변경 허락(SA)은 같은 조건을 붙이면 바꿔 쓸 수 있어요.'},
+], ['✅ 가능', '⛔ 불가능']);
+
+renderQuiz($('#quiz'), [
+  {q:'소스 코드가 공개되어 누구나 사용, 수정, 배포할 수 있는 소프트웨어는?', o:['셰어웨어','오픈 소스 소프트웨어','상용 소프트웨어'], a:1, e:'오픈 소스 소프트웨어는 소스 코드가 공개되어 있어요.'},
+  {q:'CCL의 4가지 이용 조건이 아닌 것은?', o:['저작자 표시','비영리','무료 배포 금지','변경 금지'], a:2, e:'CCL의 조건은 저작자 표시, 비영리, 변경 금지, 동일 조건 변경 허락이에요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>카드 뉴스 기획실</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.topics{display:flex;flex-wrap:wrap;gap:6px}
+.topics button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;color:var(--ink)}
+.topics button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.ed{display:grid;gap:10px}
+.ed fieldset{border:2px solid var(--line);border-radius:14px;padding:8px 12px}
+.ed legend{font-weight:800;padding:0 6px}
+.ed input,.ed textarea,.ed select{font:inherit;padding:6px 10px;border:2px solid var(--line);border-radius:10px;width:100%;background:var(--panel);color:var(--ink);margin:4px 0}
+.deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.cn{aspect-ratio:1/1;border-radius:18px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.12);overflow:hidden}
+.cn .no{font-size:.8rem;opacity:.85}
+.cn h4{margin:0;font-family:var(--cute);font-weight:400;font-size:1.4rem;line-height:1.3;word-break:keep-all}
+.cn p{margin:0;font-size:.9rem;line-height:1.5;word-break:keep-all}
+.cn .em{font-size:2.6rem}
+.th0{background:linear-gradient(135deg,#3b6cf6,#7b5cf6)}
+.th1{background:linear-gradient(135deg,#16b8a6,#3b9cf6)}
+.th2{background:linear-gradient(135deg,#ff7aa2,#ff9e5e)}
+.checks label{display:block;padding:5px 0}
+@media print{.ed,.topics{display:none}}
+</style>
+</head>
+<body data-unit="5" data-title="카드 뉴스 기획실" data-sub="중1 Ⅴ단원 · 창의·융합 프로젝트 · 미래엔 220~221쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 창의·융합 프로젝트</span>
+  <h1>카드 뉴스 기획실</h1>
+  <p class="lead"><b>카드 뉴스</b>는 이미지와 짧은 글이 결합된 뉴스예요. 모둠별로 디지털 사회에서 지켜야 할 윤리를 카드 뉴스로 기획해 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>주제 정하기</h2>
+    <div class="card">
+      <p>모둠원과 의논해 주제 하나를 고르세요.</p>
+      <div class="topics" id="topics"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>사례 수집과 개요 작성</h2>
+    <div class="card">
+      <h3>🔍 관련 사례 정리</h3>
+      <p>주제와 관련된 실제 사례를 조사해 핵심만 적어 보세요. 사례를 가져온 곳(출처)도 꼭 적어요.</p>
+      <div class="ed">
+        <textarea id="case" rows="3" placeholder="어떤 일이 있었나요? 누가 어떤 피해를 입었나요?"></textarea>
+        <input id="src" placeholder="출처 (예: ○○신문, 2026년 ○월 ○일)">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🗒️ 카드 뉴스 개요 작성</h3>
+      <p>1장은 눈길을 끄는 제목, 2장은 사례와 문제, 3장은 <b>개인과 사회가 할 수 있는 예방법이나 실천 방안</b>을 담아요. 오른쪽(아래)에 카드가 바로 만들어져요. (저장되지 않아요. 완성 후 캡처하거나 인쇄하세요.)</p>
+      <div class="ed" id="ed"></div>
+      <div class="deck" id="deck" style="margin-top:12px"></div>
+      <p style="margin-top:10px"><button class="btn line" onclick="print()">🖨️ 인쇄하기</button></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>제작 전 점검</h2>
+    <div class="card">
+      <p>실제 카드 뉴스를 만들기 전에 확인해요.</p>
+      <div class="checks" id="checks"></div>
+      <p class="hint" id="chkMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>느낀 점 공유하기</h2>
+    <div class="card">
+      <p>친구들의 카드 뉴스를 보고 <b>디지털 사회에서 지켜야 할 윤리</b>에 대해 새롭게 알게 된 점을 한 가지씩 이야기해 보세요. 카드 뉴스에 쓴 이미지·글꼴도 <b>저작권</b>과 <b>CCL</b>을 지켜 사용했는지 다시 확인해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 220~221쪽 프로젝트를 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const TOPICS = [['🗣️', '사이버 폭력'], ['🎣', '사이버 범죄'], ['📱', '스마트폰 중독·인터넷 중독·게임 과몰입'], ['🔐', '개인 정보 보호'], ['©️', '저작권 보호']];
+let topic = 0;
+$('#topics').innerHTML = TOPICS.map(([e, t], i) => `<button data-i="${i}" class="${i ? '' : 'on'}">${e} ${t}</button>`).join('');
+$$('#topics button').forEach(b => b.onclick = () => { $$('#topics button').forEach(x => x.classList.remove('on')); b.classList.add('on'); topic = +b.dataset.i; draw(); });
+
+const PH = [
+  ['제목', '예: 그 말, 화면 너머에도 사람이 있어요', '부제: 예: 우리 반이 알아야 할 사이버 폭력 이야기'],
+  ['사례와 문제', '예: 단체 대화방에서 시작된 놀림', '예: 장난으로 보낸 메시지가 순식간에 퍼져 친구가 학교에 오지 못했어요.'],
+  ['예방법·실천 방안', '예: 이렇게 막을 수 있어요', '예: 보내기 전 3초 생각하기 / 목격하면 캡처 후 어른에게 알리기 / 학교는 예방 교육 실시'],
+];
+$('#ed').innerHTML = PH.map(([l, a, b], i) => `<fieldset><legend>${i + 1}장 · ${l}</legend><input data-i="${i}" data-k="h" placeholder="${a}"><textarea data-i="${i}" data-k="p" rows="2" placeholder="${b}"></textarea></fieldset>`).join('');
+const esc = s => s.replace(/[<>&]/g, '').replace(/\n/g, '<br>');
+function draw(){
+  $('#deck').innerHTML = PH.map((_, i) => {
+    const h = esc($(`#ed [data-i="${i}"][data-k="h"]`).value.trim()) || PH[i][1].replace('예: ', '');
+    const p = esc($(`#ed [data-i="${i}"][data-k="p"]`).value.trim()) || PH[i][2].replace(/^(부제: )?예: /, '');
+    const foot = i === 2 && $('#src').value.trim() ? `<p style="font-size:.7rem;opacity:.8">사례 출처: ${esc($('#src').value.trim())}</p>` : '';
+    return `<div class="cn th${i}"><span class="no">${i + 1} / 3 · ${TOPICS[topic][1]}</span>${i === 0 ? `<span class="em">${TOPICS[topic][0]}</span>` : ''}<h4>${h}</h4><p>${p}</p>${foot}</div>`;
+  }).join('');
+}
+$$('#ed input, #ed textarea, #src').forEach(x => x.oninput = draw); draw();
+
+const CH = ['전달하고자 하는 핵심 내용이 잘 드러나는가?', '개인과 사회가 할 수 있는 예방법이나 실천 방안을 포함했는가?', '사례의 출처를 밝혔는가?', '사용할 이미지와 글꼴의 저작권(CCL)을 확인했는가?', '모둠원이 모두 역할을 나누어 참여했는가?'];
+$('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
+$$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 준비 완료! 이제 카드 뉴스를 만들어 보세요.' : `${n} / ${CH.length}`; });
+</script>
+</body>
+</html>

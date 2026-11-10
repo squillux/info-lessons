@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디지털 사회와 직업의 변화</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 14px}
+.ba div{border-radius:14px;padding:10px 12px;font-size:.92rem}
+.ba .past{background:var(--bg)}
+.ba .now{background:var(--mint-soft);display:none}
+.ba.open .now{display:block}
+.ba h4{margin:0 0 4px}
+.plan{display:grid;gap:10px}
+.plan label{font-weight:700}
+.plan input,.plan textarea{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;width:100%;background:var(--panel);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-weight:700;color:var(--ink)}
+.chips button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.board{border:3px dashed var(--mint);border-radius:18px;padding:14px 16px;background:#fff;margin-top:12px}
+.board h4{margin:0 0 8px;font-family:var(--cute);font-weight:400;font-size:1.3rem;color:var(--mint)}
+.board p{margin:6px 0}
+.qa{border:2px solid var(--line);border-radius:14px;margin:8px 0;overflow:hidden}
+.qa button{all:unset;cursor:pointer;display:block;padding:10px 14px;font-weight:700;background:var(--bg)}
+.qa p{margin:0;padding:10px 14px;display:none}
+.qa.open p{display:block}
+</style>
+</head>
+<body data-unit="5" data-title="디지털 사회와 직업의 변화" data-sub="중1 Ⅴ단원 · 디지털 사회와 직업의 변화 · 미래엔 196~200쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 진로 탐색</span>
+  <h1>디지털 사회와 직업의 변화</h1>
+  <p class="lead">기술이 발달하면 어떤 직업은 사라지고, 어떤 직업은 새로 생기고, 많은 직업은 일하는 모습이 바뀌어요. 내 진로와 어떤 관련이 있을까요?</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>요즘 친구들이 되고 싶어 하는 직업 중에 10년 전에는 없던 직업이 있을까요? 하나 떠올려 보세요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🔄 사라지는 직업, 새로 생기는 직업</h3>
+      <div id="sort"></div>
+    </div>
+
+    <div class="card">
+      <h3>⏳ 변화하는 직업: 과거와 현재</h3>
+      <p>과거 모습을 읽고, 버튼을 눌러 현재 모습과 필요한 역량을 확인해 보세요.</p>
+      <div id="ba"></div>
+    </div>
+
+    <div class="card">
+      <h3>🎯 디지털 사회 나의 진로 설계 <span class="tag-opt">더 해 보기</span></h3>
+      <p>관심 있는 직업을 하나 정하고 설계 카드를 완성해 보세요. (저장되지 않아요. 완성되면 캡처하거나 인쇄하세요.)</p>
+      <div class="plan">
+        <label>관심 있는 직업 <input id="job" placeholder="예: 게임 기획자"></label>
+        <label>이 직업이 하는 일 <textarea id="what" rows="2"></textarea></label>
+        <label>이 직업에서 활용할 수 있는 디지털 기술 <textarea id="tech" rows="2" placeholder="예: 인공지능으로 게임 속 캐릭터의 대사를 만들어요."></textarea></label>
+        <div><label>필요한 역량 (여러 개 가능)</label><div class="chips" id="caps"></div></div>
+      </div>
+      <div class="board" id="board"></div>
+    </div>
+
+    <div class="card">
+      <h3>💬 청소년 진로 고민 Q&amp;A</h3>
+      <div id="qa"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>디지털 기술이 발달하면서 <b>직업이 사라지고, 새로 생기고, 일하는 모습이 바뀌어요.</b> 직업에 필요한 역량도 바뀌므로 디지털 사회의 변화를 이해하며 진로를 준비해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 196~200쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#sort'), [
+  {icon:'🎫', t:'지하철 승차권 판매원', a:0, e:'교통 카드와 자동 발매기가 이 일을 대신하게 되었어요.'},
+  {icon:'🛣️', t:'고속도로 요금소 직원', a:0, e:'달리면서 자동으로 요금을 내는 시스템이 생겼어요.'},
+  {icon:'🛡️', t:'사이버 평판 관리자', a:1, e:'온라인에서 개인이나 기업의 평판을 관리하는 새로운 직업이에요.'},
+  {icon:'🌍', t:'기후 변화 대응 전문가', a:1, e:'데이터로 기후 변화의 영향을 분석하고 대응 방법을 제시하는 직업이에요.'},
+  {icon:'🛸', t:'드론 조종사', a:1, e:'드론이 촬영·배송·방제에 쓰이며 새로 생겼어요.'},
+], ['사라지는 직업', '새로 생기는 직업']);
+
+const BA = [
+  ['🧑‍🌾 농부', '재배 방식에 대한 지식과 기술, 자연 친화력이 중요했어요.', '스마트팜에서 디지털 기기로 작물을 관리해요.', '디지털 기기를 다루는 역량'],
+  ['🧑‍🏫 선생님', '교실에서 교과서로 수업했어요.', '원격 수업과 디지털 교과서, 태블릿 등 다양한 도구를 활용해요.', '디지털 도구로 수업하는 역량'],
+  ['🧑‍🔧 정비사', '기계와 전기·전자 부품을 다루는 손재주가 중요했어요.', '드론을 띄워 비행기 외부를 점검하는 등 디지털 기기를 제어해요.', '디지털 기기를 제어하고 관리하는 역량'],
+];
+$('#ba').innerHTML = BA.map(([n, p, c, k], i) => `<h4 style="margin:10px 0 0">${n}</h4><div class="ba" id="ba${i}"><div class="past"><h4>과거</h4>${p}</div><div class="now"><h4>현재</h4>${c}<br><b>필요 역량:</b> ${k}</div></div><button class="btn line" data-i="${i}">현재 모습 보기 ▶</button>`).join('');
+$$('#ba .btn').forEach(b => b.onclick = () => { $('#ba' + b.dataset.i).classList.add('open'); b.remove(); });
+
+const CAPS = ['디지털 리터러시', '의사소통 능력', '융합 능력', '창의력', '협업 능력', '비판적 사고력'];
+const on = new Set();
+$('#caps').innerHTML = CAPS.map(c => `<button data-c="${c}">${c}</button>`).join('');
+$$('#caps button').forEach(b => b.onclick = () => { on.has(b.dataset.c) ? on.delete(b.dataset.c) : on.add(b.dataset.c); b.classList.toggle('on'); draw(); });
+const esc = s => s.replace(/[<>&]/g, '');
+function draw(){
+  const j = esc($('#job').value.trim()) || '○○○';
+  $('#board').innerHTML = `<h4>🚀 나는 미래에 ${j}이(가) 될 거예요</h4>
+    <p><b>하는 일</b> ${esc($('#what').value.trim()) || '<span class="hint">-</span>'}</p>
+    <p><b>활용할 기술</b> ${esc($('#tech').value.trim()) || '<span class="hint">-</span>'}</p>
+    <p><b>필요한 역량</b> ${on.size ? [...on].map(c => `<span class="pill">${c}</span>`).join(' ') : '<span class="hint">-</span>'}</p>`;
+}
+['#job', '#what', '#tech'].forEach(s => $(s).oninput = draw); draw();
+
+const QA = [
+  ['기술이 발전하면 일자리가 모두 사라지지 않을까요?', '과거 자동차가 등장했을 때 마부는 줄었지만 자동차를 만들고 고치는 새로운 일자리가 생겼어요. 반복적인 일은 기계가 맡더라도 새로운 직업이 계속 생겨나므로, 변화에 맞는 역량을 기르는 것이 중요해요.'],
+  ['평생 한 가지 직업만 갖게 될까요?', '수명이 길어지고 기술이 빠르게 바뀌면서 살아가는 동안 여러 직업을 갖거나 직업을 바꾸는 사람이 많아질 거예요.'],
+  ['예술이나 스포츠 분야도 디지털 기술의 영향을 받나요?', '네. 인공지능과 함께 작품을 만드는 예술가, 데이터로 경기를 분석하는 전문가처럼 다양한 분야에서 디지털 기술을 활용해요.'],
+];
+$('#qa').innerHTML = QA.map(([q, a]) => `<div class="qa"><button>Q. ${q}</button><p>A. ${a}</p></div>`).join('');
+$$('#qa .qa button').forEach(b => b.onclick = () => b.parentElement.classList.toggle('open'));
+
+renderQuiz($('#quiz'), [
+  {q:'직업의 모습이 변하면 그 직업에 필요한 역량도 변한다.', o:['⭕ 맞다','❌ 아니다'], a:0, e:'농부에게 디지털 기기를 다루는 역량이 필요해진 것처럼 필요한 역량도 바뀌어요.'},
+  {q:'다음 중 디지털 기술의 발달로 새로 생긴 직업은?', o:['지하철 승차권 판매원','사이버 평판 관리자','고속도로 요금소 직원'], a:1, e:'사이버 평판 관리자는 온라인 공간이 커지며 생긴 직업이에요.'},
+]);
+</script>
+</body>
+</html>

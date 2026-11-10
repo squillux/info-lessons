@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ⅴ단원 용어 퍼즐</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.pz{display:grid;gap:12px}
+.pz .row{display:block;border:2px solid var(--line);border-radius:16px;padding:10px 14px;background:#fff}
+.pz .row.ok{border-color:var(--mint);background:var(--mint-soft)}
+.pz .clue{margin:0 0 6px}
+.pz .boxes{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.pz .boxes input{width:min(100%,260px)}
+.pz .row.ok input{border-color:var(--mint)}
+.pz .hintb{margin-left:6px}
+.self label{display:block;padding:6px 0;border-bottom:1px dashed var(--line)}
+</style>
+</head>
+<body data-unit="5" data-title="Ⅴ단원 용어 퍼즐" data-sub="중1 Ⅴ단원 · 단원 정리 · 미래엔 219, 222쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 단원 정리</span>
+  <h1>Ⅴ단원 용어 퍼즐</h1>
+  <p class="lead">디지털 문화 단원의 핵심 용어를 설명을 보고 맞혀 보세요. 띄어쓰기 없이 입력하세요. 막히면 <b>초성 힌트</b>를 눌러 보세요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>이 단원에서 배운 용어 중 가장 기억에 남는 것은 무엇인가요? 친구에게 한 문장으로 설명해 보세요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧩 디지털 사회와 직업</h3>
+      <div class="pz" id="p1"></div>
+    </div>
+    <div class="card">
+      <h3>🧩 디지털 윤리</h3>
+      <div class="pz" id="p2"></div>
+    </div>
+    <div class="card">
+      <h3>🧩 개인 정보와 저작권</h3>
+      <div class="pz" id="p3"></div>
+      <p class="score" id="total"></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>스스로 점검</h2>
+    <div class="card">
+      <p>할 수 있게 된 것에 체크해 보세요. (저장되지 않아요.)</p>
+      <div class="self" id="self"></div>
+      <p class="hint" id="selfMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>디지털 사회를 살아가는 우리는 기술의 변화를 이해하고 진로를 준비하며, <b>디지털 윤리</b>를 실천하고 <b>개인 정보</b>와 <b>저작권</b>을 보호해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 219, 222쪽 정리 활동을 바탕으로 새로 구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const SETS = {
+  p1: [
+    ['디지털 기술이 사회·경제·문화 등 다양한 분야에 큰 영향을 미치는 사회', '디지털사회'],
+    ['디지털 기술로 도시의 교통·환경·안전 문제를 해결하는 도시', '스마트시티'],
+    ['디지털 기기나 서비스를 쓸 수 있는 사람과 그렇지 못한 사람 사이의 차이', '정보격차'],
+    ['여러 사물이 인터넷으로 연결되어 정보를 주고받는 기술 (줄임말 IoT)', '사물인터넷'],
+  ],
+  p2: [
+    ['디지털 기술을 쓸 때 감정을 조절하고 타인을 존중하며 긍정적인 관계를 맺는 기본 소양', '디지털윤리'],
+    ['사이버 공간에서 폭력, 음란 정보 등으로 신체적·정신적·재산상의 피해를 주는 행위', '사이버폭력'],
+    ['기관이나 지인을 사칭해 개인 정보나 돈을 빼내는 사이버 범죄 수법', '피싱'],
+    ['정보 통신망을 마비시키려고 여러 컴퓨터로 접속을 몰아 보내는 공격 (영어 약자)', 'DDOS'],
+  ],
+  p3: [
+    ['살아 있는 개인에 관한 정보로, 그 사람을 알아볼 수 있는 정보', '개인정보'],
+    ['개인 정보를 지키려면 이것을 추측하기 어렵게 만들고 주기적으로 바꿔요', '비밀번호'],
+    ['저작물을 이용해 경제적 이익을 얻을 수 있는 권리 (넘겨줄 수 있음)', '저작재산권'],
+    ['저작권은 있지만 누구나 무료로 쓸 수 있게 배포한 소프트웨어', '프리웨어'],
+    ['대한민국 공공 기관이 만든 저작물에 대한 자유 이용 허락 표시 제도', '공공누리'],
+  ],
+};
+const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+const cho = w => [...w].map(c => { const k = c.charCodeAt(0) - 0xAC00; return k >= 0 && k < 11172 ? CHO[Math.floor(k / 588)] : c; }).join('');
+let solved = 0; const totalN = Object.values(SETS).flat().length;
+Object.entries(SETS).forEach(([id, list]) => {
+  $('#' + id).innerHTML = list.map(([c, w], i) => `<div class="row" data-w="${w}"><p class="clue">${i + 1}. ${c} <span class="pill">${w.length}글자</span></p><div class="boxes"><input class="inp" autocomplete="off" placeholder="${'○'.repeat(w.length)}"><button class="btn line hintb">초성 힌트</button></div><p class="hint" style="margin:6px 0 0"></p></div>`).join('');
+});
+$$('.pz .row').forEach(row => {
+  const w = row.dataset.w, inp = row.querySelector('input');
+  inp.addEventListener('input', () => {
+    if (row.classList.contains('ok')) return;
+    if (inp.value.replace(/\s/g, '').toUpperCase() === w){ row.classList.add('ok'); inp.readOnly = true; row.querySelector('p.hint').textContent = '⭕ 정답!'; solved++; $('#total').textContent = solved === totalN ? `🎉 ${totalN}개 모두 맞혔어요!` : `${solved} / ${totalN} 해결`; $('#total').classList.add('show'); }
+  });
+  row.querySelector('.hintb').onclick = () => { row.querySelector('p.hint').textContent = '💡 ' + cho(w); };
+});
+
+const SELF = ['디지털 사회의 의미와 특성을 설명할 수 있다.', '디지털 사회의 변화가 직업과 진로에 미치는 영향을 말할 수 있다.', '디지털 윤리를 지키는 행동을 실천할 수 있다.', '개인 정보의 유형을 알고 보호 방법을 실천할 수 있다.', '저작권을 알고 CCL 조건에 맞게 저작물을 이용할 수 있다.'];
+$('#self').innerHTML = SELF.map(s => `<label><input type="checkbox"> ${s}</label>`).join('');
+$$('#self input').forEach(i => i.onchange = () => { const n = $$('#self input:checked').length; $('#selfMsg').textContent = n === SELF.length ? '🎉 Ⅴ단원을 완벽하게 정리했어요!' : `${n} / ${SELF.length} · 체크하지 못한 내용은 해당 활동을 다시 해 보세요.`; });
+</script>
+</body>
+</html>

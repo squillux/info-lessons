@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디지털 윤리 상황판</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.promise{border:3px solid var(--on);background:var(--yellow-soft);border-radius:18px;padding:14px 18px}
+.promise h4{margin:0 0 8px;font-family:var(--cute);font-weight:400;font-size:1.3rem;text-align:center}
+.promise ol{margin:0;padding-left:1.4em;line-height:1.8}
+.promise li.mine{color:var(--brand);font-weight:700}
+.add{display:grid;gap:8px;margin-top:12px}
+.add input,.add select{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;width:100%;background:var(--panel);color:var(--ink)}
+</style>
+</head>
+<body data-unit="5" data-title="디지털 윤리 상황판" data-sub="중1 Ⅴ단원 · 디지털 윤리의 실천 · 미래엔 203, 208쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 디지털 윤리</span>
+  <h1>디지털 윤리 상황판</h1>
+  <p class="lead"><b>디지털 윤리</b>란 디지털 기술을 쓸 때 자신의 감정을 조절하고 타인을 존중하며 좋은 관계를 맺는 데 필요한 기본 소양이에요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>단체 대화방에서 내가 보낸 말 때문에 친구가 속상해한 적이 있나요? 얼굴을 보고 말할 때와 무엇이 달랐을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🚦 이럴 때 어떻게 할까?</h3>
+      <p>상황마다 디지털 윤리를 지키는 행동을 골라 보세요.</p>
+      <div id="sit"></div>
+    </div>
+
+    <div class="card">
+      <h3>📜 아름다운 디지털 세상을 위한 우리 반 약속</h3>
+      <p>기본 약속을 읽고, 상황을 골라 <b>우리 반만의 약속</b>을 더해 보세요. (저장되지 않아요. 완성되면 인쇄하거나 캡처하세요.)</p>
+      <div class="promise"><h4>디지털 생활에서 지켜야 할 약속</h4><ol id="list"></ol></div>
+      <div class="add">
+        <select id="when"><option>댓글을 달 때</option><option>SNS에 게시물을 올릴 때</option><option>친구들과 메신저로 대화할 때</option><option>온라인 게임을 할 때</option><option>사진이나 영상을 찍을 때</option></select>
+        <input id="txt" placeholder="예: 친구가 나온 사진은 꼭 허락을 받고 올린다.">
+        <button class="btn" id="addBtn">약속 추가하기</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>건전한 디지털 사회를 만들려면 상대방의 입장을 생각하고, 다른 사람의 정보와 권리를 존중하며, 익명 공간에서도 예의를 지키는 <b>디지털 윤리</b>를 실천해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 203, 208쪽 내용을 바탕으로 재구성 · 상황은 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#sit'), [
+  {icon:'💬', t:'친구가 올린 그림에 고칠 점이 보여요.', a:1, e:'댓글을 남길 때는 상대방의 입장을 생각해요.'},
+  {icon:'📸', t:'수학여행 단체 사진을 SNS에 올리고 싶어요.', a:1, e:'다른 사람이 나온 사진은 반드시 동의를 받고 올려요.'},
+  {icon:'🗣️', t:'반 친구에 대한 확인되지 않은 소문이 대화방에 올라왔어요.', a:1, e:'소문을 함부로 퍼뜨리지 않아요. 퍼 나르는 것도 피해를 키워요.'},
+  {icon:'🎭', t:'이름이 드러나지 않는 게시판에 글을 써요.', a:1, e:'익명 공간에서도 예의를 지켜요.'},
+], ['😈 생각나는 대로 한다', '😇 상대를 존중하는 방법을 고른다']);
+// 보기 버튼에 구체적인 행동을 보여 주기
+const ACTS = [
+  ['"이게 그림이냐ㅋㅋ"라고 쓴다', '"색감이 좋아! 손 부분만 조금 더 그리면 완벽할 것 같아"라고 쓴다'],
+  ['찍힌 친구들에게 묻지 않고 바로 올린다', '사진에 나온 친구들에게 먼저 허락을 받는다'],
+  ['재밌으니까 다른 대화방에도 전달한다', '퍼뜨리지 않고, 친구가 상처받지 않게 멈추자고 말한다'],
+  ['누군지 모르니까 거친 말도 괜찮다', '얼굴을 보고 말할 때처럼 예의를 지켜 쓴다'],
+];
+$$('#sit .choice').forEach((c, i) => c.querySelectorAll('.opt').forEach((b, k) => b.textContent = (k ? '😇 ' : '😈 ') + ACTS[i][k]));
+
+const BASE = ['욕하거나 상대를 깎아내리는 말을 하지 않는다.', '다른 사람의 명예를 떨어뜨리는 글을 쓰지 않는다.', '다른 사람의 사생활이나 신상 정보를 퍼뜨리지 않는다.', '대화방이나 게임에서 누군가를 따돌리지 않는다.', '불법 영상이나 남을 불쾌하게 하는 자료를 공유하지 않는다.', '생각이 다르다는 이유로 비난하거나 차별하지 않는다.', '사실인지 확인되지 않은 정보를 퍼 나르지 않는다.'];
+const mine = [];
+const esc = s => s.replace(/[<>&]/g, '');
+function draw(){ $('#list').innerHTML = BASE.map(b => `<li>${b}</li>`).join('') + mine.map(m => `<li class="mine">${m}</li>`).join(''); }
+$('#addBtn').onclick = () => { const t = esc($('#txt').value.trim()); if (!t) { $('#txt').focus(); return; } mine.push(`[${$('#when').value}] ${t}`); $('#txt').value = ''; draw(); };
+draw();
+
+renderQuiz($('#quiz'), [
+  {q:'디지털 기술을 쓸 때 감정을 조절하고 타인을 존중하며 긍정적인 관계를 맺는 데 필요한 기본 소양은?', o:['디지털 윤리','디지털 기술','디지털 전환'], a:0, e:'디지털 윤리를 실천하는 노력이 건전한 디지털 사회를 만들어요.'},
+  {q:'디지털 윤리를 지키는 행동은?', o:['친구에 대한 소문을 다른 대화방에 전달한다','다른 사람이 나온 사진을 동의 없이 올린다','익명 게시판에서도 예의를 갖춰 글을 쓴다'], a:2, e:'익명 공간에서도 상대를 존중해야 해요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개인 정보 탐정</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.dots{display:flex;flex-wrap:wrap;gap:3px;margin:10px 0}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--brand);transition:opacity .4s,background .4s}
+.dots i.off{opacity:.12}
+.dots i.me{background:var(--pink);transform:scale(1.4)}
+.clues{display:flex;flex-wrap:wrap;gap:6px}
+.big-n{font-family:var(--cute);font-size:1.6rem;color:var(--brand)}
+.post{max-width:440px;border:2px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.post .ph{position:relative;height:220px;background:linear-gradient(#bfe3ff,#e9f6ff 60%,#cfe9c9 60%)}
+.post .ph span{position:absolute;font-size:2.4rem}
+.post .ph button{all:unset;cursor:pointer;position:absolute;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:2px 8px;font-size:.8rem;font-weight:700}
+.post .ph button.hid,.post .tx button.hid{background:#333;color:#333;border-color:#333}
+.post .tx{padding:10px 14px;font-size:.95rem;line-height:1.8}
+.post .tx button{all:unset;cursor:pointer;border-bottom:2px dotted var(--pink);padding:0 2px}
+</style>
+</head>
+<body data-unit="5" data-title="개인 정보 탐정" data-sub="중1 Ⅴ단원 · 개인 정보 보호 · 미래엔 210~211, 213쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 개인 정보 보호</span>
+  <h1>개인 정보 탐정</h1>
+  <p class="lead"><b>개인 정보</b>란 살아 있는 개인에 관한 정보로, 그 사람을 알아볼 수 있는 정보예요. 하나만으로는 누군지 몰라도 <b>다른 정보와 합쳐서 알아볼 수 있다면</b> 개인 정보예요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>내 SNS 프로필 사진이나 게시물만 보고 낯선 사람이 나에 대해 무엇을 알아낼 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧩 정보가 합쳐지면 누군지 알 수 있어요</h3>
+      <p>가상의 학생 300명이 있어요. 단서를 하나씩 더해 보세요.</p>
+      <div class="clues" id="clues"></div>
+      <p>남은 사람: <span class="big-n" id="left">300</span>명</p>
+      <div class="dots" id="dots"></div>
+      <p class="hint" id="cMsg"></p>
+    </div>
+
+    <div class="card">
+      <h3>🗃️ 개인 정보의 유형</h3>
+      <div id="type"></div>
+    </div>
+
+    <div class="card">
+      <h3>🕵️ 게시물 속 개인 정보 가리기</h3>
+      <p>가상의 SNS 게시물이에요. 올리기 전에 가려야 할 개인 정보를 모두 눌러 가려 보세요.</p>
+      <div class="post">
+        <div class="ph" id="ph">
+          <span style="left:40%;top:40%">🧑‍🎓</span>
+          <button style="left:30%;top:78%" data-k="0">이름표: 김○○</button>
+          <button style="left:8%;top:10%" data-k="1">교문: ○○중학교</button>
+          <button style="left:62%;top:12%" data-k="2">101동 1203호</button>
+        </div>
+        <div class="tx">오늘 <button data-k="3">생일</button>🎂 선물 보낼 사람은 <button data-k="4">010-1234-5678</button>로 연락 주세요 📍<button data-k="5">○○동 △△아파트</button></div>
+      </div>
+      <div class="feedback" id="pFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🚨 개인 정보 침해, 이렇게 대처해요</h3>
+      <div id="cope"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>개인 정보</b>는 개인을 알아볼 수 있는 정보로, 다른 정보와 결합해 알아볼 수 있는 정보도 포함돼요. 신체·신분·정신·재산·사회·기타 정보 등 범위가 넓으므로 함부로 공개하지 않고, 침해를 당하면 바로 신고해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 210~211, 213쪽 내용을 바탕으로 재구성 · 인물, 학교, 번호는 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const CL = [['🏫 ○○중학교에 다녀요', 300], ['1️⃣ 1학년이에요', 100], ['4️⃣ 4반이에요', 25], ['📏 키가 165cm 이상이에요', 4], ['💇 단발머리예요', 1]];
+let step = 0;
+$('#dots').innerHTML = '<i></i>'.repeat(300);
+const dots = $$('#dots i');
+const order = dots.map((_, i) => i).sort(() => Math.random() - .5);
+$('#clues').innerHTML = CL.map(([t], i) => `<button class="btn line" data-i="${i}" ${i ? 'disabled' : ''}>${t}</button>`).join('');
+$$('#clues button').forEach(b => b.onclick = () => {
+  const i = +b.dataset.i; if (i !== step) return;
+  step++; b.disabled = true; const nb = $$('#clues button')[step]; if (nb) nb.disabled = false;
+  const keep = new Set(order.slice(0, CL[i][1]));
+  dots.forEach((d, k) => { d.classList.toggle('off', !keep.has(k)); d.classList.toggle('me', CL[i][1] === 1 && keep.has(k)); });
+  $('#left').textContent = CL[i][1];
+  $('#cMsg').textContent = CL[i][1] === 1 ? '😮 단서 하나하나는 평범했지만, 합치니 딱 한 사람만 남았어요! 그래서 이 정보들도 개인 정보예요.' : '';
+});
+
+renderChoice($('#type'), [
+  {icon:'🧬', t:'얼굴, 키, 몸무게, 지문, 건강 상태', a:0, e:'신체 정보'},
+  {icon:'🪪', t:'이름, 주민 등록 번호, 주소, 생년월일, 가족 관계', a:1, e:'신분 정보'},
+  {icon:'💭', t:'종교, 가치관, 정치 성향', a:2, e:'정신 정보'},
+  {icon:'💰', t:'통장 계좌 번호, 신용 카드 번호, 소득', a:3, e:'재산 정보'},
+  {icon:'🎓', t:'학력, 성적, 출석 상황, 상벌 기록', a:4, e:'사회 정보'},
+  {icon:'📍', t:'이메일 주소, 통화 내역, 위치 정보, 취미', a:5, e:'기타 정보'},
+], ['신체', '신분', '정신', '재산', '사회', '기타']);
+
+const WHY = ['이름표로 이름이 드러나요.', '학교 이름이 드러나요.', '집의 동·호수가 보여요.', '생년월일을 짐작할 수 있어요.', '전화번호는 바로 연락할 수 있는 정보예요.', '집 위치가 드러나요.'];
+let hid = 0;
+$$('#ph button, .tx button').forEach(b => b.onclick = () => {
+  if (b.classList.contains('hid')) return;
+  b.classList.add('hid'); hid++;
+  feedback($('#pFb'), true, `⭕ ${WHY[+b.dataset.k]} (${hid} / ${WHY.length})` + (hid === WHY.length ? ' 🎉 이제 안전하게 올릴 수 있어요!' : ''));
+});
+
+renderChoice($('#cope'), [
+  {icon:'📧', t:'가입한 사이트에서 개인 정보가 유출된 뒤 스팸 문자가 계속 와요.', a:0, e:'해당 사이트에 유출 사실을 확인하고 내 정보를 삭제하거나 탈퇴를 요청해요.'},
+  {icon:'📞', t:'모르는 사람이 내 개인 정보를 알고 전화로 협박해요.', a:1, e:'함부로 대응하지 말고 대화 내용을 녹음해 경찰에 신고해요.'},
+  {icon:'🏧', t:'계좌 정보가 유출되어 돈이 빠져나갔어요.', a:2, e:'은행 고객 센터나 금융 관련 기관에 즉시 신고하고 계좌 지급 정지를 신청해요.'},
+], ['사이트에 삭제·탈퇴 요청', '증거를 남기고 경찰에 신고', '은행에 신고·지급 정지']);
+
+renderQuiz($('#quiz'), [
+  {q:'"○○중 1학년 4반, 키 165cm 이상, 단발머리" 같은 정보는 개인 정보일까?', o:['하나씩은 평범하므로 개인 정보가 아니다','결합하면 누군지 알 수 있으므로 개인 정보다'], a:1, e:'다른 정보와 쉽게 결합해 개인을 알아볼 수 있으면 개인 정보예요.'},
+  {q:'이름, 주민 등록 번호, 생년월일은 어떤 유형의 개인 정보일까?', o:['신분 정보','재산 정보','정신 정보'], a:0, e:'자신이 누구인지 나타내는 신분 정보예요.'},
+]);
+</script>
+</body>
+</html>

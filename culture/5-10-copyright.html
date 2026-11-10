@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>저작권 판정소</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.two div{border-radius:16px;padding:12px 14px}
+.two .a{background:var(--brand-soft)}
+.two .b{background:var(--yellow-soft)}
+.two h4{margin:0 0 6px}
+.calc{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.order{display:grid;gap:6px;max-width:520px}
+.order button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;color:var(--ink)}
+.order button.done{border-color:var(--mint);background:var(--mint-soft)}
+.order button .n{display:inline-block;min-width:1.6em;font-weight:800;color:var(--mint)}
+</style>
+</head>
+<body data-unit="5" data-title="저작권 판정소" data-sub="중1 Ⅴ단원 · 저작권 보호 · 미래엔 214, 216~218쪽">
+<main>
+  <span class="badge">중1 Ⅴ단원 · 저작권 보호</span>
+  <h1>저작권 판정소</h1>
+  <p class="lead"><b>저작물</b>은 인간의 사상이나 감정을 독창적으로 표현한 창작물이고, <b>저작권</b>은 저작물에 대해 저작자에게 주는 권리예요. 저작권은 창작하는 순간 자연히 생겨요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>내가 공책에 그린 캐릭터를 친구가 몰래 티셔츠로 만들어 판다면 기분이 어떨까요? 내 그림에도 저작권이 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>⚖️ 저작권의 두 가지 권리</h3>
+      <div class="two">
+        <div class="a"><h4>🧑‍🎨 저작 인격권</h4>저작자의 명예와 인격을 보호하는 권리예요. <b>다른 사람에게 넘기거나 물려줄 수 없고</b>, 저작자가 사망하면 사라져요.</div>
+        <div class="b"><h4>💰 저작 재산권</h4>저작물을 이용해 경제적 이익을 얻을 수 있는 권리예요. <b>넘기거나 물려줄 수 있고</b>, 보통 저작자가 사망한 후 <b>70년</b>까지 보호돼요.</div>
+      </div>
+      <div id="right" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <h3>⏳ 저작 재산권은 언제까지?</h3>
+      <p>가상의 작가가 세상을 떠난 해를 넣어 보세요.</p>
+      <div class="calc"><input class="inp" id="yr" type="number" value="1955" style="width:140px"> 년에 사망 → <b id="until"></b></div>
+      <p class="hint">저작 재산권은 사망한 다음 해 1월 1일부터 계산해 70년이 되는 해의 말일까지 보호돼요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🪜 저작물 이용 5단계</h3>
+      <p>올바른 순서대로 눌러 보세요.</p>
+      <div class="order" id="order"></div>
+      <div class="feedback" id="oFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔨 침해일까, 아닐까?</h3>
+      <div id="judge"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>저작권은 <b>저작 인격권</b>(넘길 수 없음)과 <b>저작 재산권</b>(넘길 수 있음, 사후 70년)으로 나뉘어요. 저작물을 이용할 때는 보호받는지 확인하고, 허락받은 범위 안에서 이용해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 214, 216~218쪽 내용을 바탕으로 재구성 · 사례는 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#right'), [
+  {icon:'🏷️', t:'내 그림을 쓸 때는 반드시 내 이름을 밝혀 달라고 요구했어요.', a:0, e:'저작자의 이름을 표시하는 것은 저작 인격권과 관련 있어요.'},
+  {icon:'✂️', t:'내 소설의 결말을 마음대로 바꾸지 못하게 했어요.', a:0, e:'작품의 내용을 함부로 바꾸지 못하게 하는 것도 저작 인격권이에요.'},
+  {icon:'🎵', t:'내가 만든 노래를 공연하거나 방송할 수 있게 허락하고 돈을 받았어요.', a:1, e:'저작물을 이용하게 하고 이익을 얻는 것은 저작 재산권이에요.'},
+  {icon:'👪', t:'작가가 세상을 떠난 뒤 가족이 책 판매 수익을 받아요.', a:1, e:'저작 재산권은 물려줄 수 있어요.'},
+], ['🧑‍🎨 저작 인격권', '💰 저작 재산권']);
+
+const updY = () => { const y = +$('#yr').value; $('#until').textContent = y ? `${y + 70}년 12월 31일까지 보호 (${y + 71}년부터 자유 이용)` : ''; };
+$('#yr').oninput = updY; updY();
+
+const STEPS = ['어떤 저작물을 이용할지 정한다.', '그 저작물이 보호받는지 확인한다.', '저작물 이용 방식이 저작권법상 허용되는지 확인한다.', '저작권자에게 이용 방법 등을 알리고 허락받는다.', '허락받은 범위 안에서만 이용한다.'];
+const shuffled = STEPS.map((s, i) => [s, i]).sort(() => Math.random() - .5);
+let next = 0;
+$('#order').innerHTML = shuffled.map(([s, i]) => `<button data-i="${i}"><span class="n"></span>${s}</button>`).join('');
+$$('#order button').forEach(b => b.onclick = () => {
+  if (b.classList.contains('done')) return;
+  if (+b.dataset.i === next){ b.classList.add('done'); b.querySelector('.n').textContent = ++next + '.'; feedback($('#oFb'), true, next === STEPS.length ? '🎉 순서를 모두 맞혔어요!' : `⭕ ${next}단계 완료`); }
+  else feedback($('#oFb'), false, '❌ 이 단계보다 먼저 해야 할 일이 있어요.');
+});
+
+renderChoice($('#judge'), [
+  {icon:'📝', t:'인터넷 커뮤니티에서 본 글을 작성자 허락 없이 내 블로그에 올리고 출처만 적었어요.', a:0, e:'출처를 표시해도 저작권자의 허락을 받지 않았다면 침해예요.'},
+  {icon:'🎤', t:'좋아하는 가수의 노래를 직접 불러 영상으로 만들어 동영상 사이트에 올렸어요.', a:0, e:'직접 불렀어도 노래(작사·작곡)는 저작권자의 허락이 필요해요.'},
+  {icon:'🖼️', t:'500년 전 화가의 그림을 미술 숙제에서 패러디했어요.', a:1, e:'저작자가 사망한 지 70년이 훨씬 지나 저작 재산권이 소멸했어요.'},
+  {icon:'📺', t:'온라인 동영상 서비스(OTT) 계정을 약관에서 허용하지 않는데도 학교 친구 여러 명과 나눠 썼어요.', a:0, e:'이용 약관을 지켜야 해요. 약관을 어긴 공유는 저작권자에게 피해를 줘요.'},
+  {icon:'📚', t:'블로그 글을 과제에 활용하면서 작성자에게 이유를 알리고 허락받은 범위 안에서 썼어요.', a:1, e:'허락받은 범위 안에서 이용하면 침해가 아니에요.'},
+], ['🚫 저작권 침해', '✅ 침해 아님']);
+
+renderQuiz($('#quiz'), [
+  {q:'저작 인격권은 다른 사람에게 넘기거나 물려줄 수 있다.', o:['⭕','❌'], a:1, e:'저작 인격권은 넘기거나 물려줄 수 없어요.'},
+  {q:'저작권은 언제 생길까?', o:['저작권 등록을 해야 생긴다','창작하는 순간 자연히 생긴다','판매를 시작하면 생긴다'], a:1, e:'저작권은 창작과 동시에 자연히 생겨요. 학생이 만든 창작물도 보호받아요.'},
+]);
+</script>
+</body>
+</html>
