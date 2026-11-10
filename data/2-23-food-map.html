@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>맛집 평점 분석기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.shops{display:grid;gap:6px;max-width:620px}
+.shop{display:grid;grid-template-columns:110px 1fr 40px;gap:6px}
+.shop input,.shop select{font:inherit;padding:6px 8px;border:2px solid var(--line);border-radius:10px;min-width:0}
+.rate{display:grid;gap:8px;max-width:620px}
+.rate .row1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stars{display:flex;gap:4px}
+.stars button{border:2px solid var(--line);background:#fff;border-radius:10px;width:42px;height:38px;font-weight:800}
+.stars button.on{background:var(--on);border-color:#e0a000}
+table.rk{border-collapse:collapse;font-size:.92rem}
+table.rk th,table.rk td{border:1px solid var(--line);padding:5px 10px;text-align:center}
+table.rk th{background:var(--bg)}
+table.rk td.top{background:var(--yellow-soft);font-weight:800}
+textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid var(--line);border-radius:12px}
+#rchart{width:100%;max-width:560px;display:block;background:var(--bg);border-radius:14px}
+</style>
+</head>
+<body data-unit="2" data-title="맛집 평점 분석기" data-sub="중1 Ⅱ단원 · 창의·융합 프로젝트 · 미래엔 74~75쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 창의·융합 프로젝트</span>
+  <h1>맛집 평점 분석기</h1>
+  <p class="lead">인터넷에는 광고 글이 많아 믿을 만한 맛집 정보를 고르기 어려워요. 반 친구들의 평가 데이터를 모아 분석해서 <b>우리 마을 맛집 지도</b>를 만들어 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>"학교 끝나고 맛있는 거 먹으러 갈까?" 인터넷 검색과 반 친구들에게 직접 묻기, 어떤 방법이 더 믿을 만할까요? 왜 그렇게 생각하나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🎯 문제 이해하기</h3>
+      <div id="define"></div>
+    </div>
+
+    <div class="card">
+      <h3>📝 음식점 목록 만들기</h3>
+      <p>모둠에서 맛집이라고 생각하는 음식점과 종류를 정하세요. (예시가 들어 있어요. 고쳐 써도 돼요)</p>
+      <div class="shops" id="shops"></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn ghost" id="addShop">➕ 음식점 추가</button></div>
+    </div>
+
+    <div class="card">
+      <h3>⭐ 설문 응답 입력하기</h3>
+      <p>친구 한 명의 평가를 입력하고 <b>응답 추가</b>를 누르세요. 5점: 매우 만족 ~ 1점: 매우 불만족 (가격은 5점이 ‘매우 저렴하다’, 양은 5점이 ‘매우 푸짐하다’)</p>
+      <div class="rate">
+        <div class="row1"><b>음식점</b><select id="rShop" class="inp" style="width:auto;font-size:1rem"></select></div>
+        <div class="row1"><b style="width:40px">맛</b><div class="stars" data-k="0"></div></div>
+        <div class="row1"><b style="width:40px">가격</b><div class="stars" data-k="1"></div></div>
+        <div class="row1"><b style="width:40px">양</b><div class="stars" data-k="2"></div></div>
+      </div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn" id="addResp">➕ 응답 추가</button><button class="btn line" id="fake">🎲 가상 응답 20개 채우기</button><button class="btn line" id="clearResp">응답 모두 지우기</button></div>
+      <p class="hint" id="respN"></p>
+    </div>
+
+    <div class="card">
+      <h3>📊 평균과 순위로 분석하기</h3>
+      <p>음식점별로 맛·가격·양의 <b>평균값</b>을 구하고, 같은 종류 안에서 <b>순위</b>를 매겼어요.</p>
+      <div class="scroll-x" id="rank"></div>
+      <div class="seg" id="rSeg" style="margin-top:10px"><button data-m="0" class="active">맛</button><button data-m="1">가격</button><button data-m="2">양</button><button data-m="3">종합</button></div>
+      <svg id="rchart" viewBox="0 0 560 240"></svg>
+      <div class="ctrl" style="margin-top:8px"><button class="btn ghost" id="copy">📋 표 복사 (스프레드시트에 붙여 넣기)</button><span class="hint" id="copyMsg"></span></div>
+    </div>
+
+    <div class="card">
+      <h3>🗺️ 해석하고 공유하기</h3>
+      <p>분석 결과를 근거로 우리 반 맛집 지도를 위한 해석을 써 보세요. 데이터에서 찾은 숫자를 꼭 넣어요!</p>
+      <div class="feedback show ok" id="auto" style="font-weight:600"></div>
+      <textarea id="myInterp" placeholder="예: 분식 중에서는 ○○의 맛 평균이 4.3점으로 가장 높았다. 그래서 …"></textarea>
+      <p class="hint">※ 입력한 내용은 저장되지 않아요. 결과는 화면을 캡처하거나 ‘표 복사’로 스프레드시트에 옮겨 발표 자료로 만들어요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>문제 이해 → 데이터 수집(설문) → 구조화(표) → 분석(평균·순위) → 해석(맛집 지도)</b>의 과정으로 실생활 문제를 데이터로 해결했어요. 믿을 만한 데이터를 직접 모으면 광고에 휘둘리지 않고 판단할 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 74~75쪽(창의·융합 프로젝트) 내용을 바탕으로 재구성 · 음식점과 응답 예시는 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#define'), [
+  {t:'해결해야 할 문제는?', a:0, e:'우리 마을 맛집 지도 만들기예요.'},
+  {t:'지금(현재) 상태는?', a:1, e:'맛집 정보가 없고 인터넷에서 믿을 만한 정보를 고르기 어려운 상태예요.'},
+  {t:'목표 상태는?', a:2, e:'믿을 수 있는 정보를 모아 맛집 지도를 완성한 상태예요.'},
+], ['우리 마을 맛집 지도 만들기', '믿을 만한 맛집 정보가 없는 상태', '믿을 수 있는 정보로 지도를 완성한 상태']);
+
+let shops = [['떡볶이집', '분식'], ['김밥 가게', '분식'], ['튀김 가게', '분식'], ['비빔밥집', '한식'], ['덮밥집', '한식']];
+let resp = [];
+const pick = [4, 3, 3];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderShops(){
+  $('#shops').innerHTML = shops.map(([n, t], i) => `<div class="shop"><input data-i="${i}" data-f="0" value="${esc(n)}" placeholder="음식점 이름"><select data-i="${i}" data-f="1">${['분식', '한식', '중식', '양식', '일식', '기타'].map(o => `<option${o === t ? ' selected' : ''}>${o}</option>`).join('')}</select><button class="btn line" data-del="${i}" title="삭제">✕</button></div>`).join('');
+  $$('#shops [data-f]').forEach(el => el.oninput = el.onchange = () => { shops[+el.dataset.i][+el.dataset.f] = el.value; renderSel(); analyze(); });
+  $$('#shops [data-del]').forEach(b => b.onclick = () => { const i = +b.dataset.del; resp = resp.filter(r => r[0] !== i).map(r => [r[0] > i ? r[0] - 1 : r[0], r[1], r[2], r[3]]); shops.splice(i, 1); renderShops(); renderSel(); analyze(); });
+}
+function renderSel(){ const v = $('#rShop').value; $('#rShop').innerHTML = shops.map(([n, t], i) => `<option value="${i}">${esc(n)} (${t})</option>`).join(''); if (v && +v < shops.length) $('#rShop').value = v; }
+$('#addShop').onclick = () => { if (shops.length >= 8) return; shops.push(['새 음식점', '분식']); renderShops(); renderSel(); };
+$$('.stars').forEach(st => {
+  const k = +st.dataset.k;
+  st.innerHTML = [1, 2, 3, 4, 5].map(v => `<button data-v="${v}">${v}</button>`).join('');
+  const upd = () => st.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.v <= pick[k]));
+  st.querySelectorAll('button').forEach(b => b.onclick = () => { pick[k] = +b.dataset.v; upd(); }); upd();
+});
+$('#addResp').onclick = () => { if (!shops.length) return; resp.push([+$('#rShop').value, ...pick]); analyze(); };
+$('#fake').onclick = () => {
+  const base = shops.map(() => [3 + Math.random() * 1.6, 2.5 + Math.random() * 2, 2.5 + Math.random() * 2]);
+  for (let n = 0; n < 20; n++){ const i = n % shops.length; resp.push([i, ...base[i].map(b => Math.max(1, Math.min(5, Math.round(b + (Math.random() - .5) * 2))))]); }
+  analyze();
+};
+$('#clearResp').onclick = () => { resp = []; analyze(); };
+
+let mode = 0, table = [];
+function analyze(){
+  $('#respN').textContent = `지금까지 모은 응답: ${resp.length}개`;
+  table = shops.map(([n, t], i) => { const rs = resp.filter(r => r[0] === i); const av = [1, 2, 3].map(k => rs.length ? rs.reduce((s, r) => s + r[k], 0) / rs.length : null); return {n, t, cnt: rs.length, av, tot: rs.length ? (av[0] + av[1] + av[2]) / 3 : null}; });
+  const rankIn = (row, k) => { const val = k === 3 ? row.tot : row.av[k]; if (val === null) return '-'; return 1 + table.filter(o => o.t === row.t && (k === 3 ? o.tot : o.av[k]) > val).length; };
+  const f = v => v === null ? '-' : v.toFixed(1);
+  $('#rank').innerHTML = `<table class="rk"><tr><th>종류</th><th>음식점</th><th>응답 수</th><th>맛 평균</th><th>순위</th><th>가격 평균</th><th>순위</th><th>양 평균</th><th>순위</th></tr>` +
+    table.slice().sort((a, b) => a.t.localeCompare(b.t, 'ko')).map(r => `<tr><td>${r.t}</td><td>${esc(r.n)}</td><td>${r.cnt}</td>${[0, 1, 2].map(k => `<td>${f(r.av[k])}</td><td class="${rankIn(r, k) === 1 ? 'top' : ''}">${rankIn(r, k)}</td>`).join('')}</tr>`).join('') + '</table>';
+  drawChart();
+  const has = table.filter(r => r.cnt);
+  if (!has.length){ $('#auto').textContent = '💡 응답을 입력하거나 가상 응답을 채우면 분석 결과를 바탕으로 해석 도우미가 나타나요.'; return; }
+  const best = has.slice().sort((a, b) => b.tot - a.tot)[0], tasty = has.slice().sort((a, b) => b.av[0] - a.av[0])[0], cheap = has.slice().sort((a, b) => b.av[1] - a.av[1])[0];
+  $('#auto').innerHTML = `💡 해석 도우미: 맛 평균은 <b>${esc(tasty.n)}</b>(${f(tasty.av[0])}점), 가격 만족은 <b>${esc(cheap.n)}</b>(${f(cheap.av[1])}점), 종합 평균은 <b>${esc(best.n)}</b>(${f(best.tot)}점)이 가장 높아요. 응답 수가 적은 음식점은 결과를 믿기 어려울 수 있어요.`;
+}
+function drawChart(){
+  const vals = table.map(r => mode === 3 ? r.tot : r.av[mode]), n = table.length || 1, w = Math.min(70, 480 / n - 14);
+  let s = `<line x1="40" y1="200" x2="550" y2="200" stroke="#c9d2e3"/>`;
+  [1, 2, 3, 4, 5].forEach(v => s += `<line x1="40" x2="550" y1="${200 - v * 34}" y2="${200 - v * 34}" stroke="#e3e8f2"/><text x="32" y="${204 - v * 34}" font-size="11" text-anchor="end" fill="#5a6578">${v}</text>`);
+  table.forEach((r, i) => { const v = vals[i], x = 60 + i * (480 / n), h = v === null ? 0 : v * 34;
+    s += `<rect x="${x}" y="${200 - h}" width="${w}" height="${h}" rx="6" fill="${r.t === '분식' ? '#ff7aa2' : r.t === '한식' ? '#16b8a6' : '#3b6cf6'}"/><text x="${x + w / 2}" y="${194 - h}" font-size="12" font-weight="700" text-anchor="middle">${v === null ? '' : v.toFixed(1)}</text><text x="${x + w / 2}" y="220" font-size="12" text-anchor="middle">${esc(r.n).slice(0, 6)}</text>`; });
+  $('#rchart').innerHTML = s;
+}
+$$('#rSeg button').forEach(b => b.onclick = () => { $$('#rSeg button').forEach(x => x.classList.toggle('active', x === b)); mode = +b.dataset.m; drawChart(); });
+$('#copy').onclick = async () => {
+  const tsv = ['종류\t음식점\t응답 수\t맛 평균\t가격 평균\t양 평균\t종합 평균'].concat(table.map(r => [r.t, r.n, r.cnt, ...r.av.map(v => v === null ? '' : v.toFixed(2)), r.tot === null ? '' : r.tot.toFixed(2)].join('\t'))).join('\n');
+  try { await navigator.clipboard.writeText(tsv); $('#copyMsg').textContent = '✅ 복사했어요! 스프레드시트 칸에 붙여 넣으세요.'; }
+  catch (e) { $('#copyMsg').textContent = '이 기기에서는 자동 복사가 안 돼요. 표를 길게 눌러 선택해 복사하세요.'; }
+};
+renderShops(); renderSel(); analyze();
+
+renderQuiz($('#quiz'), [
+  {q:'친구들의 응답으로 음식점 순위를 정할 때 쓴 대표값은?', o:['평균값','가장 처음 응답','가장 큰 값 하나'], a:0, e:'여러 응답의 평균을 구하면 한 사람의 의견에 치우치지 않아요.'},
+  {q:'응답이 1개뿐인 음식점의 평균이 5.0점이라면?', o:['무조건 최고의 맛집이다','응답이 적어 믿기 어려우니 더 조사한다'], a:1, e:'데이터 양이 적으면 결과의 신뢰도가 낮아요.'},
+]);
+</script>
+</body>
+</html>
