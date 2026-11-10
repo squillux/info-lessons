@@ -1,0 +1,54 @@
+{
+  "rules": {
+    "keys": {
+      "$room": {
+        ".read": false,
+        ".write": "!data.exists()",
+        ".validate": "$room.matches(/^[0-9]{4}$/) && newData.isString() && newData.val().length >= 20 && newData.val().length <= 64"
+      }
+    },
+    "ctl": {
+      "$room": {
+        "$sec": {
+          ".read": false,
+          ".write": "$sec === root.child('keys/' + $room).val()",
+          ".validate": "newData.hasChildren(['t']) && newData.child('t').isNumber()"
+        }
+      }
+    },
+    "rooms": {
+      "$room": {
+        "pub": {
+          ".read": true,
+          ".write": "root.child('keys/' + $room).exists() && newData.exists() && (!data.exists() || newData.child('t').val() > data.child('t').val()) && newData.parent().parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val() + '/t').val() === newData.child('t').val()",
+          ".validate": "newData.hasChildren(['t', 'act'])",
+          "t": { ".validate": "newData.isNumber()" },
+          "act": { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "q": {
+            "$i": {
+              ".validate": "$i.matches(/^[0-9]{1,2}$/) && newData.hasChildren(['open', 'show', 'round'])",
+              "open": { ".validate": "newData.isBoolean()" },
+              "show": { ".validate": "newData.isBoolean()" },
+              "round": { ".validate": "newData.isNumber()" },
+              "$other": { ".validate": false }
+            }
+          },
+          "$other": { ".validate": false }
+        }
+      }
+    },
+    "votes": {
+      "$room": {
+        ".read": true,
+        "$i": {
+          "$round": {
+            "$dev": {
+              ".write": "!data.exists() && root.child('rooms/' + $room + '/pub/q/' + $i + '/open').val() === true && root.child('rooms/' + $room + '/pub/q/' + $i + '/round').val() + '' === $round",
+              ".validate": "$dev.matches(/^[a-z0-9]{12,32}$/) && newData.isNumber() && newData.val() >= 0 && newData.val() < 10"
+            }
+          }
+        }
+      }
+    }
+  }
+}
