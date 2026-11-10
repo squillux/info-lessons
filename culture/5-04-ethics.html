@@ -99,10 +99,10 @@ const VOTE = [
 $('#vote').innerHTML = VOTE.map(([r, y, n], i) => `<div class="choice"><p><b>${i + 1}. ${r}</b></p><p class="hint" style="margin:2px 0">👍 ${y}<br>👎 ${n}</p>
   <div class="opts"><button class="opt" data-v="${i}" data-k="0">👍 찬성 <b>0</b></button><button class="opt" data-v="${i}" data-k="1">👎 반대 <b>0</b></button><button class="btn line" data-r="${i}">초기화</button></div><div class="explain"></div></div>`).join('');
 const tally = VOTE.map(() => [0, 0]);
-const showV = i => { const [a, b] = tally[i], c = $('#vote .choice')[i]; c.querySelectorAll('.opt b').forEach((x, k) => x.textContent = tally[i][k]);
+const showV = i => { const [a, b] = tally[i], c = $$('#vote .choice')[i]; c.querySelectorAll('.opt b').forEach((x, k) => x.textContent = tally[i][k]);
   const ex = c.querySelector('.explain'); if (a + b){ ex.textContent = a === b ? '⚖️ 의견이 똑같이 나뉘었어요. 서로의 근거를 더 들어 보고 조건을 바꿔 다시 정해 볼까요?' : (a > b ? '👍 찬성' : '👎 반대') + ` 의견이 많아요 (${a}:${b}). 다른 의견을 낸 친구의 근거도 규칙을 다듬는 데 반영해 보세요.`; ex.classList.add('show'); } else ex.classList.remove('show'); };
-$('#vote .opt').forEach(b => b.onclick = () => { tally[+b.dataset.v][+b.dataset.k]++; showV(+b.dataset.v); });
-$('#vote [data-r]').forEach(b => b.onclick = () => { tally[+b.dataset.r] = [0, 0]; showV(+b.dataset.r); });
+$$('#vote .opt').forEach(b => b.onclick = () => { tally[+b.dataset.v][+b.dataset.k]++; showV(+b.dataset.v); });
+$$('#vote [data-r]').forEach(b => b.onclick = () => { tally[+b.dataset.r] = [0, 0]; showV(+b.dataset.r); });
 
 renderQuiz($('#quiz'), [
   {q:'디지털 기술을 쓸 때 감정을 조절하고 타인을 존중하며 긍정적인 관계를 맺는 데 필요한 기본 소양은?', o:['디지털 윤리','디지털 기술','디지털 전환'], a:0, e:'디지털 윤리를 실천하는 노력이 건전한 디지털 사회를 만들어요.'},
