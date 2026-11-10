@@ -161,10 +161,22 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
   <div class="card goal">
     <h3>🎯 학습 목표</h3>
     <ol>
-      <li>비트(bit)와 바이트(byte)의 뜻을 설명할 수 있다.</li>
-      <li>10진수와 2진수를 서로 바꿀 수 있다.</li>
-      <li>그림과 문자가 0과 1로 표현되는 원리를 설명할 수 있다.</li>
+      <li>아날로그 데이터와 디지털 데이터의 차이를 설명할 수 있다.</li>
+      <li>비트(bit)와 이진수의 뜻을 알고, 수를 이진수로 표현할 수 있다.</li>
+      <li>문자와 이미지가 디지털 데이터로 표현되는 방법을 설명할 수 있다.</li>
     </ol>
+  </div>
+
+  <div class="card">
+    <h3>📈 아날로그 데이터 vs 디지털 데이터</h3>
+    <p><b>아날로그 데이터</b>는 소리의 크기·빛의 밝기처럼 <b>연속적인 값</b>이고, <b>디지털 데이터</b>는 일정한 간격으로 끊어서 나타낸 <b>불연속적인 값</b>이에요. 막대를 움직여 끊는 간격을 바꿔 보세요.</p>
+    <canvas id="wave" height="180" style="width:100%;background:var(--bg);border-radius:12px"></canvas>
+    <div class="ctrl" style="margin-top:8px">
+      <label for="samples">나누는 칸 수</label>
+      <input type="range" id="samples" min="4" max="48" value="8" style="flex:1;min-width:160px">
+      <span class="pill" id="sampleN">8</span>
+    </div>
+    <p class="hint">— 파란 곡선: 아날로그 데이터 &nbsp; ■ 주황 계단: 디지털 데이터. 칸을 잘게 나눌수록 원래 모습에 가까워져요(대신 저장할 데이터는 많아져요).</p>
   </div>
 
   <div class="card">
@@ -256,7 +268,18 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
   <div class="card">
     <h3>📏 저장 공간 계산해 보기</h3>
     <p>8×8 흑백 그림 = 픽셀 <b>64</b>개 = <b>64비트</b> = <b>8바이트</b></p>
-    <p class="hint">8비트 = 1바이트(byte). 컬러 사진은 픽셀 하나에 더 많은 비트를 쓰기 때문에 용량이 훨씬 커져요. 스마트폰 사진 한 장은 픽셀이 1,000만 개가 넘어요!</p>
+    <p class="hint">8비트 = 1바이트(byte). 이미지 전체 용량 = 픽셀 하나의 용량 × 전체 픽셀 수</p>
+  </div>
+
+  <div class="card">
+    <h3>🎨 픽셀 하나에 비트를 더 쓰면?</h3>
+    <p>픽셀 하나를 몇 비트로 표현하느냐에 따라 나타낼 수 있는 색의 수가 달라져요.</p>
+    <div class="seg" id="depth">
+      <button data-b="1" class="active">1비트</button><button data-b="2">2비트</button><button data-b="4">4비트</button><button data-b="8">8비트</button><button data-b="24">24비트</button>
+    </div>
+    <p>2<sup id="depthB">1</sup> = <span class="pill" id="depthN">2</span>가지 색</p>
+    <div id="swatches" style="display:flex;flex-wrap:wrap;gap:3px"></div>
+    <p class="hint">24비트는 빨강(R)·초록(G)·파랑(B)에 8비트씩 써서 약 1,677만 가지 색을 표현해요(트루 컬러).</p>
   </div>
 </section>
 
@@ -264,7 +287,19 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
 <section id="text" data-label="활동3 · 문자 코드">
   <span class="tag">활동 3 · 5분</span>
   <h2>글자도 0과 1로!</h2>
-  <p class="lead">컴퓨터는 글자마다 정해진 <b>번호(문자 코드)</b>를 붙이고, 그 번호를 2진수로 저장해요. 영문자는 주로 아스키(ASCII) 코드, 한글은 유니코드를 사용합니다.</p>
+  <p class="lead">컴퓨터는 글자마다 약속된 이진수 <b>문자 코드</b>를 사용해요. <b>아스키(ASCII) 코드</b>는 <b>7비트</b>로 128(2<sup>7</sup>)개의 문자를 나타내고, 한글처럼 더 많은 문자는 <b>유니코드</b>로 나타냅니다.</p>
+  <div class="card">
+    <h3>🕵️ 암호 놀이: 아스키 코드를 해독하라!</h3>
+    <p>아래 7비트 암호를 글자로 바꿔 보세요. <button class="btn line" id="tableBtn" style="padding:4px 10px">아스키 코드표 보기</button></p>
+    <div id="asciiTable" style="display:none;margin-bottom:10px"></div>
+    <div class="mono" id="secret" style="font-size:1.15rem;display:flex;gap:10px;flex-wrap:wrap"></div>
+    <div class="ctrl" style="margin-top:10px">
+      <input id="secretIn" class="charin" style="width:180px" maxlength="8" placeholder="정답 입력" autocomplete="off">
+      <button class="btn" id="secretCheck">확인</button>
+      <button class="btn ghost" id="secretNext">다른 암호</button>
+    </div>
+    <div class="feedback" id="secretFb"></div>
+  </div>
   <div class="card">
     <label for="charIn"><b>내 이름의 영문 이니셜이나 좋아하는 단어를 입력해 보세요</b> (최대 8글자)</label><br>
     <input id="charIn" class="charin" maxlength="8" value="HI" autocomplete="off">
@@ -285,10 +320,11 @@ table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text
   <div class="card summary">
     <h3>📝 오늘 배운 내용</h3>
     <ul>
-      <li><b>비트(bit)</b>: 0 또는 1을 저장하는 가장 작은 단위. 비트가 n개면 2<sup>n</sup>가지를 표현할 수 있어요.</li>
-      <li><b>바이트(byte)</b>: 8비트를 묶은 단위. 1바이트로 256(2<sup>8</sup>)가지를 표현해요.</li>
-      <li><b>2진수</b>: 자리마다 1, 2, 4, 8, 16…(2배씩 커짐)의 값을 가지는 수 체계예요.</li>
-      <li>그림은 <b>픽셀</b>, 글자는 <b>문자 코드</b>로 바꾼 다음 0과 1로 저장해요.</li>
+      <li><b>아날로그 데이터</b>는 연속적인 값, <b>디지털 데이터</b>는 불연속적인 값이에요. 디지털 데이터는 저장·편집·복사·전송이 쉬워요.</li>
+      <li><b>비트(bit: binary digit)</b>: 디지털 데이터의 최소 저장 단위로 0 또는 1을 나타내요. 비트가 n개면 2<sup>n</sup>가지를 표현해요. 8비트 = 1바이트.</li>
+      <li><b>이진수</b>: 0과 1만 사용하는 수 체계. 10진수를 2로 계속 나눈 나머지를 오른쪽부터 왼쪽으로 나열해 구해요.</li>
+      <li><b>문자</b>: 아스키 코드(7비트, 128개 문자), 유니코드(전 세계 문자)로 표현해요.</li>
+      <li><b>이미지</b>: <b>비트맵 방식</b>은 픽셀로 표현해 확대하면 <b>계단 현상</b>이 생기고, <b>벡터 방식</b>은 수학적 연산으로 표현해 확대해도 깨지지 않아요. <b>해상도</b>(가로 픽셀 수 × 세로 픽셀 수)가 높을수록 선명해요.</li>
     </ul>
   </div>
 </section>
@@ -324,6 +360,7 @@ function go(i){
   $('#where').textContent = `${cur + 1} / ${sections.length}`;
   history.replaceState(null, '', '#' + sections[cur].id);
   window.scrollTo({top: 0});
+  if (sections[cur].id === 'intro') drawWave();
 }
 $('#prev').onclick = () => go(cur - 1);
 $('#next').onclick = () => go(cur + 1);
@@ -496,7 +533,7 @@ function renderChars(){
   for (const ch of [...$('#charIn').value].slice(0, 8)){
     const code = ch.codePointAt(0);
     const ascii = code < 128;
-    const width = ascii ? 8 : 16;
+    const width = ascii ? 7 : 16;
     const b = bin(code, width).replace(/(.{8})(?=.)/g, '$1 ');
     box.insertAdjacentHTML('beforeend', `<div class="ch"><div class="c">${ch === ' ' ? '␣' : ch.replace(/[<>&]/g, '')}</div>
       <div class="d">${ascii ? '아스키' : '유니코드'} 번호 ${code}</div>
@@ -506,8 +543,70 @@ function renderChars(){
 $('#charIn').addEventListener('input', renderChars);
 renderChars();
 
+/* ---------- 도입: 아날로그 vs 디지털 ---------- */
+function drawWave(){
+  const cv = $('#wave'), n = +$('#samples').value;
+  $('#sampleN').textContent = n;
+  const w = cv.width = cv.clientWidth * devicePixelRatio, h = cv.height = 180 * devicePixelRatio;
+  const ctx = cv.getContext('2d'), f = x => h / 2 - Math.sin(x * Math.PI * 4) * h * 0.32 - Math.sin(x * Math.PI * 9) * h * 0.08;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(255,183,3,.75)';
+  for (let i = 0; i < n; i++){ const x0 = i / n * w, y = f((i + .5) / n); ctx.fillRect(x0 + 1, y, w / n - 2, h - y); }
+  ctx.strokeStyle = '#2f5bea'; ctx.lineWidth = 3 * devicePixelRatio; ctx.beginPath();
+  for (let x = 0; x <= w; x += 2){ const y = f(x / w); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  ctx.stroke();
+}
+$('#samples').addEventListener('input', drawWave);
+addEventListener('resize', drawWave);
+drawWave();
+
+/* ---------- 활동 2: 색 표현 ---------- */
+function drawDepth(b){
+  $('#depthB').textContent = b;
+  $('#depthN').textContent = (2 ** b).toLocaleString();
+  const n = Math.min(2 ** b, 64), sw = [];
+  for (let i = 0; i < n; i++){
+    let c;
+    if (b === 1) c = i ? '#000' : '#fff';
+    else if (b <= 2){ const v = Math.round(255 * i / (n - 1)); c = `rgb(${v},${v},${v})`; }
+    else c = `hsl(${Math.round(360 * i / n)},${b === 24 ? 85 : 70}%,${b >= 8 ? 30 + (i % 4) * 12 : 50}%)`;
+    sw.push(`<span style="width:26px;height:26px;border-radius:4px;border:1px solid var(--line);background:${c}"></span>`);
+  }
+  $('#swatches').innerHTML = sw.join('') + (2 ** b > 64 ? `<span class="hint" style="align-self:center">… 외 ${(2 ** b - 64).toLocaleString()}가지</span>` : '');
+}
+$$('#depth button').forEach(btn => btn.onclick = () => {
+  $$('#depth button').forEach(x => x.classList.toggle('active', x === btn)); drawDepth(+btn.dataset.b);
+});
+drawDepth(1);
+
+/* ---------- 활동 3: 암호 놀이 ---------- */
+const SECRETS = ['HELLO', 'CODE', 'DATA', 'BIT', 'INFO'];
+let si = 0;
+function showSecret(){
+  $('#secret').innerHTML = [...SECRETS[si]].map(c => `<span style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 8px">${bin(c.charCodeAt(0), 7)}</span>`).join('');
+  $('#secretIn').value = ''; $('#secretFb').className = 'feedback';
+}
+$('#secretCheck').onclick = () => {
+  const ok = $('#secretIn').value.trim().toUpperCase() === SECRETS[si], fb = $('#secretFb');
+  fb.textContent = ok ? `🎉 해독 성공! 정답은 ${SECRETS[si]}` : '다시 도전! 코드표에서 A = 1000001(65)부터 하나씩 세어 보세요.';
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+};
+$('#secretNext').onclick = () => { si = (si + 1) % SECRETS.length; showSecret(); };
+$('#tableBtn').onclick = () => {
+  const t = $('#asciiTable');
+  if (!t.innerHTML){
+    let r = '';
+    for (let i = 65; i <= 90; i++) r += `<span style="display:inline-block;margin:2px 6px 2px 0;font-size:.85rem"><b>${String.fromCharCode(i)}</b> <span class="mono">${bin(i, 7)}</span></span>`;
+    t.innerHTML = r;
+  }
+  t.style.display = t.style.display === 'none' ? 'block' : 'none';
+};
+showSecret();
+
 /* ---------- 정리: 퀴즈 ---------- */
 const QUIZ = [
+  {q:'다음 중 디지털 데이터의 특징으로 알맞은 것은?', o:['연속적인 값이다','불연속적인 값이다','복사하면 품질이 떨어진다','컴퓨터에 저장할 수 없다'], a:1, e:'디지털 데이터는 일정한 간격으로 끊어 나타낸 불연속적인 값이에요.'},
+  {q:'아스키(ASCII) 코드는 몇 비트로 문자를 나타낼까요?', o:['4비트','7비트','16비트','32비트'], a:1, e:'아스키 코드는 7비트로 128(2⁷)개의 문자를 나타내요.'},
   {q:'비트(bit) 1개로 나타낼 수 있는 상태는 몇 가지일까요?', o:['1가지','2가지','8가지','10가지'], a:1, e:'비트는 0 또는 1, 두 가지 상태를 나타내요.'},
   {q:'2진수 1011을 10진수로 바꾸면?', o:['9','11','13','1011'], a:1, e:'8 + 0 + 2 + 1 = 11'},
   {q:'10진수 6을 2진수로 바꾸면?', o:['110','101','011','1100'], a:0, e:'6 = 4 + 2 → 110₍₂₎'},
