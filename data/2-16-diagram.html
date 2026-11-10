@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다이어그램: 계층형과 그래프형</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.bracket{display:flex;gap:18px;overflow-x:auto;padding:6px 2px}
+.round{display:flex;flex-direction:column;justify-content:space-around;gap:8px;min-width:110px}
+.round h4{margin:0 0 4px;font-size:.85rem;color:var(--muted);text-align:center}
+.match{display:flex;flex-direction:column;gap:3px;border-left:3px solid var(--line);padding-left:6px}
+.pl{border:2px solid var(--line);background:#fff;border-radius:10px;padding:4px 8px;font-size:.9rem;font-weight:600;text-align:left}
+.pl.win{border-color:var(--ok);background:var(--ok-soft)}
+.pl.lose{opacity:.4}
+.pl.empty{color:var(--muted);border-style:dashed;font-weight:400}
+.champ{font-family:var(--cute);font-size:1.3rem;text-align:center;align-self:center}
+.ftree{font-family:ui-monospace,Consolas,monospace;line-height:2}
+.fnode{display:inline-block;border:2px solid #f7dd8f;background:var(--yellow-soft);border-radius:8px;padding:0 8px;cursor:pointer;font-family:inherit}
+.fnode.target{box-shadow:0 0 0 3px var(--brand)}
+.fchip{border:2px solid var(--line);background:#fff;border-radius:8px;padding:2px 8px;margin:2px;font-size:.85rem}
+.fchip.sel{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.fchip.good{border-color:var(--ok)}.fchip.bad{border-color:var(--bad)}
+#map{width:100%;max-width:560px;display:block;background:var(--bg);border-radius:14px}
+#map .st{cursor:pointer}
+.view{display:none}.view.on{display:block}
+table.ot{border-collapse:collapse}
+table.ot th,table.ot td{border:1px solid var(--line);padding:4px 10px;text-align:center}
+table.ot th{background:var(--bg)}
+</style>
+</head>
+<body data-unit="2" data-title="다이어그램: 계층형과 그래프형" data-sub="중1 Ⅱ단원 · 데이터의 구조화 · 미래엔 61~62쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 구조화</span>
+  <h1>다이어그램: 계층형과 그래프형</h1>
+  <p class="lead"><b>다이어그램</b>은 기호와 선으로 데이터 사이의 관계를 나타내는 방법이에요. 상하 관계를 보여 주는 <b>계층형</b>과, 데이터를 선으로 이어 연관성을 보여 주는 <b>그래프형</b>이 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>우리 반 8명이 토너먼트로 가위바위보 대회를 해요. 우승하려면 몇 번 이겨야 할까요? 말로 설명하기 어렵다면 어떻게 그려서 보여 줄 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🏆 계층형: 가위바위보 대진표</h3>
+      <p>각 경기에서 이긴 사람을 눌러 다음 단계로 올려 보세요. 대진표는 위아래로 나뉘어 가는 <b>계층형(트리)</b> 구조예요.</p>
+      <div class="bracket" id="bracket"></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn line" id="brReset">다시 하기</button></div>
+      <div class="feedback" id="brFb"></div>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 천재교육 중학교 정보 66쪽</p>
+    </div>
+
+    <div class="card">
+      <h3>📁 계층형: 폴더 트리에 정리하기</h3>
+      <p>파일 탐색기의 폴더도 계층형이에요. 파일을 누른 뒤, 넣을 폴더 이름을 누르세요.</p>
+      <div id="fpile" style="margin-bottom:8px"></div>
+      <div class="ftree" id="ftree"></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="fChk">채점하기</button></div>
+      <div class="feedback" id="fFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🚇 그래프형: 노드와 엣지</h3>
+      <p>가상의 지하철 노선도예요. 역은 <b>노드(점)</b>, 역을 잇는 선은 <b>엣지(선)</b>예요. 역을 눌러 연결된 역을 확인해 보세요.</p>
+      <svg id="map" viewBox="0 0 560 300"></svg>
+      <p id="mapOut" class="hint">역을 눌러 보세요.</p>
+      <div class="ctrl"><span><b>질문</b>: 가장 많은 역과 연결된 갈아타는 역은?</span></div>
+      <div class="opts" id="hubOpts" style="margin-top:6px"></div>
+      <div class="feedback" id="hubFb"></div>
+      <p class="hint">⚠️ 그래프형의 ‘그래프’는 점과 선으로 연결한 구조예요. 데이터 시각화에 쓰는 막대그래프와는 다른 뜻이에요.</p>
+    </div>
+
+    <div class="card">
+      <h3>⚖️ 표로 볼까, 트리로 볼까?</h3>
+      <p>같은 학생회 데이터를 표와 트리로 나타냈어요. 버튼을 눌러 비교하고, 질문마다 어느 쪽이 더 편한지 골라 보세요.</p>
+      <div class="seg" id="otSeg"><button data-v="t" class="active">📊 표</button><button data-v="r">🌳 트리</button></div>
+      <div class="view on" id="vT"><div class="scroll-x"><table class="ot"><tr><th>이름</th><th>직책</th><th>소속</th><th>학년</th></tr>
+        <tr><td>한결</td><td>회장</td><td>-</td><td>3</td></tr><tr><td>보람</td><td>부회장</td><td>-</td><td>2</td></tr>
+        <tr><td>새롬</td><td>부장</td><td>체육부</td><td>2</td></tr><tr><td>이든</td><td>부원</td><td>체육부</td><td>1</td></tr>
+        <tr><td>다빈</td><td>부장</td><td>도서부</td><td>3</td></tr><tr><td>윤슬</td><td>부원</td><td>도서부</td><td>1</td></tr>
+        <tr><td>지안</td><td>부원</td><td>도서부</td><td>2</td></tr></table></div></div>
+      <div class="view" id="vR"><svg viewBox="0 0 520 210" style="width:100%;max-width:520px" id="orgSvg"></svg></div>
+      <div id="otPick" style="margin-top:12px"></div>
+      <p class="src" style="text-align:left;margin-top:8px">참고: 씨마스 중학교 정보 71쪽 (같은 데이터를 표와 트리로 구조화해 비교하는 활동)</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 어떤 방법으로 구조화할까?</h3>
+      <div id="pick"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>계층형(트리)</b>은 조직도·대진표·폴더처럼 <b>상하 관계</b>를, <b>그래프형</b>은 노선도·회로도·네트워크처럼 <b>노드와 엣지</b>로 데이터 간의 <b>연관성</b>을 보여 줘요. 목적에 맞게 리스트, 테이블, 다이어그램을 골라 구조화해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 61~62쪽 내용을 바탕으로 재구성 · 대진표 참고: 천재교육 중학교 정보 66쪽 · 표와 트리 비교 참고: 씨마스 중학교 정보 71쪽 · 이름과 노선은 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+/* 대진표 */
+const PLAYERS = ['가온', '나래', '다솔', '라온', '마루', '바다', '사랑', '아라'];
+let R;
+function brReset(){ R = [PLAYERS.slice(), Array(4).fill(null), Array(2).fill(null), [null]]; renderBr(); $('#brFb').className = 'feedback'; }
+function renderBr(){
+  const names = ['8강', '4강', '결승'];
+  $('#bracket').innerHTML = [0, 1, 2].map(r => `<div class="round"><h4>${names[r]}</h4>${Array.from({length: R[r].length / 2}, (_, m) => {
+    const a = R[r][m * 2], b = R[r][m * 2 + 1], w = R[r + 1][m];
+    const btn = (p, k) => p ? `<button class="pl ${w ? (w === p ? 'win' : 'lose') : ''}" data-r="${r}" data-m="${m}" data-p="${p}">${p}</button>` : `<span class="pl empty">?</span>`;
+    return `<div class="match">${btn(a)}${btn(b)}</div>`; }).join('')}</div>`).join('') + `<div class="champ">🏆<br>${R[3][0] || '?'}</div>`;
+  $$('#bracket .pl[data-p]').forEach(b => b.onclick = () => {
+    const r = +b.dataset.r, m = +b.dataset.m, ma = R[r][m * 2], mb = R[r][m * 2 + 1];
+    if (!ma || !mb) return;
+    R[r + 1][m] = b.dataset.p;
+    for (let k = r + 2; k <= 3; k++) R[k] = R[k].map(() => null);   // 앞 경기가 바뀌면 뒤 결과 초기화
+    renderBr();
+    if (R[3][0]) feedback($('#brFb'), true, `🎉 ${R[3][0]} 우승! 8명 토너먼트에서는 ${3}번 이기면 우승해요. 경기는 모두 7번 열려요.`);
+    else $('#brFb').className = 'feedback';
+  });
+}
+$('#brReset').onclick = brReset;
+brReset();
+
+/* 폴더 트리 */
+const FOLDERS = ['동영상/축제', '동영상/체육 대회', '문서/양식', '문서/계획서'];
+const FFILES = [['축제 공연 장면.mp4', 0], ['체육 대회 응원.mp4', 1], ['동아리 가입 신청서.hwp', 2], ['1학기 활동 계획서.hwp', 3], ['축제 리허설.mp4', 0]];
+let fsel = -1; const fplace = FFILES.map(() => -1);
+function renderF(check){
+  const chip = i => `<button class="fchip${fsel === i ? ' sel' : ''}${check ? (fplace[i] === FFILES[i][1] ? ' good' : ' bad') : ''}" data-i="${i}">${FFILES[i][0]}</button>`;
+  $('#fpile').innerHTML = FFILES.map((_, i) => fplace[i] < 0 ? chip(i) : '').join('') || '<span class="hint">모두 정리했어요. 채점해 보세요!</span>';
+  const inF = k => FFILES.map((_, i) => fplace[i] === k ? '<br>' + '&nbsp;'.repeat(12) + '└ ' + chip(i) : '').join('');
+  $('#ftree').innerHTML = `📁 축구 동아리<br>&nbsp;&nbsp;├ 📁 동영상<br>&nbsp;&nbsp;│&nbsp;&nbsp;├ <button class="fnode" data-k="0">📁 축제</button>${inF(0)}<br>&nbsp;&nbsp;│&nbsp;&nbsp;└ <button class="fnode" data-k="1">📁 체육 대회</button>${inF(1)}<br>&nbsp;&nbsp;└ 📁 문서<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├ <button class="fnode" data-k="2">📁 양식</button>${inF(2)}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ <button class="fnode" data-k="3">📁 계획서</button>${inF(3)}`;
+  $$('.fchip').forEach(b => b.onclick = () => { fsel = fsel === +b.dataset.i ? -1 : +b.dataset.i; renderF(); });
+  $$('.fnode').forEach(b => { b.classList.toggle('target', fsel >= 0); b.onclick = () => { if (fsel < 0) return; fplace[fsel] = +b.dataset.k; fsel = -1; $('#fFb').className = 'feedback'; renderF(); }; });
+}
+$('#fChk').onclick = () => { const left = fplace.filter(v => v < 0).length, wrong = FFILES.filter((f, i) => fplace[i] >= 0 && fplace[i] !== f[1]).length; renderF(true); feedback($('#fFb'), !left && !wrong, left ? `아직 ${left}개가 남았어요.` : wrong ? `빨간 파일 ${wrong}개를 다시 옮겨 보세요.` : '🎉 정리 완료! 상위 폴더 → 하위 폴더로 나뉘는 계층형 구조예요.'); };
+renderF();
+
+/* 노선도 (그래프형) */
+const ST = {서림:[60,60], 꽃내:[170,60], 한빛:[290,60], 솔밭:[420,60], 별마루:[290,160], 물가:[170,160], 바람:[420,160], 누리:[290,255], 달샘:[500,255]};
+const EG = [['서림','꽃내','#3b6cf6'],['꽃내','한빛','#3b6cf6'],['한빛','솔밭','#3b6cf6'],['한빛','별마루','#16b8a6'],['별마루','누리','#16b8a6'],['물가','별마루','#ff7aa2'],['별마루','바람','#ff7aa2'],['꽃내','물가','#e0a000'],['바람','달샘','#ff7aa2'],['누리','달샘','#16b8a6']];
+let cur = '';
+function renderMap(){
+  const nb = n => EG.filter(e => e[0] === n || e[1] === n).map(e => e[0] === n ? e[1] : e[0]);
+  $('#map').innerHTML = EG.map(([a, b, c]) => { const on = cur && (a === cur || b === cur); return `<line x1="${ST[a][0]}" y1="${ST[a][1]}" x2="${ST[b][0]}" y2="${ST[b][1]}" stroke="${c}" stroke-width="${on ? 9 : 6}" stroke-linecap="round" opacity="${cur && !on ? .3 : 1}"/>`; }).join('') +
+    Object.entries(ST).map(([n, [x, y]]) => `<g class="st" data-n="${n}"><circle cx="${x}" cy="${y}" r="${n === cur ? 14 : 11}" fill="#fff" stroke="${n === cur ? '#1f2a3d' : '#5a6578'}" stroke-width="4"/><text x="${x + 16}" y="${y - 16}" font-size="15" font-weight="700" fill="#1f2a3d" stroke="#f3f6fc" stroke-width="5" paint-order="stroke">${n}</text></g>`).join('');
+  $$('#map .st').forEach(g => g.onclick = () => { cur = g.dataset.n; renderMap(); const n = nb(cur); $('#mapOut').innerHTML = `<b>${cur}</b> 노드와 연결된 엣지 ${n.length}개 → ${n.join(', ')}`; });
+}
+renderMap();
+const HUB = ['한빛', '별마루', '꽃내', '서림'];
+$('#hubOpts').innerHTML = HUB.map((h, i) => `<button class="opt" data-k="${i}">${h}</button>`).join('');
+$$('#hubOpts .opt').forEach(b => b.onclick = () => { const ok = b.dataset.k === '1'; $$('#hubOpts .opt').forEach(x => x.classList.remove('right', 'wrong')); b.classList.add(ok ? 'right' : 'wrong'); feedback($('#hubFb'), ok, ok ? '⭕ 별마루는 엣지 4개로 한빛, 누리, 물가, 바람과 연결돼요. 초록 노선과 분홍 노선이 만나는 곳이에요.' : '역을 눌러 연결된 엣지 수를 세어 보세요.'); });
+
+/* 표 vs 트리 */
+$$('#otSeg button').forEach(b => b.onclick = () => { $$('#otSeg button').forEach(x => x.classList.toggle('active', x === b)); $('#vT').classList.toggle('on', b.dataset.v === 't'); $('#vR').classList.toggle('on', b.dataset.v === 'r'); });
+(function(){
+  const bx = (x, y, t, c) => `<rect x="${x - 50}" y="${y - 16}" width="100" height="32" rx="9" fill="${c}" stroke="#c9d2e3"/><text x="${x}" y="${y + 5}" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2a3d">${t}</text>`;
+  const ln = (x1, y1, x2, y2) => `<path d="M${x1} ${y1 + 16} V${(y1 + y2) / 2} H${x2} V${y2 - 16}" fill="none" stroke="#9aa3b5" stroke-width="2"/>`;
+  let s = ln(260, 25, 260, 75) + ln(260, 75, 140, 125) + ln(260, 75, 380, 125) + ln(140, 125, 140, 185) + ln(380, 125, 320, 185) + ln(380, 125, 440, 185);
+  s += bx(260, 25, '회장 한결', '#e9efff') + bx(260, 75, '부회장 보람', '#e9efff') + bx(140, 125, '체육부장 새롬', '#fff6db') + bx(380, 125, '도서부장 다빈', '#fff6db') + bx(140, 185, '이든', '#fff') + bx(320, 185, '윤슬', '#fff') + bx(440, 185, '지안', '#fff');
+  $('#orgSvg').innerHTML = s;
+})();
+renderChoice($('#otPick'), [
+  {t:'윤슬이는 누구에게 보고해야 할까?', a:1, e:'트리는 상하 관계가 한눈에 보여요.'},
+  {t:'1학년 학생은 모두 몇 명일까?', a:0, e:'표는 학년 열만 보고 세거나 정렬하기 쉬워요.'},
+  {t:'도서부에는 어떤 사람들이 있을까?', a:1, e:'트리에서 도서부장 아래 가지만 보면 돼요. (표에서 소속 열로 찾아도 돼요!)'},
+], ['📊 표가 편해요', '🌳 트리가 편해요']);
+
+renderChoice($('#pick'), [
+  {icon:'🏫', t:'학생회 조직도', a:2, e:'상하 관계를 보여 주는 계층형이에요.'},
+  {icon:'🚌', t:'버스 노선도', a:3, e:'정류장(노드)을 선(엣지)으로 이은 그래프형이에요.'},
+  {icon:'⏳', t:'은행 번호표 대기 명단', a:0, e:'순서대로 나열한 리스트예요.'},
+  {icon:'📇', t:'반 친구들의 이름·생일·취미 정리', a:1, e:'여러 속성을 행과 열로 정리하는 테이블이에요.'},
+  {icon:'🖥️', t:'컴퓨터실 컴퓨터들의 네트워크 연결 모습', a:3, e:'장비(노드)와 연결(엣지)을 보여 주는 그래프형이에요.'},
+  {icon:'🗂️', t:'윈도 파일 탐색기의 폴더', a:2, e:'상위·하위 폴더로 나뉘는 계층형이에요.'},
+], ['📋 리스트', '📊 테이블', '🌳 계층형', '🕸️ 그래프형']);
+
+renderQuiz($('#quiz'), [
+  {q:'데이터의 상하 관계를 명확히 보여 주는 구조화 방법은?', o:['계층형','그래프형','리스트'], a:0, e:'계층형(트리)은 하나의 데이터를 상하 관계로 나누어 가요.'},
+  {q:'그래프형에서 노드와 노드를 연결하는 선을 무엇이라고 할까요?', o:['엣지(간선)','인덱스','열'], a:0, e:'점은 노드, 선은 엣지(간선)예요.'},
+  {q:'지하철 노선도처럼 데이터 간의 연관성을 보여 주기 좋은 방법은?', o:['계층형','그래프형','테이블'], a:1, e:'두 개 이상의 데이터를 선으로 연결하는 그래프형이에요.'},
+]);
+</script>
+</body>
+</html>

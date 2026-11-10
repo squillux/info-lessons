@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>나이팅게일의 장미 도표</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.logs{display:flex;flex-wrap:wrap;gap:6px;max-height:190px;overflow:auto;padding:10px;background:var(--bg);border-radius:14px}
+.log{background:#fff;border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:.8rem;transform:rotate(var(--r));}
+table.nt{border-collapse:collapse;font-size:.88rem}
+table.nt th,table.nt td{border:1px solid var(--line);padding:3px 7px;text-align:center}
+table.nt th{background:var(--bg)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;margin:6px 0}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}
+#rose,#bars{width:100%;max-width:440px;display:block;margin:0 auto}
+.big{font-family:var(--cute);font-size:2.4rem;text-align:center}
+</style>
+</head>
+<body data-unit="2" data-title="나이팅게일의 장미 도표" data-sub="중1 Ⅱ단원 · 데이터의 구조화 · 미래엔 63쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 구조화</span>
+  <h1>나이팅게일의 장미 도표</h1>
+  <p class="lead">1853년 크림 전쟁 때, 간호사 <b>플로렌스 나이팅게일</b>은 병원 기록을 모으고 정리해 그림으로 나타냈어요. 이 다이어그램이 어떻게 많은 사람을 살렸는지 따라가 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>전쟁 중 병원에 온 병사들이 크게 다치지 않았는데도 많이 죽고 있었어요. 원인을 찾으려면 무엇부터 해야 할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📒 흩어진 기록을 표로 구조화하기</h3>
+      <p>당시에는 병원 기록이 정리되어 있지 않아 원인을 알 수 없었어요. 나이팅게일은 입원 시점, 부상, 감염 여부 등을 기록하고 정리했어요.</p>
+      <div class="logs" id="logs"></div>
+      <div class="ctrl" style="margin-top:10px"><button class="btn" id="toTable">📊 원인별·월별 표로 정리하기</button></div>
+      <div id="tbl" class="scroll-x" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h3>🌹 표를 장미 도표로 시각화하기</h3>
+      <p>달마다 조각 하나, 조각의 넓이가 사망자 수예요. 꽃잎 모양이라 <b>장미 도표</b>라고 불렀어요.</p>
+      <div class="legend"><span><i style="background:#3b6cf6"></i>감염병</span><span><i style="background:#ff7aa2"></i>부상</span><span><i style="background:#9aa3b5"></i>기타</span></div>
+      <div class="seg" id="vSeg"><button data-v="rose" class="active">🌹 장미 도표</button><button data-v="bar">📊 막대그래프</button></div>
+      <svg id="rose" viewBox="-210 -210 420 420"></svg>
+      <svg id="bars" viewBox="0 0 440 240" style="display:none"></svg>
+      <p><b>질문</b>: 병사들이 가장 많이 죽은 원인은?</p>
+      <div class="opts" id="cause"></div>
+      <div class="feedback" id="causeFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔁 데이터로 문제를 해결한 과정</h3>
+      <p>나이팅게일이 문제를 해결한 순서대로 단계를 눌러 보세요.</p>
+      <div class="opts" id="flowPool"></div>
+      <div id="flowDone" style="margin-top:10px"></div>
+      <div id="after" hidden>
+        <p style="margin-top:12px">이 결과로 병원 환경(위생)을 개선하자, 감염병으로 죽는 병사들의 사망률이 6개월 만에</p>
+        <div class="big">42% → 2%</div>
+        <p class="hint" style="text-align:center">로 줄어 많은 사람을 살릴 수 있었어요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>나이팅게일은 <b>문제 인식 → 데이터 수집 → 구조화·시각화 → 분석 → 해결</b>의 과정으로 감염병이 가장 큰 원인임을 밝혀냈어요. 데이터를 구조화하고 시각화하면 숨은 원인을 찾아 문제를 해결할 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 63쪽 내용을 바탕으로 재구성 · 월별 사망자 수는 이해를 돕기 위해 단순화한 예시 수치 (사망률 42%→2%는 교과서 내용)</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const M = ['4월','5월','6월','7월','8월','9월','10월','11월','12월','1월','2월','3월'];
+const D = {감염병:[20,35,60,90,110,95,70,45,25,15,10,5], 부상:[5,8,10,12,10,8,6,5,4,3,3,2], 기타:[4,5,8,10,12,9,7,5,4,3,2,2]};
+const C = {감염병:'#3b6cf6', 부상:'#ff7aa2', 기타:'#9aa3b5'};
+
+/* 흩어진 기록 */
+const logs = [];
+M.forEach((m, i) => Object.keys(D).forEach(k => { for (let j = 0; j < Math.max(1, Math.round(D[k][i] / 25)); j++) logs.push(`${m} · ${k}`); }));
+logs.sort(() => Math.random() - .5);
+$('#logs').innerHTML = logs.map(t => `<span class="log" style="--r:${(Math.random() * 6 - 3).toFixed(1)}deg">📝 ${t}</span>`).join('');
+$('#toTable').onclick = () => {
+  $('#tbl').innerHTML = `<table class="nt"><tr><th>원인</th>${M.map(m => `<th>${m}</th>`).join('')}</tr>${Object.keys(D).map(k => `<tr><th style="color:${C[k]}">${k}</th>${D[k].map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}</table><p class="hint">흩어진 기록이 한눈에 보여요. 그런데 숫자만으로는 차이가 잘 느껴지나요? 다음 활동에서 그림으로 바꿔 봐요.</p>`;
+  $('#toTable').disabled = true;
+};
+
+/* 장미 도표: 넓이가 값에 비례하도록 반지름 = √값 */
+(function(){
+  const max = Math.max(...M.map((_, i) => D.감염병[i]));
+  const sc = 175 / Math.sqrt(max);
+  const arc = (i, v) => {
+    const a0 = (i / 12) * 2 * Math.PI - Math.PI / 2, a1 = ((i + 1) / 12) * 2 * Math.PI - Math.PI / 2, r = Math.sqrt(v) * sc;
+    return `M0 0 L${(r * Math.cos(a0)).toFixed(1)} ${(r * Math.sin(a0)).toFixed(1)} A${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${(r * Math.cos(a1)).toFixed(1)} ${(r * Math.sin(a1)).toFixed(1)} Z`;
+  };
+  let s = '';
+  M.forEach((m, i) => {
+    Object.keys(D).map(k => [k, D[k][i]]).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => s += `<path d="${arc(i, v)}" fill="${C[k]}" fill-opacity=".8" stroke="#fff" stroke-width="1.5"><title>${m} ${k} ${v}명</title></path>`);
+    const a = ((i + .5) / 12) * 2 * Math.PI - Math.PI / 2;
+    const lr = Math.max(...Object.keys(D).map(k => Math.sqrt(D[k][i]) * sc)) + 16;
+    s += `<text x="${(lr * Math.cos(a)).toFixed(0)}" y="${(lr * Math.sin(a) + 4).toFixed(0)}" font-size="12" text-anchor="middle" fill="#5a6578">${m}</text>`;
+  });
+  $('#rose').innerHTML = s;
+  let b = '';
+  M.forEach((m, i) => {
+    let y = 210; const x = 18 + i * 35;
+    Object.keys(D).forEach(k => { const h = D[k][i] * 1.4; y -= h; b += `<rect x="${x}" y="${y.toFixed(1)}" width="26" height="${h.toFixed(1)}" fill="${C[k]}" fill-opacity=".85"/>`; });
+    b += `<text x="${x + 13}" y="228" font-size="11" text-anchor="middle" fill="#5a6578">${m}</text>`;
+  });
+  $('#bars').innerHTML = `<line x1="10" y1="210" x2="436" y2="210" stroke="#c9d2e3"/>` + b;
+})();
+$$('#vSeg button').forEach(bt => bt.onclick = () => { $$('#vSeg button').forEach(x => x.classList.toggle('active', x === bt)); $('#rose').style.display = bt.dataset.v === 'rose' ? 'block' : 'none'; $('#bars').style.display = bt.dataset.v === 'bar' ? 'block' : 'none'; });
+const CA = ['감염병', '부상', '기타'];
+$('#cause').innerHTML = CA.map((c, i) => `<button class="opt" data-k="${i}">${c}</button>`).join('');
+$$('#cause .opt').forEach(b => b.onclick = () => { const ok = b.dataset.k === '0'; $$('#cause .opt').forEach(x => x.classList.remove('right', 'wrong')); b.classList.add(ok ? 'right' : 'wrong'); feedback($('#causeFb'), ok, ok ? '⭕ 치료하러 온 병원에서 오히려 감염병으로 죽는 병사가 훨씬 많았어요!' : '파란 조각의 넓이를 다른 색과 비교해 보세요.'); });
+
+/* 문제 해결 순서 */
+const FLOW = ['🤔 문제 인식', '📝 데이터 수집', '🌹 구조화·시각화', '🔍 데이터 분석', '🏥 문제 해결'];
+let fd = [];
+const order = FLOW.map((_, i) => i).sort(() => Math.random() - .5);
+function renderFlow(msg){
+  $('#flowPool').innerHTML = order.filter(i => !fd.includes(i)).map(i => `<button class="opt" data-i="${i}">${FLOW[i]}</button>`).join('');
+  $('#flowDone').innerHTML = fd.map(i => `<span class="pill">${FLOW[i]}</span>`).join(' → ') + (msg ? `<div class="feedback show bad">${msg}</div>` : '');
+  $$('#flowPool .opt').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i;
+    if (i !== fd.length) return renderFlow('그 단계 전에 먼저 해야 할 일이 있어요.');
+    fd.push(i); renderFlow();
+    if (fd.length === FLOW.length) $('#after').hidden = false;
+  });
+}
+renderFlow();
+
+renderQuiz($('#quiz'), [
+  {q:'나이팅게일이 기록을 정리해 원그래프 형태로 나타낸 다이어그램은?', o:['장미 도표(로즈 다이어그램)','대진표','노선도'], a:0, e:'모양이 장미꽃과 비슷해 장미 도표라고 불러요.'},
+  {q:'장미 도표로 밝혀낸 가장 큰 사망 원인은?', o:['전투 부상','병원의 감염병','추위'], a:1, e:'감염병으로 죽는 병사가 훨씬 많다는 것을 한눈에 보여 주었어요.'},
+  {q:'이 사례에서 배울 수 있는 점은?', o:['데이터를 구조화·시각화하면 숨은 원인을 찾아 문제를 해결할 수 있다','기록은 정리하지 않아도 된다'], a:0, e:'데이터에 기반한 문제 해결의 대표적인 사례예요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>가계도 퍼즐</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.story{background:var(--bg);border-radius:14px;padding:14px 16px;line-height:1.9}
+.timer{font-family:ui-monospace,Consolas,monospace;font-size:1.4rem;font-weight:800;color:var(--brand)}
+.tree svg{width:100%;max-width:620px;display:block;margin:0 auto}
+.cmp{display:flex;gap:12px;flex-wrap:wrap}
+.cmp div{flex:1 1 160px;border-radius:14px;padding:12px;text-align:center;background:var(--bg)}
+.cmp b{display:block;font-size:1.8rem}
+.tt{border-collapse:collapse}
+.tt th,.tt td{border:1px solid var(--line);padding:4px 10px;text-align:center}
+.tt th{background:var(--bg)}
+</style>
+</head>
+<body data-unit="2" data-title="가계도 퍼즐" data-sub="중1 Ⅱ단원 · 데이터의 구조화 · 미래엔 58~59쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 구조화</span>
+  <h1>가계도 퍼즐</h1>
+  <p class="lead">같은 데이터라도 어떻게 정리해서 보여 주느냐에 따라 이해하는 속도가 달라져요. 말로 된 설명과 그림으로 정리한 가계도를 비교해 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>명절에 처음 본 친척이 "나는 너희 큰아버지의 아들이야"라고 했어요. 이 사람은 나와 어떤 관계일까요? 머릿속으로 바로 떠오르나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📜 말로만 듣고 맞히기</h3>
+      <p><b>시작</b>을 누르면 시간이 재어져요. 설명을 읽고 질문에 답해 보세요.</p>
+      <div class="ctrl"><button class="btn" id="s1">⏱ 시작</button><span class="timer" id="t1">0.0초</span></div>
+      <div id="q1box" hidden>
+        <div class="story" style="margin-top:10px">할아버지와 할머니에게는 자녀가 세 명 있어요. 첫째는 큰아버지이고, 둘째는 우리 아빠, 막내는 고모예요. 큰아버지에게는 아들 준호와 딸 소은이 있어요. 고모에게는 딸 하린이 있어요. 우리 아빠의 자녀는 나와 여동생 다인이에요. 큰아버지와 결혼한 분은 큰어머니이고, 고모와 결혼한 분은 고모부예요.</div>
+        <p style="margin-top:10px"><b>질문: 소은이는 나에게 어떤 관계일까요?</b></p>
+        <div class="opts" id="a1"></div>
+        <div class="feedback" id="f1"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🌳 가계도를 보고 맞히기</h3>
+      <p>같은 데이터를 <b>가계도</b>로 구조화했어요. 이번에도 시간을 재어 볼까요?</p>
+      <div class="ctrl"><button class="btn" id="s2">⏱ 시작</button><span class="timer" id="t2">0.0초</span></div>
+      <div id="q2box" hidden>
+        <div class="tree" id="tree" style="margin-top:10px"></div>
+        <p style="margin-top:10px"><b>질문: 하린이는 우리 아빠에게 어떤 관계일까요?</b></p>
+        <div class="opts" id="a2"></div>
+        <div class="feedback" id="f2"></div>
+      </div>
+      <div class="cmp" id="cmp" style="margin-top:12px" hidden>
+        <div>📜 말로 된 설명<b id="c1">-</b></div>
+        <div>🌳 가계도<b id="c2">-</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🗓️ 시간표도 마찬가지!</h3>
+      <p>아래 두 가지 중 <b>수요일 3교시</b> 과목을 더 빨리 찾을 수 있는 쪽은?</p>
+      <div class="story" style="margin-bottom:10px">월요일은 국어, 수학, 영어, 정보, 체육이고, 화요일은 과학, 국어, 음악, 수학, 사회예요. 수요일은 영어, 사회, 미술, 과학, 국어이고, 목요일은 수학, 정보, 체육, 국어, 영어예요.</div>
+      <div class="scroll-x"><table class="tt"><tr><th></th><th>월</th><th>화</th><th>수</th><th>목</th></tr>
+        <tr><th>1교시</th><td>국어</td><td>과학</td><td>영어</td><td>수학</td></tr>
+        <tr><th>2교시</th><td>수학</td><td>국어</td><td>사회</td><td>정보</td></tr>
+        <tr><th>3교시</th><td>영어</td><td>음악</td><td>미술</td><td>체육</td></tr>
+        <tr><th>4교시</th><td>정보</td><td>수학</td><td>과학</td><td>국어</td></tr>
+        <tr><th>5교시</th><td>체육</td><td>사회</td><td>국어</td><td>영어</td></tr></table></div>
+      <p style="margin-top:12px">데이터의 특성을 파악하여 체계적으로 정리하는 것을 <b>데이터의 구조화</b>라고 해요. 구조화하면 좋은 점은?</p>
+      <div id="why"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>데이터의 구조화</b>는 데이터의 특성을 파악해 체계적으로 정리하는 것이에요. 구조화하면 의미를 <b>쉽고 빠르게 이해</b>하고, 다른 사람에게 <b>효과적으로 전달</b>하고, 데이터 사이의 <b>연관성</b>도 찾을 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 58~59쪽 내용을 바탕으로 재구성 · 가족과 시간표는 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+function timed(startBtn, timerEl, box, optsEl, fbEl, opts, ans, okMsg, done){
+  let t0 = 0, iv = 0, finished = false;
+  $(startBtn).onclick = () => {
+    $(box).hidden = false; $(startBtn).disabled = true; t0 = performance.now();
+    iv = setInterval(() => $(timerEl).textContent = ((performance.now() - t0) / 1000).toFixed(1) + '초', 100);
+  };
+  $(optsEl).innerHTML = opts.map((o, i) => `<button class="opt" data-k="${i}">${o}</button>`).join('');
+  $$(optsEl + ' .opt').forEach(b => b.onclick = () => {
+    if (finished) return;
+    const ok = +b.dataset.k === ans;
+    b.classList.add(ok ? 'right' : 'wrong');
+    if (!ok) return feedback($(fbEl), false, '다시 생각해 보세요.');
+    finished = true; clearInterval(iv);
+    const sec = ((performance.now() - t0) / 1000).toFixed(1);
+    $(timerEl).textContent = sec + '초';
+    feedback($(fbEl), true, `⭕ ${okMsg} (${sec}초)`);
+    done(sec);
+  });
+}
+const res = {};
+const showCmp = () => { if (res.a && res.b){ $('#cmp').hidden = false; $('#c1').textContent = res.a + '초'; $('#c2').textContent = res.b + '초'; } };
+timed('#s1', '#t1', '#q1box', '#a1', '#f1', ['사촌', '조카', '여동생', '고모'], 0, '소은이는 큰아버지의 딸이니 나와 사촌이에요.', s => { res.a = s; showCmp(); });
+timed('#s2', '#t2', '#q2box', '#a2', '#f2', ['딸', '조카', '누나', '사촌'], 1, '하린이는 아빠의 여동생(고모)의 딸이니 조카예요.', s => { res.b = s; showCmp(); });
+
+/* 가계도 SVG */
+(function(){
+  const box = (x, y, t, c) => `<g><rect x="${x - 46}" y="${y - 17}" width="92" height="34" rx="10" fill="${c}" stroke="#c9d2e3"/><text x="${x}" y="${y + 5}" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2a3d">${t}</text></g>`;
+  const ln = (x1, y1, x2, y2) => `<path d="M${x1} ${y1} V${(y1 + y2) / 2} H${x2} V${y2}" fill="none" stroke="#9aa3b5" stroke-width="2"/>`;
+  const Y = [30, 110, 190], W = '#ffffff', M = '#e9efff', P = '#ffeef3', G = '#fff6db';
+  let s = '';
+  s += ln(310, Y[0] + 17, 110, Y[1] - 17) + ln(310, Y[0] + 17, 310, Y[1] - 17) + ln(310, Y[0] + 17, 510, Y[1] - 17);
+  s += ln(110, Y[1] + 17, 55, Y[2] - 17) + ln(110, Y[1] + 17, 165, Y[2] - 17);
+  s += ln(310, Y[1] + 17, 260, Y[2] - 17) + ln(310, Y[1] + 17, 360, Y[2] - 17);
+  s += ln(510, Y[1] + 17, 510, Y[2] - 17);
+  s += box(250, Y[0], '할아버지', W) + box(370, Y[0], '할머니', W);
+  s += box(110, Y[1], '큰아버지', M) + box(310, Y[1], '아빠', M) + box(510, Y[1], '고모', P);
+  s += box(55, Y[2], '준호', G) + box(165, Y[2], '소은', G) + box(260, Y[2], '⭐ 나', '#e2f7f4') + box(360, Y[2], '다인', G) + box(510, Y[2], '하린', G);
+  $('#tree').innerHTML = `<svg viewBox="0 0 620 215">${s}</svg>`;
+})();
+
+renderChoice($('#why'), [
+  {t:'요일별 과목을 한눈에 찾을 수 있어요.', a:0, e:'구조화하면 데이터의 의미를 쉽고 빠르게 이해할 수 있어요.'},
+  {t:'친구에게 우리 가족 관계를 설명할 때 가계도를 보여 주면 금방 이해해요.', a:1, e:'다른 사람에게 내용을 효과적으로 전달할 수 있어요.'},
+  {t:'시간표를 보니 정보 시간 다음에는 늘 체육이 있다는 걸 발견했어요.', a:2, e:'전체를 한눈에 보며 데이터 사이의 연관성, 새로운 사실을 찾을 수 있어요.'},
+], ['🔍 쉽고 빠르게 이해', '📣 효과적으로 전달', '💡 연관성·새로운 발견']);
+
+renderQuiz($('#quiz'), [
+  {q:'데이터의 특성을 파악하여 체계적으로 정리하는 것을 무엇이라고 할까요?', o:['데이터의 구조화','데이터의 압축','데이터의 삭제'], a:0, e:'데이터의 구조화라고 해요.'},
+  {q:'데이터를 구조화하는 이유로 알맞지 않은 것은?', o:['의미를 쉽고 빠르게 이해할 수 있다','다른 사람에게 효과적으로 전달할 수 있다','데이터의 양이 저절로 늘어난다'], a:2, e:'구조화는 데이터를 정리하는 것이지 양을 늘리는 것이 아니에요.'},
+]);
+</script>
+</body>
+</html>

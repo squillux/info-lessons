@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리스트와 테이블</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.queue{display:grid;gap:6px;max-width:420px;margin:10px 0}
+.qi{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 10px;animation:pop .3s}
+.qi .ix{flex:0 0 34px;height:34px;border-radius:8px;background:var(--brand);color:#fff;font-family:ui-monospace,Consolas,monospace;font-weight:800;display:flex;align-items:center;justify-content:center}
+.qi.first{border-color:var(--mint);background:var(--mint-soft)}
+.cards{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.dcard{background:var(--yellow-soft);border:2px solid #f7dd8f;border-radius:12px;padding:6px 12px;font-size:.92rem}
+table.grid2{border-collapse:collapse;margin-top:8px}
+table.grid2 th,table.grid2 td{border:1px solid var(--line);padding:6px 10px;text-align:center;cursor:pointer}
+table.grid2 th{background:var(--bg)}
+table.grid2 td.row-hl{background:#eef3ff}
+table.grid2 td.col-hl{background:#e2f7f4}
+table.grid2 td.both{background:#ffc233}
+table.grid2 select{font:inherit;padding:2px 4px;border-radius:6px;border:1px solid var(--line)}
+</style>
+</head>
+<body data-unit="2" data-title="리스트와 테이블" data-sub="중1 Ⅱ단원 · 데이터의 구조화 · 미래엔 59~60쪽">
+<main>
+  <span class="badge">중1 Ⅱ단원 · 데이터의 구조화</span>
+  <h1>리스트와 테이블</h1>
+  <p class="lead">데이터는 목적과 의미, 특성에 따라 <b>리스트</b>, <b>테이블</b>, <b>다이어그램</b> 등 여러 방법으로 구조화할 수 있어요. 먼저 리스트와 테이블을 다뤄 봅시다.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>병원 대기실 화면에는 이름이 순서대로 나와요. 반 주소록은 이름, 전화번호, 이메일이 칸에 맞춰 정리되어 있어요. 두 정리 방법은 무엇이 다를까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📋 리스트: 동아리 면접 대기 명단</h3>
+      <p><b>리스트(목록)</b>는 데이터를 일정한 순서대로 나열하는 방법이에요. 각 데이터의 위치를 나타내는 번호(<b>인덱스</b>)로 데이터를 저장하거나 추가, 삭제, 수정할 수 있어요.</p>
+      <div class="ctrl">
+        <button class="btn" id="qNext">✅ 1번 면접 끝</button>
+        <button class="btn ghost" id="qAdd">➕ 새 지원자 접수</button>
+        <button class="btn line" id="qReset">처음으로</button>
+      </div>
+      <div class="queue" id="queue"></div>
+      <div class="ctrl"><span>질문: 지금 <b>3번</b>은 누구일까요?</span><input class="inp" id="qAns" style="width:140px;font-size:1rem" placeholder="이름"><button class="btn ghost" id="qChk">확인</button></div>
+      <div class="feedback" id="qFb"></div>
+      <p class="hint">💬 앞사람이 빠지면 뒤 사람들의 번호는 어떻게 되나요? 층별 안내도, 최근 통화 내역도 리스트예요.</p>
+    </div>
+
+    <div class="card">
+      <h3>📊 테이블: 흩어진 데이터를 표로</h3>
+      <p><b>테이블(표)</b>은 행과 열로 이루어진 바둑판 모양의 칸에 데이터를 저장하는 방법이에요. 아래 메모를 보고 빈칸을 골라 채워 보세요.</p>
+      <div class="cards">
+        <span class="dcard">📝 서진이는 50m 달리기 8.2초, 제자리멀리뛰기 180cm</span>
+        <span class="dcard">📝 도윤이는 멀리뛰기 165cm, 달리기는 9.0초</span>
+        <span class="dcard">📝 유나는 달리기 8.6초, 멀리뛰기 172cm</span>
+      </div>
+      <div class="scroll-x"><table class="grid2" id="fillT"></table></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="fillChk">채점하기</button></div>
+      <div class="feedback" id="fillFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🧭 행과 열 찾기</h3>
+      <p>칸을 눌러 보세요. <b style="color:#3b6cf6">행(가로)</b>은 한 사람(항목)의 데이터, <b style="color:#0d7d71">열(세로)</b>은 같은 속성의 데이터가 모여 있어요.</p>
+      <div class="scroll-x"><table class="grid2" id="rcT"></table></div>
+      <p id="rcOut" class="hint" style="margin-top:8px">칸을 눌러 보세요.</p>
+      <div class="ctrl"><button class="btn ghost" id="sortRun">🏃 달리기 기록 빠른 순 정렬</button><button class="btn ghost" id="addCol">➕ '윗몸 말아 올리기' 열 추가</button></div>
+      <p class="hint">테이블은 행이나 열을 추가·삭제하며 관리하고, 숫자 데이터를 쉽게 계산·비교할 수 있어요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🤔 리스트일까, 테이블일까?</h3>
+      <div id="pick"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>리스트</b>는 데이터를 순서대로 나열해 번호(인덱스)로 추가·삭제·수정하고, <b>테이블</b>은 행과 열로 된 칸에 많은 데이터를 일정한 기준으로 간결하게 정리해 계산하기 쉬워요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 59~60쪽 내용을 바탕으로 재구성 · 이름과 기록은 가상 데이터</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+/* 리스트 */
+const START = ['가온', '나래', '다솔', '라온', '마루'], MORE = ['바다', '사랑', '아라', '자람', '차미'];
+let q = START.slice(), more = 0;
+function renderQ(){
+  $('#queue').innerHTML = q.map((n, i) => `<div class="qi${i ? '' : ' first'}"><span class="ix">${i + 1}</span>${n}${i ? '' : ' <small class="hint">← 지금 면접 중</small>'}</div>`).join('') || '<p class="hint">대기자가 없어요.</p>';
+  $('#qFb').className = 'feedback';
+}
+$('#qNext').onclick = () => { q.shift(); renderQ(); };
+$('#qAdd').onclick = () => { q.push(MORE[more++ % MORE.length]); renderQ(); };
+$('#qReset').onclick = () => { q = START.slice(); more = 0; renderQ(); };
+$('#qChk').onclick = () => { const ok = q[2] && $('#qAns').value.trim() === q[2]; feedback($('#qFb'), ok, ok ? `⭕ 맞아요! 인덱스 3의 데이터는 ${q[2]}예요.` : '명단에서 3번 칸을 다시 확인해 보세요.'); };
+renderQ();
+
+/* 표 채우기 */
+const ANS = [['서진', '8.2초', '180cm'], ['도윤', '9.0초', '165cm'], ['유나', '8.6초', '172cm']];
+const RUN = ['8.2초', '8.6초', '9.0초'], JUMP = ['165cm', '172cm', '180cm'];
+const sel = (arr, r, c) => `<select data-r="${r}" data-c="${c}"><option value="">?</option>${arr.map(v => `<option>${v}</option>`).join('')}</select>`;
+$('#fillT').innerHTML = `<tr><th>이름</th><th>50m 달리기</th><th>제자리멀리뛰기</th></tr>` + ANS.map((r, i) => `<tr><td>${r[0]}</td><td>${sel(RUN, i, 1)}</td><td>${sel(JUMP, i, 2)}</td></tr>`).join('');
+$('#fillChk').onclick = () => {
+  let wrong = 0;
+  $$('#fillT select').forEach(s => { const ok = s.value === ANS[+s.dataset.r][+s.dataset.c]; s.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; if (!ok) wrong++; });
+  feedback($('#fillFb'), !wrong, !wrong ? '🎉 완성! 흩어진 메모보다 표가 한눈에 비교하기 쉽죠?' : `${wrong}칸이 달라요. 메모를 다시 읽어 보세요.`);
+};
+
+/* 행과 열 */
+let rows = [['서진', 8.2, 180], ['도윤', 9.0, 165], ['유나', 8.6, 172], ['하람', 8.4, 176]], head = ['이름', '50m 달리기(초)', '제자리멀리뛰기(cm)'], extra = false;
+function renderRC(){
+  $('#rcT').innerHTML = `<tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>` + rows.map((r, i) => `<tr>${r.map((v, j) => `<td data-r="${i}" data-c="${j}">${v}</td>`).join('')}</tr>`).join('');
+  $$('#rcT td').forEach(td => td.onclick = () => {
+    const r = +td.dataset.r, c = +td.dataset.c;
+    $$('#rcT td').forEach(x => { const xr = +x.dataset.r, xc = +x.dataset.c; x.className = xr === r && xc === c ? 'both' : xr === r ? 'row-hl' : xc === c ? 'col-hl' : ''; });
+    $('#rcOut').innerHTML = `<b style="color:#3b6cf6">${r + 2}행</b>: ${rows[r][0]}의 데이터 · <b style="color:#0d7d71">${c + 1}열</b>: 모든 학생의 '${head[c]}' → 이 칸의 값은 <b>${rows[r][c]}</b>`;
+  });
+}
+$('#sortRun').onclick = () => { rows.sort((a, b) => a[1] - b[1]); renderRC(); $('#rcOut').textContent = `가장 빠른 학생은 ${rows[0][0]}(${rows[0][1]}초)예요. 표는 정렬·비교가 쉬워요.`; };
+$('#addCol').onclick = () => { if (extra) return; extra = true; head.push('윗몸 말아 올리기(회)'); const v = {서진: 32, 도윤: 41, 유나: 28, 하람: 36}; rows.forEach(r => r.push(v[r[0]])); renderRC(); $('#rcOut').textContent = '새 속성(열)이 추가됐어요!'; };
+renderRC();
+
+renderChoice($('#pick'), [
+  {icon:'🏢', t:'건물의 층별 안내도 (1층 편의점, 2층 서점, …)', a:0, e:'층 순서대로 나열한 리스트예요.'},
+  {icon:'📇', t:'반 친구들의 이름·전화번호·이메일 주소록', a:1, e:'여러 속성을 행과 열로 정리한 테이블이에요.'},
+  {icon:'📞', t:'스마트폰의 최근 통화 내역', a:0, e:'시간 순서대로 나열된 리스트예요.'},
+  {icon:'🎭', t:'공연장 좌석 배치도 (A열 1번, B열 3번 …)', a:1, e:'행과 열로 위치를 나타내는 테이블이에요.'},
+  {icon:'🏋️', t:'학생별 종목 기록을 모은 체력 측정표', a:1, e:'학생(행)과 종목(열)으로 정리한 테이블이에요.'},
+], ['📋 리스트', '📊 테이블']);
+
+renderQuiz($('#quiz'), [
+  {q:'데이터를 일정한 순서대로 나열하는 구조화 방법은?', o:['리스트(목록)','테이블(표)','다이어그램'], a:0, e:'리스트는 순서대로 나열하고 인덱스로 위치를 나타내요.'},
+  {q:'테이블에서 가로 방향으로 나열된 데이터의 집합은?', o:['행','열'], a:0, e:'가로는 행, 세로는 열이에요.'},
+  {q:'테이블로 구조화하면 좋은 점은?', o:['많은 데이터를 일정한 기준으로 간결하게 정리하고 계산하기 쉽다','데이터 간의 상하 관계를 보여 준다'], a:0, e:'상하 관계는 다이어그램(계층형)이 잘 보여 줘요.'},
+]);
+</script>
+</body>
+</html>
