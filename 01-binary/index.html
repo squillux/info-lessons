@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0과 1로 세상 표현하기</title>
+<meta name="description" content="중학교 1학년 정보 – 이진수와 디지털 표현 1차시 수업 자료">
+<style>
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --ink:#1d2433; --muted:#5b6478; --line:#dde2ec;
+  --brand:#2f5bea; --brand-soft:#e6ecff; --on:#ffb703; --on-ink:#3a2a00;
+  --ok:#1f9d55; --ok-soft:#e3f6ea; --bad:#d64545; --bad-soft:#fde8e8;
+  --pixel-off:#ffffff; --pixel-on:#1d2433; --radius:16px;
+  --fs:17px;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.6;
+  -webkit-tap-highlight-color:transparent}
+body.big{--fs:21px}
+button{font:inherit;cursor:pointer}
+.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.08em}
+
+/* 상단 */
+header{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--line)}
+.top{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-size:1.15rem;margin:0;flex:1 1 auto}
+.top h1 small{display:block;font-size:.75rem;color:var(--muted);font-weight:500}
+.tools{display:flex;gap:6px}
+.tool{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 10px;font-size:.8rem;color:var(--muted)}
+nav.steps{max-width:1100px;margin:0 auto;padding:0 16px 10px;display:flex;gap:6px;overflow-x:auto}
+nav.steps button{flex:0 0 auto;border:0;background:var(--bg);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:600}
+nav.steps button.active{background:var(--brand);color:#fff}
+
+main{max-width:1100px;margin:0 auto;padding:20px 16px 90px}
+section{display:none}
+section.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:.8rem;border-radius:999px;padding:2px 12px}
+h2{font-size:1.6rem;margin:.4em 0 .2em}
+.lead{color:var(--muted);margin:0 0 1.2em}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card h3{margin:0 0 .5em;font-size:1.1rem}
+.goal li{margin:.25em 0}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.row>.card{flex:1 1 320px}
+.hint{font-size:.9rem;color:var(--muted)}
+.big-num{font-size:2.6rem;font-weight:800;line-height:1.1}
+.pill{display:inline-block;padding:2px 10px;border-radius:8px;background:var(--bg);font-weight:700}
+
+/* 전구 */
+.bulbs{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0}
+.bulb{width:64px;height:84px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bulb .glass{width:52px;height:52px;border-radius:50%;background:#e5e8ef;border:3px solid #c9cfdb;transition:.15s}
+.bulb .base{width:24px;height:14px;background:#9aa3b5;border-radius:3px}
+.bulb .lbl{font-size:.8rem;font-weight:700;color:var(--muted)}
+.bulb.on .glass{background:var(--on);border-color:#e09b00;box-shadow:0 0 22px rgba(255,183,3,.75)}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--brand);color:#fff}
+.btn.ghost{background:var(--brand-soft);color:var(--brand)}
+.btn.line{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+table.combo{border-collapse:collapse;margin-top:8px}
+table.combo td,table.combo th{border:1px solid var(--line);padding:4px 12px;text-align:center}
+
+/* 비트 카드 */
+.bitcards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 16px}
+.bitcard{width:118px;border:0;padding:0;background:none;perspective:600px}
+.bitcard .inner{position:relative;height:150px;transition:transform .35s;transform-style:preserve-3d}
+.bitcard.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid var(--line)}
+.face.back{background:#2b3245;color:#8b93a7;font-size:2.4rem;font-weight:800;border-color:#2b3245}
+.face.front{background:#fff8e6;border-color:var(--on);transform:rotateY(180deg)}
+.dots{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:96px;min-height:56px;align-content:center}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--on-ink)}
+.face.front b{font-size:1.6rem}
+.bitlabel{font-size:.8rem;color:var(--muted);text-align:center;margin-top:4px}
+.bitcard.on .bitlabel{color:var(--on-ink);font-weight:700}
+.readout{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;text-align:center}
+.readout .card{flex:0 1 260px;margin:0}
+.mission{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:12px;font-weight:700;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--ok-soft);color:var(--ok)}
+.feedback.bad{background:var(--bad-soft);color:var(--bad)}
+.progress{display:flex;gap:6px}
+.progress i{width:14px;height:14px;border-radius:50%;background:var(--line)}
+.progress i.done{background:var(--ok)}
+
+/* 픽셀 */
+.pixel-wrap{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;background:var(--line);padding:3px;border-radius:10px;width:min(100%,360px);touch-action:none;user-select:none}
+.px{aspect-ratio:1;background:var(--pixel-off);border-radius:4px}
+.px.on{background:var(--pixel-on)}
+.px.wrong{outline:3px solid var(--bad);outline-offset:-3px}
+.codes{display:grid;gap:3px;padding:3px 0}
+.code{display:flex;align-items:center;gap:8px;font-size:1rem;height:calc((min(100vw - 64px,360px) - 30px)/8);min-height:28px;max-height:42px}
+.code .n{width:22px;color:var(--muted);font-size:.8rem;text-align:right}
+.code .mono{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:0 8px}
+.code.bad .mono{border-color:var(--bad);color:var(--bad)}
+.code.good .mono{border-color:var(--ok);color:var(--ok)}
+.seg{display:inline-flex;background:var(--bg);border-radius:12px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{border:0;background:none;border-radius:9px;padding:6px 14px;font-weight:700;color:var(--muted)}
+.seg button.active{background:var(--panel);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* 문자 */
+.charin{font:inherit;font-size:1.4rem;padding:10px 14px;border:2px solid var(--line);border-radius:12px;width:min(100%,320px)}
+.chars{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ch{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:center;min-width:120px}
+.ch .c{font-size:1.8rem;font-weight:800}
+.ch .d{font-size:.8rem;color:var(--muted)}
+
+/* 퀴즈 */
+.q{margin-bottom:14px}
+.q p{font-weight:700;margin:0 0 8px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:8px 16px;font-weight:600}
+.opt.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.explain{margin-top:6px;font-size:.9rem;color:var(--muted);display:none}
+.explain.show{display:block}
+.summary li{margin:.35em 0}
+
+/* 하단 이동 */
+.pager{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);z-index:10}
+.pager .in{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pager .where{color:var(--muted);font-size:.85rem}
+
+@media (max-width:600px){
+  h2{font-size:1.35rem}
+  .bitcard{width:calc(20% - 10px);min-width:58px}
+  .bitcard .inner{height:110px}
+  .face.back{font-size:1.6rem}
+  .dots i{width:7px;height:7px}
+  .face.front b{font-size:1.1rem}
+  .tools .tool span{display:none}
+}
+@media print{header,.pager{display:none}section{display:block!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>0과 1로 세상 표현하기 <small>중학교 1학년 정보 · 데이터 · 1차시(45분)</small></h1>
+    <div class="tools">
+      <button class="tool" id="bigBtn" title="글자 크게 (전자칠판용)">가<b>+</b> <span>크게</span></button>
+      <button class="tool" id="fsBtn" title="전체 화면">⛶ <span>전체 화면</span></button>
+    </div>
+  </div>
+  <nav class="steps" id="steps"></nav>
+</header>
+
+<main>
+<!-- 도입 -->
+<section id="intro" data-label="도입 · 5분">
+  <span class="tag">도입</span>
+  <h2>컴퓨터는 사진과 글자를 어떻게 기억할까?</h2>
+  <p class="lead">컴퓨터 안에는 전기가 <b>흐른다(켜짐)</b>, <b>흐르지 않는다(꺼짐)</b>는 두 가지 상태만 있어요. 이것을 <b>1</b>과 <b>0</b>으로 나타냅니다.</p>
+
+  <div class="card goal">
+    <h3>🎯 학습 목표</h3>
+    <ol>
+      <li>비트(bit)와 바이트(byte)의 뜻을 설명할 수 있다.</li>
+      <li>10진수와 2진수를 서로 바꿀 수 있다.</li>
+      <li>그림과 문자가 0과 1로 표현되는 원리를 설명할 수 있다.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>💡 생각 열기: 전구로 신호 보내기</h3>
+    <p>친구와 멀리 떨어져 전구만으로 신호를 주고받는다면, 전구 <b>몇 개</b>로 <b>몇 가지</b> 신호를 보낼 수 있을까요? 전구를 눌러 켜고 꺼 보세요.</p>
+    <div class="ctrl">
+      <button class="btn ghost" id="bulbMinus">전구 빼기 −</button>
+      <button class="btn ghost" id="bulbPlus">전구 더하기 +</button>
+    </div>
+    <div class="bulbs" id="bulbs"></div>
+    <p>전구 <span class="pill" id="bulbN">1</span>개 → 만들 수 있는 신호 <span class="pill" id="bulbWays">2</span>가지 <span class="hint" id="bulbFormula"></span></p>
+    <p class="hint">👉 전구 하나가 늘어날 때마다 경우의 수는 어떻게 변하나요?</p>
+    <div id="comboBox"></div>
+  </div>
+</section>
+
+<!-- 활동 1 -->
+<section id="cards" data-label="활동1 · 이진수 카드">
+  <span class="tag">활동 1 · 12분</span>
+  <h2>이진수 카드로 수 만들기</h2>
+  <p class="lead">카드를 누르면 뒤집혀요. 앞면(점이 보임)은 <b>1</b>, 뒷면은 <b>0</b>입니다. 보이는 점의 개수를 모두 더하면 10진수가 돼요.</p>
+
+  <div class="card">
+    <div class="bitcards" id="bitcards"></div>
+    <div class="readout">
+      <div class="card"><div class="hint">2진수</div><div class="big-num mono" id="binOut">00000</div></div>
+      <div class="card"><div class="hint">10진수(점의 개수)</div><div class="big-num" id="decOut">0</div></div>
+    </div>
+    <p class="hint" style="text-align:center;margin:.8em 0 0" id="sumOut">켜진 카드가 없어요.</p>
+    <div style="text-align:center;margin-top:10px"><button class="btn line" id="resetCards">모두 뒤집기(0으로)</button></div>
+  </div>
+
+  <div class="card">
+    <h3>🧩 미션: 카드로 이 수를 만들어 보세요</h3>
+    <div class="mission">
+      <span>목표 수</span><span class="big-num" id="target">5</span>
+      <button class="btn" id="checkMission">확인</button>
+      <button class="btn ghost" id="nextMission">다음 미션</button>
+      <div class="progress" id="missionProg"></div>
+    </div>
+    <div class="feedback" id="missionFb"></div>
+  </div>
+
+  <div class="card">
+    <h3>🤔 함께 생각해 봐요</h3>
+    <ul>
+      <li>카드의 점 개수(1, 2, 4, 8, 16)에는 어떤 규칙이 있나요?</li>
+      <li>카드 5장으로 만들 수 있는 가장 큰 수는? 수는 모두 몇 가지일까요?</li>
+      <li>내 생일 날짜(일)를 이진수로 나타내 보세요.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 활동 2 -->
+<section id="pixels" data-label="활동2 · 픽셀 그림">
+  <span class="tag">활동 2 · 13분</span>
+  <h2>그림도 0과 1로 저장해요</h2>
+  <p class="lead">디지털 그림은 작은 점인 <b>픽셀</b>이 모여 만들어져요. 흑백 그림에서는 칸마다 칠하면 <b>1</b>, 비우면 <b>0</b>으로 저장합니다.</p>
+
+  <div class="seg" id="pxMode">
+    <button data-m="draw" class="active">✏️ 자유롭게 그리기</button>
+    <button data-m="decode">🔐 암호 풀기</button>
+  </div>
+
+  <div class="card">
+    <div id="decodeBar" style="display:none;margin-bottom:12px">
+      <p style="margin:0 0 8px">오른쪽 암호(0과 1)를 보고 <b>1인 칸만</b> 칠해 숨은 그림을 찾아보세요.</p>
+      <div class="ctrl">
+        <button class="btn ghost" data-puzzle="0">암호 ①</button>
+        <button class="btn ghost" data-puzzle="1">암호 ②</button>
+        <button class="btn ghost" data-puzzle="2">암호 ③</button>
+        <button class="btn" id="checkPx">정답 확인</button>
+      </div>
+    </div>
+    <div class="pixel-wrap">
+      <div class="grid" id="grid"></div>
+      <div>
+        <div class="hint" id="codesTitle">한 줄 = 8비트 = 1바이트</div>
+        <div class="codes" id="codes"></div>
+      </div>
+    </div>
+    <div class="feedback" id="pxFb"></div>
+    <div class="ctrl" style="margin-top:12px">
+      <button class="btn line" id="clearPx">지우기</button>
+      <span class="hint" id="pxCount"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📏 저장 공간 계산해 보기</h3>
+    <p>8×8 흑백 그림 = 픽셀 <b>64</b>개 = <b>64비트</b> = <b>8바이트</b></p>
+    <p class="hint">8비트 = 1바이트(byte). 컬러 사진은 픽셀 하나에 더 많은 비트를 쓰기 때문에 용량이 훨씬 커져요. 스마트폰 사진 한 장은 픽셀이 1,000만 개가 넘어요!</p>
+  </div>
+</section>
+
+<!-- 활동 3 -->
+<section id="text" data-label="활동3 · 문자 코드">
+  <span class="tag">활동 3 · 5분</span>
+  <h2>글자도 0과 1로!</h2>
+  <p class="lead">컴퓨터는 글자마다 정해진 <b>번호(문자 코드)</b>를 붙이고, 그 번호를 2진수로 저장해요. 영문자는 주로 아스키(ASCII) 코드, 한글은 유니코드를 사용합니다.</p>
+  <div class="card">
+    <label for="charIn"><b>내 이름의 영문 이니셜이나 좋아하는 단어를 입력해 보세요</b> (최대 8글자)</label><br>
+    <input id="charIn" class="charin" maxlength="8" value="HI" autocomplete="off">
+    <div class="chars" id="chars"></div>
+    <p class="hint" style="margin-top:12px">💬 대문자 A와 소문자 a의 코드는 같을까요? 한글은 왜 더 많은 비트가 필요할까요?</p>
+  </div>
+</section>
+
+<!-- 정리 -->
+<section id="wrap" data-label="정리 · 10분">
+  <span class="tag">정리</span>
+  <h2>확인 퀴즈</h2>
+  <p class="lead">답을 누르면 바로 채점돼요.</p>
+  <div class="card" id="quiz"></div>
+  <div class="card" id="scoreCard" style="display:none;text-align:center">
+    <div class="hint">내 점수</div><div class="big-num" id="score"></div>
+  </div>
+  <div class="card summary">
+    <h3>📝 오늘 배운 내용</h3>
+    <ul>
+      <li><b>비트(bit)</b>: 0 또는 1을 저장하는 가장 작은 단위. 비트가 n개면 2<sup>n</sup>가지를 표현할 수 있어요.</li>
+      <li><b>바이트(byte)</b>: 8비트를 묶은 단위. 1바이트로 256(2<sup>8</sup>)가지를 표현해요.</li>
+      <li><b>2진수</b>: 자리마다 1, 2, 4, 8, 16…(2배씩 커짐)의 값을 가지는 수 체계예요.</li>
+      <li>그림은 <b>픽셀</b>, 글자는 <b>문자 코드</b>로 바꾼 다음 0과 1로 저장해요.</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<div class="pager"><div class="in">
+  <button class="btn line" id="prev">◀ 이전</button>
+  <span class="where" id="where"></span>
+  <button class="btn" id="next">다음 ▶</button>
+</div></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const bin = (n, w) => n.toString(2).padStart(w, '0');
+
+/* ---------- 단계 이동 ---------- */
+const sections = $$('main section');
+const stepsNav = $('#steps');
+sections.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.textContent = s.dataset.label;
+  b.onclick = () => go(i);
+  stepsNav.appendChild(b);
+});
+let cur = 0;
+function go(i){
+  cur = Math.max(0, Math.min(sections.length - 1, i));
+  sections.forEach((s, k) => s.classList.toggle('active', k === cur));
+  $$('#steps button').forEach((b, k) => b.classList.toggle('active', k === cur));
+  $('#prev').disabled = cur === 0;
+  $('#next').disabled = cur === sections.length - 1;
+  $('#where').textContent = `${cur + 1} / ${sections.length}`;
+  history.replaceState(null, '', '#' + sections[cur].id);
+  window.scrollTo({top: 0});
+}
+$('#prev').onclick = () => go(cur - 1);
+$('#next').onclick = () => go(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') go(cur + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(cur - 1);
+});
+const startIdx = sections.findIndex(s => '#' + s.id === location.hash);
+go(startIdx < 0 ? 0 : startIdx);
+
+$('#bigBtn').onclick = () => {
+  document.body.classList.toggle('big');
+  try { localStorage.setItem('big', document.body.classList.contains('big') ? '1' : ''); } catch (e) {}
+};
+try { if (localStorage.getItem('big')) document.body.classList.add('big'); } catch (e) {}
+$('#fsBtn').onclick = () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+};
+
+/* ---------- 도입: 전구 ---------- */
+let bulbCount = 1;
+function drawBulbs(){
+  const box = $('#bulbs');
+  const prev = [...box.children].map(b => b.classList.contains('on'));
+  box.innerHTML = '';
+  for (let i = 0; i < bulbCount; i++){
+    const b = document.createElement('button');
+    b.className = 'bulb' + (prev[i] ? ' on' : '');
+    b.innerHTML = `<span class="glass"></span><span class="base"></span><span class="lbl">${prev[i] ? '1' : '0'}</span>`;
+    b.onclick = () => { b.classList.toggle('on'); b.querySelector('.lbl').textContent = b.classList.contains('on') ? '1' : '0'; };
+    box.appendChild(b);
+  }
+  $('#bulbN').textContent = bulbCount;
+  $('#bulbWays').textContent = 2 ** bulbCount;
+  $('#bulbFormula').textContent = bulbCount > 1 ? `(${Array(bulbCount).fill(2).join(' × ')} = ${2 ** bulbCount})` : '';
+  $('#bulbMinus').disabled = bulbCount <= 1;
+  $('#bulbPlus').disabled = bulbCount >= 8;
+  const cb = $('#comboBox');
+  if (bulbCount <= 3){
+    let rows = '';
+    for (let n = 0; n < 2 ** bulbCount; n++){
+      rows += `<tr><td>${n + 1}</td><td class="mono">${bin(n, bulbCount).replace(/1/g, '💡').replace(/0/g, '⚫')}</td><td class="mono">${bin(n, bulbCount)}</td></tr>`;
+    }
+    cb.innerHTML = `<table class="combo"><tr><th>신호</th><th>전구</th><th>0과 1</th></tr>${rows}</table>`;
+  } else {
+    cb.innerHTML = `<p class="hint">전구가 ${bulbCount}개면 경우가 ${2 ** bulbCount}가지라 표로 다 보여 주기 어려워요!</p>`;
+  }
+}
+$('#bulbPlus').onclick = () => { bulbCount++; drawBulbs(); };
+$('#bulbMinus').onclick = () => { bulbCount--; drawBulbs(); };
+drawBulbs();
+
+/* ---------- 활동 1: 이진수 카드 ---------- */
+const VALUES = [16, 8, 4, 2, 1];
+const bitState = [0, 0, 0, 0, 0];
+const cardBox = $('#bitcards');
+VALUES.forEach((v, i) => {
+  const b = document.createElement('button');
+  b.className = 'bitcard';
+  b.setAttribute('aria-label', `${v} 카드`);
+  b.innerHTML = `<div class="inner">
+      <div class="face back">0</div>
+      <div class="face front"><div class="dots">${'<i></i>'.repeat(v)}</div><b>${v}</b></div>
+    </div><div class="bitlabel">${v}의 자리</div>`;
+  b.onclick = () => { bitState[i] ^= 1; updateCards(); };
+  cardBox.appendChild(b);
+});
+function cardValue(){ return VALUES.reduce((s, v, i) => s + v * bitState[i], 0); }
+function updateCards(){
+  $$('.bitcard').forEach((c, i) => c.classList.toggle('on', !!bitState[i]));
+  $('#binOut').textContent = bitState.join('');
+  const val = cardValue();
+  $('#decOut').textContent = val;
+  const parts = VALUES.filter((v, i) => bitState[i]);
+  $('#sumOut').textContent = parts.length ? `${parts.join(' + ')} = ${val}` : '켜진 카드가 없어요.';
+  $('#missionFb').className = 'feedback';
+}
+$('#resetCards').onclick = () => { bitState.fill(0); updateCards(); };
+
+const MISSIONS = [5, 10, 19, 27, 31];
+let mi = 0; const solved = new Set();
+function showMission(){
+  $('#target').textContent = MISSIONS[mi];
+  $('#missionProg').innerHTML = MISSIONS.map((_, k) => `<i class="${solved.has(k) ? 'done' : ''}"></i>`).join('');
+  $('#missionFb').className = 'feedback';
+}
+$('#checkMission').onclick = () => {
+  const fb = $('#missionFb'), t = MISSIONS[mi], v = cardValue();
+  if (v === t){
+    solved.add(mi); showMission();
+    fb.textContent = solved.size === MISSIONS.length
+      ? `🎉 정답! ${t} = ${bin(t, 5)}₍₂₎  모든 미션 완료! 31은 카드 5장으로 만들 수 있는 가장 큰 수예요.`
+      : `⭕ 정답! ${t}은(는) 2진수로 ${bin(t, 5)}이에요.`;
+    fb.className = 'feedback show ok';
+  } else {
+    fb.textContent = v < t ? `지금은 ${v}이에요. ${t - v}만큼 더 필요해요. 큰 카드부터 생각해 볼까요?` : `지금은 ${v}이에요. ${v - t}만큼 너무 많아요.`;
+    fb.className = 'feedback show bad';
+  }
+};
+$('#nextMission').onclick = () => { mi = (mi + 1) % MISSIONS.length; bitState.fill(0); updateCards(); showMission(); };
+updateCards(); showMission();
+
+/* ---------- 활동 2: 픽셀 ---------- */
+const PUZZLES = [
+  ['00000000','01100110','11111111','11111111','01111110','00111100','00011000','00000000'],
+  ['00111100','01000010','10100101','10000001','10100101','10011001','01000010','00111100'],
+  ['00011000','00111100','01111110','11011011','11111111','00100100','01011010','10100101'],
+];
+let px = Array(64).fill(0), mode = 'draw', puzzle = 0;
+const grid = $('#grid');
+for (let i = 0; i < 64; i++){ const d = document.createElement('div'); d.className = 'px'; d.dataset.i = i; grid.appendChild(d); }
+let painting = false, paintVal = 1;
+grid.addEventListener('pointerdown', e => {
+  const c = e.target.closest('.px'); if (!c) return;
+  painting = true; paintVal = px[c.dataset.i] ? 0 : 1; setPx(+c.dataset.i, paintVal);
+  grid.setPointerCapture?.(e.pointerId);
+});
+grid.addEventListener('pointermove', e => {
+  if (!painting) return;
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (el && el.classList.contains('px')) setPx(+el.dataset.i, paintVal);
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => grid.addEventListener(t, () => painting = false));
+function setPx(i, v){ if (px[i] === v) return; px[i] = v; renderPx(); }
+function rowStr(r){ return px.slice(r * 8, r * 8 + 8).join(''); }
+function renderPx(checked){
+  $$('.px').forEach((c, i) => { c.classList.toggle('on', !!px[i]); c.classList.remove('wrong'); });
+  const codes = $('#codes'); codes.innerHTML = '';
+  for (let r = 0; r < 8; r++){
+    const s = mode === 'draw' ? rowStr(r) : PUZZLES[puzzle][r];
+    let cls = 'code';
+    if (checked) cls += rowStr(r) === PUZZLES[puzzle][r] ? ' good' : ' bad';
+    codes.insertAdjacentHTML('beforeend', `<div class="${cls}"><span class="n">${r + 1}</span><span class="mono">${s}</span></div>`);
+  }
+  const on = px.reduce((a, b) => a + b, 0);
+  $('#pxCount').textContent = `칠한 칸(1): ${on}개 · 빈 칸(0): ${64 - on}개`;
+  if (!checked) $('#pxFb').className = 'feedback';
+}
+$('#clearPx').onclick = () => { px.fill(0); renderPx(); };
+$$('#pxMode button').forEach(b => b.onclick = () => {
+  mode = b.dataset.m;
+  $$('#pxMode button').forEach(x => x.classList.toggle('active', x === b));
+  $('#decodeBar').style.display = mode === 'decode' ? 'block' : 'none';
+  $('#codesTitle').textContent = mode === 'decode' ? `암호 ${'①②③'[puzzle]} · 1인 칸을 칠하세요` : '한 줄 = 8비트 = 1바이트';
+  px.fill(0); renderPx();
+});
+$$('[data-puzzle]').forEach(b => b.onclick = () => {
+  puzzle = +b.dataset.puzzle; px.fill(0);
+  $('#codesTitle').textContent = `암호 ${'①②③'[puzzle]} · 1인 칸을 칠하세요`;
+  renderPx();
+});
+$('#checkPx').onclick = () => {
+  const ans = PUZZLES[puzzle].join('');
+  let wrong = 0;
+  $$('.px').forEach((c, i) => { if (String(px[i]) !== ans[i]){ wrong++; c.classList.add('wrong'); } });
+  renderPx(true);
+  $$('.px').forEach((c, i) => { if (String(px[i]) !== ans[i]) c.classList.add('wrong'); });
+  const fb = $('#pxFb');
+  const names = ['하트', '웃는 얼굴', '우주 침략자'];
+  if (!wrong){ fb.textContent = `🎉 정답! 숨은 그림은 '${names[puzzle]}'이에요. 64비트(8바이트)로 저장되는 그림이랍니다.`; fb.className = 'feedback show ok'; }
+  else { fb.textContent = `빨간 테두리 칸 ${wrong}개가 암호와 달라요. 빨간 줄의 암호를 다시 확인해 보세요.`; fb.className = 'feedback show bad'; }
+};
+renderPx();
+
+/* ---------- 활동 3: 문자 코드 ---------- */
+function renderChars(){
+  const box = $('#chars'); box.innerHTML = '';
+  for (const ch of [...$('#charIn').value].slice(0, 8)){
+    const code = ch.codePointAt(0);
+    const ascii = code < 128;
+    const width = ascii ? 8 : 16;
+    const b = bin(code, width).replace(/(.{8})(?=.)/g, '$1 ');
+    box.insertAdjacentHTML('beforeend', `<div class="ch"><div class="c">${ch === ' ' ? '␣' : ch.replace(/[<>&]/g, '')}</div>
+      <div class="d">${ascii ? '아스키' : '유니코드'} 번호 ${code}</div>
+      <div class="mono">${b}</div><div class="d">${width}비트</div></div>`);
+  }
+}
+$('#charIn').addEventListener('input', renderChars);
+renderChars();
+
+/* ---------- 정리: 퀴즈 ---------- */
+const QUIZ = [
+  {q:'비트(bit) 1개로 나타낼 수 있는 상태는 몇 가지일까요?', o:['1가지','2가지','8가지','10가지'], a:1, e:'비트는 0 또는 1, 두 가지 상태를 나타내요.'},
+  {q:'2진수 1011을 10진수로 바꾸면?', o:['9','11','13','1011'], a:1, e:'8 + 0 + 2 + 1 = 11'},
+  {q:'10진수 6을 2진수로 바꾸면?', o:['110','101','011','1100'], a:0, e:'6 = 4 + 2 → 110₍₂₎'},
+  {q:'1바이트(byte)는 몇 비트일까요?', o:['2비트','4비트','8비트','10비트'], a:2, e:'8비트를 묶어 1바이트라고 해요.'},
+  {q:'8×8 흑백 픽셀 그림을 저장하려면 몇 비트가 필요할까요?', o:['8비트','16비트','64비트','256비트'], a:2, e:'픽셀 1개 = 1비트, 8×8 = 64개 → 64비트(8바이트)'},
+];
+const answered = {};
+$('#quiz').innerHTML = QUIZ.map((x, i) => `<div class="q" data-q="${i}"><p>${i + 1}. ${x.q}</p>
+  <div class="opts">${x.o.map((o, k) => `<button class="opt" data-k="${k}">${o}</button>`).join('')}</div>
+  <div class="explain">${x.e}</div></div>`).join('');
+$$('.q').forEach(qe => {
+  const i = +qe.dataset.q;
+  qe.querySelectorAll('.opt').forEach(btn => btn.onclick = () => {
+    if (i in answered) return;
+    const k = +btn.dataset.k; answered[i] = k === QUIZ[i].a;
+    qe.querySelectorAll('.opt')[QUIZ[i].a].classList.add('right');
+    if (!answered[i]) btn.classList.add('wrong');
+    qe.querySelector('.explain').classList.add('show');
+    if (Object.keys(answered).length === QUIZ.length){
+      const sc = Object.values(answered).filter(Boolean).length;
+      $('#score').textContent = `${sc} / ${QUIZ.length}`;
+      $('#scoreCard').style.display = 'block';
+    }
+  });
+});
+</script>
+</body>
+</html>
