@@ -151,3 +151,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   html.big .ttl{flex:1 1 calc(100% - 120px)}
   html.big .tools{flex:1 1 100%;justify-content:flex-end}
 }
+
+/* 로그인 확인 전에는 활동 내용을 가림 (auth.js) */
+html.ga-wait main,html.ga-wait .nextbar{visibility:hidden}

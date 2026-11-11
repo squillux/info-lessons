@@ -54,8 +54,9 @@ const LIVE = (() => {
   const dev = () => { let d = ls.get('live:dev'); if (!d || !/^[a-z0-9]{20}$/.test(d)){ d = rnd(20); ls.set('live:dev', d); } return d; };
   let db = null;
   function loadSdk(){
-    if (window.firebase?.database) return Promise.resolve();
-    const add = f => new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = LIVE_SDK + f; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); });
+    // auth.js와 같은 SDK 파일을 한 번만 불러오도록 함께 쓰는 목록(__fbScripts)을 사용
+    const R = window.__fbScripts = window.__fbScripts || {};
+    const add = f => R[f] = R[f] || new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = LIVE_SDK + f; sc.onload = ok; sc.onerror = () => { delete R[f]; no(new Error('sdk')); }; document.head.appendChild(sc); });
     return add('firebase-app-compat.js').then(() => add('firebase-database-compat.js'));
   }
   function connect(){

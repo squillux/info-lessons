@@ -114,3 +114,15 @@ const contentsList = [
   {unit: 5, sub: '5-2-3', icon: '🧩', badge: '중1 Ⅴ단원 · 단원 정리', title: 'Ⅴ단원 용어 퍼즐', desc: '설명과 초성 힌트로 디지털 문화 단원의 핵심 용어를 맞히고 스스로 점검해요. (교과서 219, 222쪽)', href: 'culture/5-12-puzzle.html', std: '05-01~03', core: false},
   {unit: 5, sub: '5-2-3', icon: '📰', badge: '중1 Ⅴ단원 · 창의·융합 프로젝트', title: '카드 뉴스 기획실', desc: '디지털 윤리 주제를 골라 사례를 정리하고, 3장짜리 카드 뉴스 개요를 미리 보기로 만들어 봐요. (교과서 220~221쪽)', href: 'culture/5-13-card-news.html', live: true, std: '05-02, 05-03', core: false},
 ];
+
+/* 학생 로그인(학번 + 개인 코드) 켜기. false면 지금처럼 로그인 없이 누구나 체험할 수 있다.
+   true로 바꾸면 로그인한 학생만, 선생님이 연 활동만 할 수 있고 진도·출석이 기록된다(assets/auth.js).
+   켜기 전에 미리 보려면 주소 끝에 ?login 을 붙인다(그 탭에서만 켜짐). */
+const LOGIN_ON = false;
+function loginActive(){
+  if (LOGIN_ON) return true;
+  try {
+    if (/[?&](login|emu)\b/.test(location.search)) sessionStorage.setItem('ga:try', '1');
+    return sessionStorage.getItem('ga:try') === '1';
+  } catch (e){ return false; }
+}

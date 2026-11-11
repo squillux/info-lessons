@@ -104,6 +104,267 @@
         ".write": "(newData.exists() && newData.val() === newData.parent().parent().child('rooms/' + $room + '/pub/t').val()) || (!newData.exists() && ((root.child('idx/' + $room).val() < now - 2592000000) || (root.child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists() && !newData.parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists())))",
         ".validate": "newData.isNumber()"
       }
+    },
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid"
+      }
+    },
+    "pins": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$sid": {
+        ".validate": "$sid.matches(/^1(0[1-9]|1[0-2])(0[1-9]|[1-5][0-9])$/) && newData.isString() && newData.val().matches(/^[A-HJ-NP-Z2-9]{6}$/)"
+      }
+    },
+    "roster": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$sid": {
+        ".read": "(auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val())",
+        ".validate": "$sid.matches(/^1(0[1-9]|1[0-2])(0[1-9]|[1-5][0-9])$/) && newData.hasChildren(['n', 'c', 'no']) && $sid.beginsWith(newData.child('c').val().replace('-', ''))",
+        "n": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
+        },
+        "c": {
+          ".validate": "newData.isString() && newData.val().matches(/^1-(0[1-9]|1[0-2])$/)"
+        },
+        "no": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 59"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "tries": {
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && (!data.exists() || data.child('at').val() < now - 3000)",
+        ".validate": "newData.hasChildren(['at', 'sid', 'pin'])",
+        "at": {
+          ".validate": "newData.val() === now"
+        },
+        "sid": {
+          ".validate": "newData.isString() && newData.val().length <= 5"
+        },
+        "pin": {
+          ".validate": "newData.isString() && newData.val().length <= 6"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "claims": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && (!newData.exists() || (newData.child('pin').val() === root.child('pins/' + newData.child('sid').val()).val() && root.child('tries/' + $uid + '/sid').val() === newData.child('sid').val() && root.child('tries/' + $uid + '/pin').val() === newData.child('pin').val()))",
+        ".validate": "newData.hasChildren(['sid', 'pin', 'at'])",
+        "sid": {
+          ".validate": "newData.isString() && newData.val().length <= 5"
+        },
+        "pin": {
+          ".validate": "newData.isString() && newData.val().length <= 6"
+        },
+        "at": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "open": {
+      ".read": "auth != null",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/)",
+        "$act": {
+          ".validate": "$act.matches(/^[1-5]-[0-9]{2}$/) && newData.isBoolean()"
+        }
+      }
+    },
+    "today": {
+      ".read": "auth != null",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/) && newData.hasChildren(['d'])",
+        "d": {
+          ".validate": "newData.isString() && newData.val().length <= 10"
+        },
+        "a": {
+          "$act": {
+            ".validate": "$act.matches(/^[1-5]-[0-9]{2}$/) && newData.isBoolean()"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "progress": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/)",
+        "$sid": {
+          ".read": "(auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val())",
+          "$act": {
+            ".write": "(auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val()) && root.child('roster/' + $sid + '/c').val() === $c",
+            ".validate": "$act.matches(/^[1-5]-[0-9]{2}$/) && newData.hasChildren(['s', 't', 'at'])",
+            "s": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 40"
+            },
+            "t": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 40"
+            },
+            "d": {
+              ".validate": "newData.isBoolean()"
+            },
+            "x": {
+              ".validate": "newData.isBoolean()"
+            },
+            "sec": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 864000"
+            },
+            "at": {
+              ".validate": "newData.isNumber() && newData.val() <= now"
+            },
+            "q": {
+              "$id": {
+                ".validate": "$id.matches(/^[A-Za-z0-9_-]{1,20}$/) && newData.hasChildren(['b', 's', 't', 'n'])",
+                "b": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 50"
+                },
+                "s": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 50"
+                },
+                "t": {
+                  ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 50"
+                },
+                "n": {
+                  ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 10000"
+                },
+                "w": {
+                  ".validate": "newData.isString() && newData.val().length <= 100"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              }
+            },
+            "m": {
+              "$id": {
+                ".validate": "$id.matches(/^[A-Za-z0-9_-]{1,20}$/) && newData.isBoolean()"
+              }
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    },
+    "visits": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/)",
+        "$d": {
+          ".validate": "$d.matches(/^20[0-9]{2}-[01][0-9]-[0-3][0-9]$/)",
+          "$sid": {
+            ".read": "(auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val())",
+            ".write": "(auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val()) && root.child('roster/' + $sid + '/c').val() === $c",
+            ".validate": "newData.hasChildren(['f', 'l', 'n'])",
+            "f": {
+              ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() : newData.val() === now)"
+            },
+            "l": {
+              ".validate": "newData.isNumber() && newData.val() <= now"
+            },
+            "n": {
+              ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() + 1 : newData.val() === 1) && newData.val() <= 10000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    },
+    "attendOpen": {
+      ".read": "auth != null",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/) && newData.hasChildren(['d', 'until'])",
+        "d": {
+          ".validate": "newData.isString() && newData.val().length <= 10"
+        },
+        "until": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "attendKey": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/) && newData.isString() && newData.val().matches(/^[0-9]{4}$/)"
+      }
+    },
+    "attend": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/)",
+        "$d": {
+          ".validate": "$d.matches(/^20[0-9]{2}-[01][0-9]-[0-3][0-9]$/)",
+          "$sid": {
+            ".read": "(auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val())",
+            ".write": "!data.exists() && (auth != null && root.child('claims/' + auth.uid + '/sid').val() === $sid && root.child('claims/' + auth.uid + '/pin').val() === root.child('pins/' + $sid).val()) && root.child('roster/' + $sid + '/c').val() === $c && root.child('attendOpen/' + $c + '/d').val() === $d && root.child('attendOpen/' + $c + '/until').val() > now && newData.child('k').val() === root.child('attendKey/' + $c).val()",
+            ".validate": "newData.hasChildren(['t', 'k'])",
+            "t": {
+              ".validate": "newData.isNumber() && newData.val() <= now"
+            },
+            "k": {
+              ".validate": "newData.isString() && newData.val().length <= 4"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    },
+    "notes": {
+      ".read": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins/' + auth.uid).val() === true)",
+      "$c": {
+        ".validate": "$c.matches(/^1-(0[1-9]|1[0-2])$/)",
+        "$sid": {
+          "$id": {
+            ".validate": "newData.hasChildren(['t', 'x'])",
+            "t": {
+              ".validate": "newData.isNumber()"
+            },
+            "a": {
+              ".validate": "newData.isString() && newData.val().length <= 10"
+            },
+            "x": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 500"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
     }
   }
 }

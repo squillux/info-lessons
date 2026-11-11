@@ -247,3 +247,14 @@ function explainIt(box, m){
 
 /* 인쇄할 때 접힌 내용(평가 기준표, 안내 등)도 펼쳐서 인쇄 */
 addEventListener('beforeprint', () => document.querySelectorAll('details').forEach(d => d.open = true));
+
+/* 로그인·잠금·진도 기록(auth.js)을 함께 불러온다. 로그인 전에는 활동 내용을 가린다. */
+(function loadAuth(){
+  const me = document.currentScript && document.currentScript.src;
+  if (!me || (typeof loginActive === 'function' && !loginActive())) return;   // 학생 로그인이 꺼져 있으면 지금처럼 바로 체험
+  document.documentElement.classList.add('ga-wait');
+  const s = document.createElement('script');
+  s.src = me.replace(/common\.js(\?.*)?$/, 'auth.js');
+  s.onerror = () => document.body.insertAdjacentHTML('afterbegin', '<p class="feedback show bad" style="margin:80px 16px">로그인 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침하세요.</p>');
+  document.head.appendChild(s);
+})();
