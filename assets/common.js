@@ -4,6 +4,33 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const bin = (n, w) => n.toString(2).padStart(w, '0');
 
+/* 진도 신호: 아무것도 저장하지 않고 window에 'info:progress' 이벤트만 내보낸다.
+   나중에 로그인·진도 기록 기능이 이 이벤트(또는 infoProgress.state)를 받아 저장한다.
+   type: start(열림) · step(다음 단계) · done(마지막 단계 도달) · quiz(확인 미션 채점 완료)
+         choice(상황 분류 완료) · mission(엔트리 점검 완료) · leave(페이지 나감, 요약 포함)
+   주소에 ?pdebug 를 붙이면 콘솔에 신호가 찍힌다. */
+const infoProgress = window.infoProgress = (() => {
+  const parts = location.pathname.split('/').filter(Boolean);
+  let file = parts[parts.length - 1] || '';
+  if (!/\.html?$/.test(file) || file === 'index.html') file = (file === 'index.html' ? parts[parts.length - 2] : file) || '';
+  const m = file.match(/^(\d-\d{2})/);
+  const act = m ? m[1] : file.replace(/\.html?$/, '');
+  const state = {act, opened: Date.now(), step: 0, total: 0, maxStep: 0, done: false, expanded: false, quiz: {}, choice: {}, mission: {}};
+  const debug = /[?&]pdebug/.test(location.search);
+  function emit(type, d){
+    const detail = Object.assign({act, type, t: Date.now()}, d || {});
+    try { dispatchEvent(new CustomEvent('info:progress', {detail})); } catch (e) {}
+    if (debug) console.log('[progress]', JSON.stringify(detail));
+  }
+  let left = false;
+  addEventListener('pagehide', () => {
+    if (left) return; left = true;
+    emit('leave', {sec: Math.round((Date.now() - state.opened) / 1000), summary: JSON.parse(JSON.stringify(state))});
+  });
+  addEventListener('pageshow', e => { if (e.persisted){ left = false; state.opened = Date.now(); emit('start', {step: state.step, total: state.total, back: true}); } });
+  return {state, emit};
+})();
+
 (function header(){
   const d = document.body.dataset;
   const h = document.createElement('header');
@@ -49,10 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (pending.length && units.length) units[units.length - 1].els.push(...pending);
   });
-  if (units.length < 2) return;
+  const P = infoProgress.state;
+  if (units.length < 2){
+    P.total = P.step = P.maxStep = 1;
+    infoProgress.emit('start', {step: 1, total: 1});
+    return;
+  }
   const key = 'reveal:' + location.pathname;
   let shown = 1;
   try { shown = Math.max(1, Math.min(units.length, +sessionStorage.getItem(key) || 1)); } catch (e) {}
+  P.total = units.length;
+  infoProgress.emit('start', {step: shown, total: units.length});
+  const track = () => {   // 진도 신호 (저장 없음)
+    const prev = P.step;
+    P.step = shown; P.maxStep = Math.max(P.maxStep, shown);
+    if (prev && shown !== prev) infoProgress.emit('step', {step: shown, total: units.length, expanded: P.expanded});
+    if (shown === units.length && !P.done){ P.done = true; infoProgress.emit('done', {total: units.length, expanded: P.expanded}); }
+  };
   const bar = document.createElement('div');
   bar.className = 'nextbar';
   const label = u => {
@@ -86,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bar.querySelector('#restartBtn').onclick = () => { shown = 1; save(); render(); window.scrollTo({top: 0, behavior: 'smooth'}); };
     }
     const p = $('header.top .prog i'); if (p) p.style.width = (shown / units.length * 100) + '%';
+    track();
     window.dispatchEvent(new Event('resize'));          // 숨겨져 있던 캔버스 다시 그리기
     if (scroll){
       const u = units[shown - 1], top = u.els[0].getBoundingClientRect().top + scrollY - 80;
@@ -98,15 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const allLabel = () => $('#allBtn').innerHTML = shown === units.length && before ? '☰ <span>접기</span>' : '☰ <span>펼치기</span>';
   $('#allBtn').onclick = () => {
     if (shown === units.length && before){ shown = before; before = 0; }
-    else if (shown < units.length){ before = shown; shown = units.length; }
+    else if (shown < units.length){ before = shown; shown = units.length; P.expanded = true; }   // 펼치기로 건너뛴 것은 따로 표시
     save(); render(); allLabel();
   };
   render();
 });
 
 /* 확인 미션: 누르면 바로 채점. items = [{q, o:[...], a:정답번호, e:해설}] */
+const boxId = (box, kind) => box.dataset.pid || (box.dataset.pid = box.id || kind + (boxId.n = (boxId.n || 0) + 1));   // 진도 신호용 상자 이름
 function renderQuiz(box, items){
-  const answered = {};
+  const answered = {}, qid = boxId(box, 'quiz');
   box.innerHTML = items.map((x, i) => `<div class="q" data-q="${i}"><p>${i + 1}. ${x.q}</p>
     <div class="opts">${x.o.map((o, k) => `<button class="opt" data-k="${k}">${o}</button>`).join('')}</div>
     <div class="explain">${x.e}</div></div>`).join('') + '<div class="score"></div>';
@@ -123,6 +165,10 @@ function renderQuiz(box, items){
         s.textContent = sc === items.length ? `🎉 ${sc} / ${items.length} 모두 맞혔어요!` : `${sc} / ${items.length} · 틀린 문제의 해설을 다시 읽어 보세요.`;
         const again = document.createElement('button'); again.className = 'btn line'; again.style.marginLeft = '8px'; again.textContent = '🔄 다시 풀기'; again.onclick = () => renderQuiz(box, items); s.appendChild(again);
         s.classList.add('show');
+        const rec = infoProgress.state.quiz[qid] = infoProgress.state.quiz[qid] || {tries: 0};   // 진도 신호 (저장 없음)
+        rec.tries++; rec.score = sc; rec.total = items.length; rec.best = Math.max(rec.best || 0, sc);
+        rec.wrong = Object.keys(answered).filter(k => !answered[k]).map(Number);
+        infoProgress.emit('quiz', Object.assign({id: qid}, rec));
       }
     });
   });
@@ -131,7 +177,7 @@ function renderQuiz(box, items){
 /* 상황 카드 분류: 상황마다 보기 버튼 중 하나를 고르면 바로 채점.
    items = [{t:상황, a:정답 보기 번호, e:해설}], options = ['보기1', ...] */
 function renderChoice(box, items, options, onDone){
-  const done = {};
+  const done = {}, cid = boxId(box, 'choice'), miss = {};
   box.innerHTML = items.map((x, i) => `<div class="choice" data-i="${i}"><p>${x.icon ? x.icon + ' ' : ''}${x.t}</p>
     <div class="opts">${options.map((o, k) => `<button class="opt" data-k="${k}">${o}</button>`).join('')}</div>
     <div class="explain"></div></div>`).join('') + '<div class="score"></div>';
@@ -144,10 +190,13 @@ function renderChoice(box, items, options, onDone){
       const ex = ce.querySelector('.explain');
       ex.textContent = ok ? '⭕ ' + (it.e || '정답!') : '❌ 다시 생각해 보세요.' + (it.hint ? ' 💡 ' + it.hint : '');
       ex.classList.add('show');
+      if (!ok && !(i in done)) miss[i] = (miss[i] || 0) + 1;
       if (ok && !(i in done)){
         done[i] = 1;
         if (Object.keys(done).length === items.length){
           const s = box.querySelector('.score'); s.textContent = '🎉 모두 해결했어요!'; s.classList.add('show');
+          const rec = infoProgress.state.choice[cid] = {total: items.length, missed: Object.keys(miss).map(Number)};   // 진도 신호 (저장 없음)
+          infoProgress.emit('choice', Object.assign({id: cid}, rec));
           onDone && onDone();
         }
       }
@@ -167,7 +216,12 @@ function entryMission(box, m){
     <p><a class="btn" href="https://playentry.org/ws" target="_blank" rel="noopener">엔트리 열기 ↗</a></p>
     <div class="mission-check"><b>✅ 스스로 점검</b>${m.check.map(c => `<label><input type="checkbox"> ${esc(c)}</label>`).join('')}<p class="hint"></p></div>`;
   const ins = box.querySelectorAll('.mission-check input'), msg = box.querySelector('.mission-check .hint');
-  ins.forEach(i => i.onchange = () => { const n = [...ins].filter(x => x.checked).length; msg.textContent = n === ins.length ? '🎉 미션 완료! 친구와 프로그램을 바꿔 실행해 보세요.' : `${n} / ${ins.length}`; });
+  const mid = boxId(box, 'mission');
+  ins.forEach(i => i.onchange = () => {
+    const n = [...ins].filter(x => x.checked).length;
+    msg.textContent = n === ins.length ? '🎉 미션 완료! 친구와 프로그램을 바꿔 실행해 보세요.' : `${n} / ${ins.length}`;
+    if (n === ins.length && !infoProgress.state.mission[mid]){ infoProgress.state.mission[mid] = {total: n}; infoProgress.emit('mission', {id: mid, total: n}); }   // 진도 신호 (저장 없음)
+  });
 }
 
 /* 프로젝트 평가 기준표(교사용): rubric(box, {std, rows:[[평가 요소, 상, 중, 하], ...]}) */
