@@ -171,7 +171,10 @@ const LIVE = (() => {
     b.onclick = () => { if (document.querySelector('main .locked')) document.getElementById('allBtn')?.click(); setTimeout(() => { first.scrollIntoView({block: 'start'}); scrollBy(0, -80); }, 50); };
     tools.prepend(b);
   }, 0);
-  return {ls, rnd, esc, dev, connect, teacherRoom, keepBar, roomBar, failBox, joinForm, bar, get db(){ return db; }};
+  /* 흔한 비속어·욕설이 들어 있으면 보내지 않음 (완벽하지 않으므로 교사 숨기기 기능과 함께 사용) */
+  const BAD = ['씨발','시발','씨바','ㅅㅂ','ㅆㅂ','병신','ㅂㅅ','븅신','개새','개색','좆','존나','졸라','지랄','ㅈㄹ','닥쳐','꺼져','미친놈','미친년','니애미','느금','엠창','fuck','shit'];
+  const bad = v => { const s = String(v).toLowerCase().replace(/[\s._*~!?,-]/g, '').replace(/시발(점|역)/g, ''); return BAD.some(w => s.includes(w)); };   // '시발점' 같은 바른 낱말은 허용
+  return {bad, ls, rnd, esc, dev, connect, teacherRoom, keepBar, roomBar, failBox, joinForm, bar, get db(){ return db; }};
 })();
 
 /* ============ 1) 실시간 투표 ============ */
@@ -332,17 +335,19 @@ function liveBoard(box, cfg){
     top.innerHTML = `<div class="lv-room"><span>참여한 방</span><span class="code">${code}</span><span class="hint">이름은 저장되지 않아요. 친구를 존중하는 말만 보내요.</span></div>`;
     body.innerHTML = `<div class="lv-item"><p><b>${esc(cfg.title || '실시간 모으기')}</b><span class="lv-st"></span></p><div class="lv-in"></div><div class="lv-msg"></div></div><div class="lv-out"></div>`;
     const it = body.querySelector('.lv-item'), inEl = body.querySelector('.lv-in'), out = body.querySelector('.lv-out');
-    let round = null;
+    let round = null, warn = '';
     const mineCount = () => Object.keys(posts).filter(id => id.startsWith(LIVE.dev() + '_')).length;
     const send = v => {
       if (!pub.open) return Promise.reject(new Error('closed'));
+      if (LIVE.bad(v)){ warn = '⚠️ 친구를 존중하는 말로 다시 써 주세요. 바르지 않은 말은 보낼 수 없어요. · '; paint(); return Promise.reject(new Error('bad')); }
+      warn = '';
       const n = mineCount(); if (n >= limit) return Promise.reject(new Error('limit'));
       return LIVE.db.ref(`posts/${code}/${pub.round}/${LIVE.dev()}/${n}`).set(String(v).slice(0, 1500)).catch(e => { throw e; });
     };
     const paint = () => {
       it.classList.toggle('open', pub.open); it.querySelector('.lv-st').textContent = pub.open ? '받는 중' : '닫힘';
       const n = mineCount();
-      it.querySelector('.lv-msg').textContent = !pub.open ? '⏳ 선생님이 받기를 시작하면 보낼 수 있어요.' : n >= limit ? `✅ ${limit}개를 모두 보냈어요.` : `보낸 개수 ${n} / ${limit}`;
+      it.querySelector('.lv-msg').textContent = warn + (!pub.open ? '⏳ 선생님이 받기를 시작하면 보낼 수 있어요.' : n >= limit ? `✅ ${limit}개를 모두 보냈어요.` : `보낸 개수 ${n} / ${limit}`);
       inEl.querySelectorAll('button,input,textarea,select').forEach(x => x.disabled = !pub.open || n >= limit);
       if (pub.show) cfg.render(visible(), out, 'student', pub.cfg); else out.innerHTML = '';
     };

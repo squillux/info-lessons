@@ -79,7 +79,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;font-size:.8rem;color:
       <li>전자칠판에서는 <b>가+ 크게</b>와 <b>전체 화면</b>을 쓰세요. 인쇄하면 모든 활동이 펼쳐져 학습지처럼 나와요.</li>
       <li>단원별 주소를 나눠 줄 수 있어요. 예: 이 페이지 주소 끝의 <code>?unit=2</code></li>
       <li>카드의 <b>★ 핵심</b>은 성취기준을 다루는 기본 활동, <b>☆ 선택</b>은 시간이 있을 때 하는 활동이에요. 카드 아래 <b>[9정○○-○○]</b>은 관련 성취기준이에요.</li>
-      <li>학생 이름이나 답을 저장하지 않아요. <b>심화</b>는 교과서 밖 내용, <b>더 해 보기</b>는 선택 활동이에요.</li>
+      <li>학생 이름은 어디에도 저장하지 않고, 대부분의 활동은 답도 저장하지 않아요. <b>📡 실시간</b> 활동만 이름 없이 투표 수와 제출 내용을 서버에 보관하며, 선생님이 <b>결과 내려받기</b> 후 <b>기록 지우기</b>를 할 수 있고 30일이 지나면 자동으로 지워져요. <b>심화</b>는 교과서 밖 내용, <b>더 해 보기</b>는 선택 활동이에요.</li>
       <li><b>📡 실시간</b> 표시 활동은 반 전체가 함께 투표하거나 응답을 모을 수 있어요. 선생님 기기에서 <b>🧑‍🏫 교사</b> 버튼을 누르면 방 코드와 <b>QR 코드</b>가 나오고, 학생은 QR을 찍으면 바로 참여해요. 서버에는 이름 없이 투표 수와 제출 내용만 남고, 부적절한 제출물은 선생님이 숨길 수 있어요.</li>
     </ul>
   </details>
@@ -90,7 +90,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;font-size:.8rem;color:
   <div id="list"></div>
 </main>
 <footer>
-  미래엔 중학교 정보 교과서 내용을 바탕으로 새로 구성한 활동이에요. 다른 출판사 교과서를 참고한 활동에는 출판사를 표시했어요. 학생 정보는 저장하지 않아요.
+  미래엔 중학교 정보 교과서 내용을 바탕으로 새로 구성한 활동이에요. 다른 출판사 교과서를 참고한 활동에는 출판사와 쪽수를 표시했어요. 학생 이름은 저장하지 않아요.
 </footer>
 <script src="assets/contents.js"></script>
 <script>
@@ -124,10 +124,10 @@ function show(u){
 }
 document.getElementById('units').innerHTML = unitList.map(u => `<button class="unit-btn" data-u="${u.unit}"><span class="n">${roman[u.unit]}</span>${esc(u.name)}</button>`).join('');
 document.querySelectorAll('.unit-btn').forEach(b => b.onclick = () => show(+b.dataset.u));
-let cur = 2;
+let cur = 1;
 const _show = show; show = u => { cur = u; _show(u); };
 document.querySelectorAll('#filter button').forEach(b => b.onclick = () => { coreOnly = b.dataset.f === 'core'; document.querySelectorAll('#filter button').forEach(x => x.classList.toggle('active', x === b)); show(cur); });
-show(+new URLSearchParams(location.search).get('unit') || 2);
+show(+new URLSearchParams(location.search).get('unit') || 1);
 </script>
 </body>
 </html>

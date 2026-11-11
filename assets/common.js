@@ -190,21 +190,6 @@ function explainIt(box, m){
   box.querySelector('[data-ex]').onclick = () => { box.querySelector('.explain-ex').hidden = false; };
 }
 
-/* 🔊 읽어 주기: 지금 열린 마지막 활동 카드의 글을 소리로 읽음 (브라우저 음성 합성, 인터넷·저장 필요 없음) */
-(function speakTool(){
-  if (!('speechSynthesis' in window)) return;
-  const tools = document.querySelector('header.top .tools'); if (!tools) return;
-  const b = document.createElement('button'); b.className = 'tool'; b.title = '지금 활동의 글을 소리로 읽어 줘요'; b.innerHTML = '🔊 <span>읽어 주기</span>';
-  b.onclick = () => {
-    if (speechSynthesis.speaking){ speechSynthesis.cancel(); b.innerHTML = '🔊 <span>읽어 주기</span>'; return; }
-    const cards = [...document.querySelectorAll('main .card')].filter(c => !c.closest('.locked') && c.offsetParent !== null);
-    const vis = cards.filter(c => { const r = c.getBoundingClientRect(); return r.bottom > 80 && r.top < innerHeight; });
-    const target = vis[0] || cards[cards.length - 1]; if (!target) return;
-    const text = [...target.querySelectorAll('h3, p, li, .choice > p, .q > p')].map(e => e.innerText.trim()).filter(Boolean).join('. ').slice(0, 1200);
-    const u = new SpeechSynthesisUtterance(text); u.lang = 'ko-KR'; u.rate = .95;
-    u.onend = u.onerror = () => b.innerHTML = '🔊 <span>읽어 주기</span>';
-    target.classList.add('pop'); setTimeout(() => target.classList.remove('pop'), 700);
-    speechSynthesis.speak(u); b.innerHTML = '⏹ <span>멈추기</span>';
-  };
-  tools.prepend(b);
-})();
+
+/* 인쇄할 때 접힌 내용(평가 기준표, 안내 등)도 펼쳐서 인쇄 */
+addEventListener('beforeprint', () => document.querySelectorAll('details').forEach(d => d.open = true));
