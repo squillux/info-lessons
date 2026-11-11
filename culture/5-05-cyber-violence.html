@@ -91,7 +91,7 @@ $$('#chat button').forEach(b => b.onclick = () => {
   const c = CHAT[+b.dataset.i];
   if (b.classList.contains('hit')) return;
   if (c[2]){ b.classList.add('hit'); found++; feedback($('#chatFb'), true, `⭕ ${c[3]} (${found} / ${need})` + (found === need ? ' 🎉 모두 찾았어요! 마지막 바다처럼 멈추자고 말하는 용기도 중요해요.' : '')); }
-  else { b.classList.add('miss'); feedback($('#chatFb'), false, '이 말은 사이버 폭력이 아니에요. 다른 말풍선을 찾아보세요.'); }
+  else { b.classList.add('miss'); if (found < need) feedback($('#chatFb'), false, '이 말은 사이버 폭력이 아니에요. 다른 말풍선을 찾아보세요.'); }
 });
 
 renderChoice($('#type'), [

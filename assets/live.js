@@ -54,7 +54,7 @@ const LIVE = (() => {
     return loadSdk().then(() => {
       if (!firebase.apps.length) firebase.initializeApp(LIVE_CFG);
       db = firebase.database();
-      return Promise.race([db.ref('.info/serverTimeOffset').once('value'), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 8000))]);
+      return Promise.race([db.ref('.info/serverTimeOffset').once('value'), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 15000))]);
     }).then(() => db);
   }
   /* 교사 방: 같은 활동의 이전 방이 있으면 이어서, 없으면 새로 만든다 */
@@ -93,7 +93,7 @@ const LIVE = (() => {
     const draw = () => { try { new QRCode(qrEl, {text: url, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M}); } catch(e){ qrEl.remove(); } };
     if (window.QRCode) draw(); else { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; sc.onload = draw; sc.onerror = () => qrEl.remove(); document.head.appendChild(sc); }
     return d; };
-  const failBox = el => { el.innerHTML = `<p class="feedback show bad">⚠️ 실시간 서버에 연결할 수 없어요(학교 인터넷 차단 등). 이 활동의 기본 기능으로 진행해 주세요.</p>`; };
+  const failBox = el => { el.innerHTML = `<p class="feedback show bad">⚠️ 실시간 서버에 연결할 수 없어요(학교 인터넷 차단 등). 이 활동의 기본 기능으로 진행해 주세요.</p><button class="btn line" onclick="location.reload()">🔄 다시 연결하기</button>`; };
   function joinForm(el, act, onJoin){
     el.innerHTML = `<p>선생님 화면의 <b>방 코드 4자리</b>를 입력하세요.</p><p><input class="inp" inputmode="numeric" maxlength="4" style="width:140px"> <button class="btn">참여하기</button></p><div class="feedback"></div>`;
     const inp = el.querySelector('input'), fb = el.querySelector('.feedback');
