@@ -54,6 +54,12 @@ textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid v
     </div>
 
     <div class="card">
+      <h3>☁️ 우리 반 실시간 워드 클라우드 <span class="tag-opt">실시간</span></h3>
+      <p>"우리 반" 하면 떠오르는 낱말을 각자 기기에서 보내면, 친구들이 많이 보낸 낱말일수록 크게 보여요. (1인 3개까지, 이름은 저장되지 않아요.)</p>
+      <div id="liveCloud"></div>
+    </div>
+
+    <div class="card">
       <h3>🎯 목적에 맞는 시각화 고르기</h3>
       <div class="kinds">
         <div><b>막대그래프</b> 막대 길이로 항목끼리 크기 비교</div>
@@ -83,6 +89,7 @@ textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid v
 </main>
 <script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
 <script>
 const V = [['계주', 9], ['줄다리기', 7], ['2인 3각', 4], ['축구', 6], ['피구', 3]];
 const PAL = ['#3b6cf6', '#16b8a6', '#ffc233', '#ff7aa2', '#9aa3b5'];
@@ -125,15 +132,24 @@ const ST = [['가', 85, 78, 60], ['나', 62, 70, 20], ['다', 92, 88, 90], ['라
 })();
 
 /* 워드 클라우드 */
-function cloud(){
-  const words = $('#wtext').value.replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(w => w.length >= 2)
+function cloud(){ cloudInto($('#wtext').value, $('#cloud')); }
+function cloudInto(text, el){
+  const words = text.replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(w => w.length >= 2)
     .map(w => { const strip = x => x.replace(/(은|는|이|가|을|를|에서|에는|에|과|와|의|도|이에요|예요|해요|했어요|들|들과)$/, ''); const a = strip(w), b = strip(a); return b.length >= 2 ? b : a; }).filter(w => w.length >= 2);
   const cnt = {}; words.forEach(w => cnt[w] = (cnt[w] || 0) + 1);
   const list = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 18), max = list.length ? list[0][1] : 1;
   const shuffled = list.slice().sort(() => Math.random() - .5);
-  $('#cloud').innerHTML = shuffled.map(([w, c]) => `<span style="font-size:${(0.9 + 1.8 * c / max).toFixed(2)}rem;color:${PAL[c === max ? 0 : c > 1 ? 1 : 4]}" title="${c}번">${w.replace(/[<>&]/g, '')}</span>`).join('') || '<span class="hint">두 글자 이상의 단어를 입력하세요.</span>';
+  el.innerHTML = shuffled.map(([w, c]) => `<span style="font-size:${(0.9 + 1.8 * c / max).toFixed(2)}rem;color:${PAL[c === max ? 0 : c > 1 ? 1 : 4]}" title="${c}번">${w.replace(/[<>&]/g, '')}</span>`).join('') || '<span class="hint">두 글자 이상의 단어를 입력하세요.</span>';
 }
 $('#wgo').onclick = cloud; cloud();
+liveBoard($('#liveCloud'), {act: '2-19', title: '우리 반 하면 떠오르는 낱말', limit: 3,
+  input(el, send){
+    el.innerHTML = '<div class="ctrl"><input class="inp" maxlength="12" placeholder="낱말 하나 (예: 웃음)"> <button class="btn">보내기</button></div>';
+    const i = el.querySelector('input'), go = () => { const v = i.value.trim(); if (v.length < 2) return; send(v).then(() => i.value = '').catch(() => {}); };
+    el.querySelector('button').onclick = go; i.onkeydown = e => { if (e.key === 'Enter') go(); };
+  },
+  render(posts, el){ if (!posts.length){ el.innerHTML = '<p class="hint">아직 보낸 낱말이 없어요.</p>'; return; } el.innerHTML = '<div class="cloud"></div>'; cloudInto(posts.map(p => p.v).join(' '), el.firstChild); },
+});
 
 renderChoice($('#pick'), [
   {icon:'🏃', t:'반별 줄넘기 기록을 비교하고 싶어요.', a:0, e:'항목끼리 크기 비교에는 막대그래프가 좋아요.'},

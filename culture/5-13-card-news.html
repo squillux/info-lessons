@@ -63,6 +63,11 @@
   <section class="step">
     <h2 class="step-h"><span class="no">3</span>제작 전 점검</h2>
     <div class="card">
+      <h3>🖼️ 카드 뉴스 개요 갤러리 <span class="tag-opt">실시간</span></h3>
+      <p>완성한 개요를 보내면 반 전체의 카드 뉴스가 한 화면에 모여요. 서로의 개요를 보고 좋은 점과 고칠 점을 이야기해요. (모둠당 2개까지, 이름은 저장되지 않아요.)</p>
+      <div id="gallery"></div>
+    </div>
+    <div class="card">
       <p>실제 카드 뉴스를 만들기 전에 확인해요.</p>
       <div class="checks" id="checks"></div>
       <p class="hint" id="chkMsg"></p>
@@ -79,6 +84,7 @@
 </main>
 <script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
 <script>
 const TOPICS = [['🗣️', '사이버 폭력'], ['🎣', '사이버 범죄'], ['📱', '스마트폰 중독·인터넷 중독·게임 과몰입'], ['🔐', '개인 정보 보호'], ['©️', '저작권 보호']];
 let topic = 0;
@@ -104,6 +110,23 @@ $$('#ed input, #ed textarea, #src').forEach(x => x.oninput = draw); draw();
 
 const CH = ['전달하고자 하는 핵심 내용이 잘 드러나는가?', '개인과 사회가 할 수 있는 예방법이나 실천 방안을 포함했는가?', '사례의 출처를 밝혔는가?', '사용할 이미지와 글꼴의 저작권(CCL)을 확인했는가?', '모둠원이 모두 역할을 나누어 참여했는가?'];
 $('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
+liveBoard($('#gallery'), {act: '5-13', title: '우리 모둠 카드 뉴스 개요 보내기', limit: 2,
+  text: v => { try { return JSON.parse(v).c[0].h.slice(0, 30); } catch(e){ return '?'; } },
+  input(el, send){
+    el.innerHTML = '<p class="hint">2단계의 1~3장 개요를 채운 뒤 보내요.</p><button class="btn">📤 우리 모둠 개요 보내기</button>';
+    el.querySelector('button').onclick = () => {
+      const c = PH.map((_, i) => ({h: $(`#ed [data-i="${i}"][data-k="h"]`).value.trim().slice(0, 80), p: $(`#ed [data-i="${i}"][data-k="p"]`).value.trim().slice(0, 300)}));
+      if (c.some(x => !x.h)) return alert('1~3장의 제목을 모두 적어 주세요.');
+      send(JSON.stringify({t: topic, c, s: $('#src').value.trim().slice(0, 100)})).catch(() => {});
+    };
+  },
+  render(posts, el){
+    const L = s => String(s || '').replace(/[<>&]/g, '').replace(/\n/g, '<br>');
+    el.innerHTML = posts.length ? posts.map((x, k) => { let d = {}; try { d = JSON.parse(x.v); } catch(e){ return ''; } const tp = TOPICS[d.t] || TOPICS[0];
+      return '<p style="margin:14px 0 6px"><b>' + (k + 1) + '. ' + tp[0] + ' ' + tp[1] + '</b>' + (d.s ? ' <span class="hint">사례 출처: ' + L(d.s) + '</span>' : '') + '</p><div class="deck">' + (d.c || []).map((c, i) => '<div class="cn th' + i + '"><span class="no">' + (i + 1) + ' / 3</span><h4>' + L(c.h) + '</h4><p>' + L(c.p) + '</p></div>').join('') + '</div>'; }).join('') : '<p class="hint">아직 보낸 개요가 없어요.</p>';
+  },
+});
+
 $$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 준비 완료! 이제 카드 뉴스를 만들어 보세요.' : `${n} / ${CH.length}`; });
 </script>
 </body>

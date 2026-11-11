@@ -63,6 +63,12 @@ textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid v
     </div>
 
     <div class="card">
+      <h3>📡 우리 반 실시간 응답 받기 <span class="tag-opt">실시간</span></h3>
+      <p>선생님이 방을 열고 <b>📤 설정 보내기</b>로 음식점 목록을 보내면, 학생들이 각자 기기에서 별점을 보내요. 받은 응답은 아래 분석에 바로 반영돼요. (1인 음식점 8곳까지, 이름은 저장되지 않아요.)</p>
+      <div id="liveRate"></div>
+    </div>
+
+    <div class="card">
       <h3>📊 평균과 순위로 분석하기</h3>
       <p>음식점별로 맛·가격·양의 <b>평균값</b>을 구하고, 같은 종류 안에서 <b>순위</b>를 매겼어요.</p>
       <div class="scroll-x" id="rank"></div>
@@ -95,6 +101,7 @@ textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid v
 </main>
 <script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
 <script>
 renderChoice($('#define'), [
   {t:'해결해야 할 문제는?', a:0, e:'우리 마을 맛집 지도 만들기예요.'},
@@ -103,7 +110,7 @@ renderChoice($('#define'), [
 ], ['우리 마을 맛집 지도 만들기', '믿을 만한 맛집 정보가 없는 상태', '믿을 수 있는 정보로 지도를 완성한 상태']);
 
 let shops = [['떡볶이집', '분식'], ['김밥 가게', '분식'], ['튀김 가게', '분식'], ['비빔밥집', '한식'], ['덮밥집', '한식']];
-let resp = [];
+let resp = [], liveResp = [];
 const pick = [4, 3, 3];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderShops(){
@@ -126,11 +133,30 @@ $('#fake').onclick = () => {
   analyze();
 };
 $('#clearResp').onclick = () => { resp = []; analyze(); };
+liveBoard($('#liveRate'), {act: '2-23', title: '음식점 별점 보내기', limit: 8,
+  conf: () => JSON.stringify(shops.map(s => s[0])),
+  text: v => { try { const [i, a, b, c] = JSON.parse(v); return `#${i + 1} 맛${a} 가격${b} 양${c}`; } catch(e){ return '?'; } },
+  input(el, send, conf){
+    let names = []; try { names = JSON.parse(conf || '[]'); } catch(e){}
+    if (!names.length){ el.innerHTML = '<p class="hint">선생님이 음식점 목록을 보내면 별점을 줄 수 있어요.</p>'; return; }
+    const p = [3, 3, 3];
+    el.innerHTML = `<div class="rate"><div class="row1"><b>음식점</b><select class="inp" style="width:auto;font-size:1rem">${names.map((n, i) => `<option value="${i}">${esc(n)}</option>`).join('')}</select></div>` +
+      ['맛', '가격', '양'].map((l, k) => `<div class="row1"><b style="width:40px">${l}</b><div class="stars" data-k="${k}">${[1, 2, 3, 4, 5].map(v => `<button data-v="${v}">${v}</button>`).join('')}</div></div>`).join('') +
+      '</div><div class="ctrl" style="margin-top:8px"><button class="btn" data-send>📨 이 음식점 별점 보내기</button></div>';
+    el.querySelectorAll('.stars').forEach(st => { const k = +st.dataset.k, upd = () => st.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.v <= p[k])); st.querySelectorAll('button').forEach(b => b.onclick = () => { p[k] = +b.dataset.v; upd(); }); upd(); });
+    el.querySelector('[data-send]').onclick = () => send(JSON.stringify([+el.querySelector('select').value, ...p])).catch(() => {});
+  },
+  render(posts, el){
+    liveResp = posts.map(x => { try { return JSON.parse(x.v); } catch(e){ return null; } }).filter(r => Array.isArray(r) && r.length === 4 && r[0] < shops.length && r.slice(1).every(n => n >= 1 && n <= 5));
+    el.innerHTML = `<p class="hint">📡 실시간 응답 ${liveResp.length}개가 아래 분석에 함께 반영돼요.</p>`; analyze();
+  },
+});
 
 let mode = 0, table = [];
 function analyze(){
-  $('#respN').textContent = `지금까지 모은 응답: ${resp.length}개`;
-  table = shops.map(([n, t], i) => { const rs = resp.filter(r => r[0] === i); const av = [1, 2, 3].map(k => rs.length ? rs.reduce((s, r) => s + r[k], 0) / rs.length : null); return {n, t, cnt: rs.length, av, tot: rs.length ? (av[0] + av[1] + av[2]) / 3 : null}; });
+  const all = resp.concat(liveResp);
+  $('#respN').textContent = `지금까지 모은 응답: ${all.length}개` + (liveResp.length ? ` (실시간 ${liveResp.length}개 포함)` : '');
+  table = shops.map(([n, t], i) => { const rs = all.filter(r => r[0] === i); const av = [1, 2, 3].map(k => rs.length ? rs.reduce((s, r) => s + r[k], 0) / rs.length : null); return {n, t, cnt: rs.length, av, tot: rs.length ? (av[0] + av[1] + av[2]) / 3 : null}; });
   const rankIn = (row, k) => { const val = k === 3 ? row.tot : row.av[k]; if (val === null) return '-'; return 1 + table.filter(o => o.t === row.t && (k === 3 ? o.tot : o.av[k]) > val).length; };
   const f = v => v === null ? '-' : v.toFixed(1);
   $('#rank').innerHTML = `<table class="rk"><tr><th>종류</th><th>음식점</th><th>응답 수</th><th>맛 평균</th><th>순위</th><th>가격 평균</th><th>순위</th><th>양 평균</th><th>순위</th></tr>` +

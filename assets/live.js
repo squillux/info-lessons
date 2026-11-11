@@ -1,8 +1,9 @@
-/* 정보 개념 체험관 · 실시간 투표 (Firebase Realtime Database)
-   사용: liveVote(box, {act:'5-04', items:[{t:'문항', sub:'근거 HTML', opts:['👍 찬성','👎 반대']}]})
-   - 학생 개인 정보는 저장하지 않는다. 서버에는 방 코드, 문항 상태, '기기 임의 번호 → 선택지 번호'만 저장된다.
-   - 교사: 방을 만든 기기에만 비밀 키가 남아 그 기기에서만 투표 시작·종료·공개를 조작할 수 있다.
-   - 연결이 안 되면 '손으로 세기' 모드(교사가 숫자를 누름)로 쓸 수 있다. */
+/* 정보 개념 체험관 · 실시간 기능 (Firebase Realtime Database)
+   1) liveVote(box, {act, items:[{t, sub, opts:[...]}]})        : 문항별 실시간 투표
+   2) liveBoard(box, {act, title, limit, conf, input, render, text}): 학생 제출물 모으기(낱말·평점·응답·작품)
+   - 학생 개인 정보는 저장하지 않는다. 서버에는 방 코드, 상태, '기기 임의 번호 → 제출 값'만 저장된다.
+   - 교사: 방을 만든 기기에만 비밀 키가 남아 그 기기에서만 시작·마감·공개·숨기기를 조작할 수 있다.
+   - 연결이 안 되면 각 활동의 기존(혼자 하기) 기능으로 수업한다. */
 const LIVE_CFG = {
   apiKey: 'AIzaSyDJV6-cIM0-UO5Rpp4VYZeUlHbWP4svXGk',
   authDomain: 'info-lessons-live-sq.firebaseapp.com',
@@ -12,7 +13,7 @@ const LIVE_CFG = {
 };
 const LIVE_SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
 
-(function(){
+const LIVE = (() => {
   const css = `.lv-bar{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
 .lv-bar .btn{font-size:.9rem}
 .lv-room{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--brand-soft);border-radius:16px;padding:10px 16px;margin-bottom:12px}
@@ -20,7 +21,7 @@ const LIVE_SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
 .lv-item{border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin:10px 0;background:#fff}
 .lv-item.open{border-color:var(--mint)}
 .lv-st{display:inline-block;font-size:.75rem;font-weight:800;border-radius:999px;padding:1px 9px;margin-left:6px;vertical-align:middle;background:var(--bg);color:var(--muted)}
-.lv-item.open .lv-st{background:var(--mint-soft);color:#0d7d71}
+.lv-item.open .lv-st,.lv-st.on{background:var(--mint-soft);color:#0d7d71}
 .lv-ctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .lv-ctl .btn{font-size:.85rem;padding:6px 12px}
 .lv-res{display:grid;gap:4px;margin-top:8px}
@@ -29,26 +30,18 @@ const LIVE_SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
 .lv-row .tr i{display:block;height:100%;width:0;background:var(--brand);transition:width .4s}
 .lv-row:nth-child(2) .tr i{background:var(--pink)}
 .lv-row:nth-child(3) .tr i{background:var(--on)}
-.lv-msg{font-size:.9rem;color:var(--muted);margin-top:6px}`;
+.lv-msg{font-size:.9rem;color:var(--muted);margin-top:6px}
+.lv-mod{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;max-height:220px;overflow:auto}
+.lv-mod button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:3px 8px;font-size:.85rem;color:var(--ink)}
+.lv-mod button.hid{text-decoration:line-through;opacity:.45}
+.lv-out{margin-top:10px}`;
   const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
-})();
 
-function liveVote(box, cfg){
-  const items = cfg.items, act = cfg.act;
-  const esc = s => String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
   const ls = {get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch(e){} }};
   const rnd = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => 'abcdefghijklmnopqrstuvwxyz0123456789'[b % 36]).join('');
-  let db = null, mode = null, code = null, key = null, pub = null, offs = [];
-  const counts = items.map(it => it.opts.map(() => 0));
-  const mine = {};   // 학생: 문항별 내가 고른 번호 (이번 라운드)
-
-  box.innerHTML = `<div class="lv-bar">
-      <button class="btn" data-m="teacher">🧑‍🏫 교사: 실시간 투표 열기</button>
-      <button class="btn line" data-m="student">🙋 학생: 방 코드로 참여</button>
-      <button class="btn line" data-m="hand">✋ 손으로 세기</button>
-    </div><div class="lv-top"></div><div class="lv-items"></div>`;
-  const top = box.querySelector('.lv-top'), list = box.querySelector('.lv-items');
-
+  const esc = s => String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  const dev = () => { let d = ls.get('live:dev'); if (!d || !/^[a-z0-9]{20}$/.test(d)){ d = rnd(20); ls.set('live:dev', d); } return d; };
+  let db = null;
   function loadSdk(){
     if (window.firebase?.database) return Promise.resolve();
     const add = f => new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = LIVE_SDK + f; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); });
@@ -59,15 +52,72 @@ function liveVote(box, cfg){
       if (!firebase.apps.length) firebase.initializeApp(LIVE_CFG);
       db = firebase.database();
       return Promise.race([db.ref('.info/serverTimeOffset').once('value'), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 8000))]);
-    });
+    }).then(() => db);
   }
-  const fail = e => { top.innerHTML = `<p class="feedback show bad">⚠️ 실시간 서버에 연결할 수 없어요(학교 인터넷 차단 등). <b>✋ 손으로 세기</b>로 진행해 주세요.</p>`; console.warn(e); };
+  /* 교사 방: 같은 활동의 이전 방이 있으면 이어서, 없으면 새로 만든다 */
+  async function teacherRoom(act, init, fresh){
+    await connect();
+    let last = null; try { last = JSON.parse(ls.get('live:last:' + act) || 'null'); } catch(e){}
+    let room = null;
+    if (!fresh && last && last.key){
+      const snap = await db.ref('rooms/' + last.code + '/pub').once('value').catch(() => null);
+      if (snap && snap.exists() && snap.val().act === act) room = {code: last.code, key: last.key, pub: snap.val()};
+    }
+    if (!room){
+      for (let tries = 0; tries < 8 && !room; tries++){
+        const c = String(1000 + Math.floor(Math.random() * 9000)), k = rnd(32);
+        try { await db.ref('keys/' + c).set(k); room = {code: c, key: k, pub: Object.assign({t: 0, act}, init)}; } catch(e){}
+      }
+      if (!room) throw new Error('방을 만들 수 없어요');
+      ls.set('live:last:' + act, JSON.stringify({code: room.code, key: room.key}));
+      room.fresh = true;
+    }
+    room.save = () => { const t = Math.max(Date.now(), (room.pub.t || 0) + 1); room.pub.t = t; return db.ref().update({[`ctl/${room.code}/${room.key}/t`]: t, [`rooms/${room.code}/pub`]: room.pub}); };
+    if (room.fresh) await room.save();
+    return room;
+  }
+  const roomBar = (code, onNew) => { const d = document.createElement('div'); d.className = 'lv-room';
+    d.innerHTML = `<span>방 코드</span><span class="code">${code}</span><span class="hint">학생은 이 페이지에서 <b>🙋 학생: 방 코드로 참여</b>를 누르고 이 번호를 입력해요.</span><button class="btn line">새 방 만들기</button>`;
+    d.querySelector('button').onclick = onNew; return d; };
+  const failBox = el => { el.innerHTML = `<p class="feedback show bad">⚠️ 실시간 서버에 연결할 수 없어요(학교 인터넷 차단 등). 이 활동의 기본 기능으로 진행해 주세요.</p>`; };
+  function joinForm(el, act, onJoin){
+    el.innerHTML = `<p>선생님 화면의 <b>방 코드 4자리</b>를 입력하세요.</p><p><input class="inp" inputmode="numeric" maxlength="4" style="width:140px"> <button class="btn">참여하기</button></p><div class="feedback"></div>`;
+    const inp = el.querySelector('input'), fb = el.querySelector('.feedback');
+    const go = async () => {
+      const c = inp.value.trim();
+      if (!/^\d{4}$/.test(c)) return feedback(fb, false, '숫자 4자리를 입력하세요.');
+      feedback(fb, true, '연결하는 중…');
+      try { await connect(); } catch(e){ return failBox(el); }
+      const snap = await db.ref('rooms/' + c + '/pub').once('value').catch(() => null);
+      if (!snap || !snap.exists() || snap.val().act !== act) return feedback(fb, false, '이 활동에 열린 방이 아니에요. 번호를 다시 확인하세요.');
+      onJoin(c, snap.val());
+    };
+    el.querySelector('button').onclick = go; inp.onkeydown = e => { if (e.key === 'Enter') go(); };
+  }
+  function bar(box, modes, onPick, start){
+    const b = document.createElement('div'); b.className = 'lv-bar';
+    b.innerHTML = modes.map(([m, label]) => `<button class="btn line" data-m="${m}">${label}</button>`).join('');
+    const pick = m => { b.querySelectorAll('.btn').forEach(x => x.classList.toggle('line', x.dataset.m !== m)); onPick(m); };
+    b.querySelectorAll('.btn').forEach(x => x.onclick = () => pick(x.dataset.m));
+    box.prepend(b); if (start) pick(start);
+  }
+  return {ls, rnd, esc, dev, connect, teacherRoom, roomBar, failBox, joinForm, bar, get db(){ return db; }};
+})();
+
+/* ============ 1) 실시간 투표 ============ */
+function liveVote(box, cfg){
+  const items = cfg.items, act = cfg.act, esc = LIVE.esc;
+  let mode = null, room = null, code = null, pub = null, offs = [];
+  const counts = items.map(it => it.opts.map(() => 0));
+  const mine = {};
+  box.innerHTML = `<div class="lv-top"></div><div class="lv-items"></div>`;
+  const top = box.querySelector('.lv-top'), list = box.querySelector('.lv-items');
   const cleanup = () => { offs.forEach(f => f()); offs = []; };
 
-  function drawRes(i, el, showPct){
+  function drawRes(i, el){
     const c = counts[i], tot = c.reduce((a, b) => a + b, 0);
     el.innerHTML = items[i].opts.map((o, k) => `<div class="lv-row"><span>${esc(o)}</span><span class="tr"><i style="width:${tot ? c[k] / tot * 100 : 0}%"></i></span><b>${c[k]}</b></div>`).join('') +
-      `<div class="lv-msg">참여 ${tot}명${showPct && tot ? ' · ' + summary(i) : ''}</div>`;
+      `<div class="lv-msg">참여 ${tot}명${tot ? ' · ' + summary(i) : ''}</div>`;
   }
   function summary(i){
     const c = counts[i], mx = Math.max(...c), win = c.filter(x => x === mx).length;
@@ -75,44 +125,22 @@ function liveVote(box, cfg){
   }
   const head = (it, i) => `<p><b>${i + 1}. ${esc(it.t)}</b><span class="lv-st"></span></p>${it.sub ? `<p class="hint" style="margin:2px 0">${it.sub}</p>` : ''}`;
 
-  /* ---------- 손으로 세기 ---------- */
   function hand(){
     cleanup(); mode = 'hand'; top.innerHTML = '<p class="hint">손을 든 학생 수만큼 선생님이 버튼을 눌러 기록해요. (저장되지 않아요.)</p>';
     list.innerHTML = items.map((it, i) => `<div class="lv-item" data-i="${i}">${head(it, i)}<div class="lv-ctl">${it.opts.map((o, k) => `<button class="opt" data-k="${k}">${esc(o)} +1</button>`).join('')}<button class="btn line" data-r>초기화</button></div><div class="lv-res"></div></div>`).join('');
     list.querySelectorAll('.lv-item').forEach(el => {
       const i = +el.dataset.i, res = el.querySelector('.lv-res');
       el.querySelector('.lv-st').textContent = '손으로 세기';
-      el.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { counts[i][+b.dataset.k]++; drawRes(i, res, true); });
-      el.querySelector('[data-r]').onclick = () => { counts[i] = counts[i].map(() => 0); drawRes(i, res, true); };
-      drawRes(i, res, true);
+      el.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { counts[i][+b.dataset.k]++; drawRes(i, res); });
+      el.querySelector('[data-r]').onclick = () => { counts[i] = counts[i].map(() => 0); drawRes(i, res); };
+      drawRes(i, res);
     });
   }
-
-  /* ---------- 교사 ---------- */
-  async function teacher(){
+  async function teacher(fresh){
     cleanup(); mode = 'teacher'; top.innerHTML = '<p class="hint">실시간 서버에 연결하는 중…</p>'; list.innerHTML = '';
-    try { await connect(); } catch(e){ return fail(e); }
-    let last = null; try { last = JSON.parse(ls.get('live:last') || 'null'); } catch(e){}
-    if (last && last.act === act && last.key){
-      const snap = await db.ref('rooms/' + last.code + '/pub').once('value').catch(() => null);
-      if (snap && snap.exists()){ code = last.code; key = last.key; pub = snap.val(); return teacherRoom(); }
-    }
-    for (let tries = 0; tries < 8; tries++){
-      const c = String(1000 + Math.floor(Math.random() * 9000)), k = rnd(32);
-      try { await db.ref('keys/' + c).set(k); code = c; key = k; break; } catch(e){ /* 이미 쓰는 번호 */ }
-    }
-    if (!code) return fail(new Error('no room'));
-    ls.set('live:last', JSON.stringify({code, key, act}));
-    pub = {t: 0, act, q: Object.fromEntries(items.map((_, i) => [i, {open: false, show: false, round: 1}]))};
-    await save(); teacherRoom();
-  }
-  function save(){
-    const t = Math.max(Date.now(), (pub.t || 0) + 1); pub.t = t;
-    return db.ref().update({[`ctl/${code}/${key}/t`]: t, [`rooms/${code}/pub`]: pub});
-  }
-  function teacherRoom(){
-    top.innerHTML = `<div class="lv-room"><span>방 코드</span><span class="code">${code}</span><span class="hint">학생은 이 페이지에서 <b>🙋 학생: 방 코드로 참여</b>를 누르고 이 번호를 입력해요.</span><button class="btn line" id="lvNew">새 방 만들기</button></div>`;
-    top.querySelector('#lvNew').onclick = () => { ls.set('live:last', ''); code = key = null; teacher(); };
+    try { room = await LIVE.teacherRoom(act, {q: Object.fromEntries(items.map((_, i) => [i, {open: false, show: false, round: 1}]))}, fresh); } catch(e){ return LIVE.failBox(top); }
+    code = room.code; pub = room.pub;
+    top.innerHTML = ''; top.appendChild(LIVE.roomBar(code, () => teacher(true)));
     list.innerHTML = items.map((it, i) => `<div class="lv-item" data-i="${i}">${head(it, i)}<div class="lv-ctl">
         <button class="btn" data-a="open"></button><button class="btn line" data-a="show"></button><button class="btn line" data-a="again">🔄 다시 투표</button></div><div class="lv-res"></div></div>`).join('');
     list.querySelectorAll('.lv-item').forEach(el => {
@@ -120,38 +148,26 @@ function liveVote(box, cfg){
       const paint = () => { const q = pub.q[i]; el.classList.toggle('open', q.open); el.querySelector('.lv-st').textContent = q.open ? '투표 중' : '닫힘';
         el.querySelector('[data-a=open]').textContent = q.open ? '⏹ 투표 종료' : '▶ 투표 시작';
         el.querySelector('[data-a=show]').textContent = q.show ? '🙈 학생 화면에서 결과 숨기기' : '📊 학생 화면에 결과 공개'; };
-      el.querySelector('[data-a=open]').onclick = () => { pub.q[i].open = !pub.q[i].open; paint(); save(); };
-      el.querySelector('[data-a=show]').onclick = () => { pub.q[i].show = !pub.q[i].show; paint(); save(); };
-      el.querySelector('[data-a=again]').onclick = () => { if (!confirm('이 문항의 투표 결과를 지우고 다시 투표할까요?')) return; pub.q[i].round++; pub.q[i].open = false; pub.q[i].show = false; paint(); save(); listen(i, res); };
-      paint(); listen(i, res);
+      el.querySelector('[data-a=open]').onclick = () => { pub.q[i].open = !pub.q[i].open; paint(); room.save(); };
+      el.querySelector('[data-a=show]').onclick = () => { pub.q[i].show = !pub.q[i].show; paint(); room.save(); };
+      el.querySelector('[data-a=again]').onclick = () => { if (!confirm('이 문항의 투표 결과를 지우고 다시 투표할까요?')) return; pub.q[i].round++; pub.q[i].open = false; pub.q[i].show = false; paint(); room.save(); listen(i, () => drawRes(i, res)); };
+      paint(); listen(i, () => drawRes(i, res));
     });
   }
-  function listen(i, res){
-    const ref = db.ref(`votes/${code}/${i}/${pub.q[i].round}`);
+  const lOffs = {};
+  function listen(i, after){
+    if (lOffs[i]) lOffs[i]();
+    const ref = LIVE.db.ref(`votes/${code}/${i}/${pub.q[i].round}`);
     const h = ref.on('value', s => {
       counts[i] = items[i].opts.map(() => 0); const v = s.val() || {};
-      Object.entries(v).forEach(([d, k]) => { if (counts[i][k] !== undefined) counts[i][k]++; if (mode === 'student' && d === dev()) mine[i] = k; });
-      if (mode === 'teacher') drawRes(i, res, true); else studentPaint(i);
+      Object.entries(v).forEach(([d, k]) => { if (counts[i][k] !== undefined) counts[i][k]++; if (d === LIVE.dev()) mine[i] = k; });
+      after();
     });
-    offs.push(() => ref.off('value', h));
+    lOffs[i] = () => ref.off('value', h); offs.push(lOffs[i]);
   }
-
-  /* ---------- 학생 ---------- */
-  const dev = () => { let d = ls.get('live:dev'); if (!d || !/^[a-z0-9]{20}$/.test(d)){ d = rnd(20); ls.set('live:dev', d); } return d; };
   function student(){
     cleanup(); mode = 'student'; list.innerHTML = '';
-    top.innerHTML = `<p>선생님 화면의 <b>방 코드 4자리</b>를 입력하세요.</p><p><input class="inp" id="lvCode" inputmode="numeric" maxlength="4" style="width:140px"> <button class="btn" id="lvJoin">참여하기</button></p><div class="feedback" id="lvFb"></div>`;
-    const go = async () => {
-      const c = top.querySelector('#lvCode').value.trim();
-      if (!/^\d{4}$/.test(c)) return feedback(top.querySelector('#lvFb'), false, '숫자 4자리를 입력하세요.');
-      feedback(top.querySelector('#lvFb'), true, '연결하는 중…');
-      try { await connect(); } catch(e){ return fail(e); }
-      const snap = await db.ref('rooms/' + c + '/pub').once('value').catch(() => null);
-      if (!snap || !snap.exists() || snap.val().act !== act) return feedback(top.querySelector('#lvFb'), false, '이 활동에 열린 방이 아니에요. 번호를 다시 확인하세요.');
-      code = c; pub = snap.val(); studentRoom();
-    };
-    top.querySelector('#lvJoin').onclick = go;
-    top.querySelector('#lvCode').onkeydown = e => { if (e.key === 'Enter') go(); };
+    LIVE.joinForm(top, act, (c, p) => { code = c; pub = p; studentRoom(); });
   }
   function studentRoom(){
     top.innerHTML = `<div class="lv-room"><span>참여한 방</span><span class="code">${code}</span><span class="hint">선생님이 투표를 시작하면 버튼을 누를 수 있어요. 이름은 저장되지 않아요.</span></div>`;
@@ -160,29 +176,18 @@ function liveVote(box, cfg){
       const i = +el.dataset.i;
       el.querySelectorAll('[data-k]').forEach(b => b.onclick = () => {
         if (!pub.q[i].open || i in mine) return;
-        const k = +b.dataset.k; mine[i] = k; studentPaint(i);
-        db.ref(`votes/${code}/${i}/${pub.q[i].round}/${dev()}`).set(k).catch(() => { delete mine[i]; studentPaint(i); el.querySelector('.lv-msg').textContent = '⚠️ 투표가 닫혔거나 이미 투표했어요.'; });
+        const k = +b.dataset.k; mine[i] = k; paintS(i);
+        LIVE.db.ref(`votes/${code}/${i}/${pub.q[i].round}/${LIVE.dev()}`).set(k).catch(() => { delete mine[i]; paintS(i); el.querySelector('.lv-msg').textContent = '⚠️ 투표가 닫혔거나 이미 투표했어요.'; });
       });
     });
-    const ref = db.ref('rooms/' + code + '/pub'), rounds = {};
+    const ref = LIVE.db.ref('rooms/' + code + '/pub'), rounds = {};
     const h = ref.on('value', s => {
       if (!s.exists()) return; pub = s.val();
-      items.forEach((_, i) => { if (rounds[i] !== pub.q[i].round){ if (rounds[i] !== undefined) delete mine[i]; rounds[i] = pub.q[i].round; listenStudent(i); } studentPaint(i); });
+      items.forEach((_, i) => { if (rounds[i] !== pub.q[i].round){ if (rounds[i] !== undefined) delete mine[i]; rounds[i] = pub.q[i].round; listen(i, () => paintS(i)); } paintS(i); });
     });
     offs.push(() => ref.off('value', h));
   }
-  const sOffs = {};
-  function listenStudent(i){
-    if (sOffs[i]) sOffs[i]();
-    const ref = db.ref(`votes/${code}/${i}/${pub.q[i].round}`);
-    const h = ref.on('value', s => {
-      counts[i] = items[i].opts.map(() => 0); const v = s.val() || {};
-      Object.entries(v).forEach(([d, k]) => { if (counts[i][k] !== undefined) counts[i][k]++; if (d === dev()) mine[i] = k; });
-      studentPaint(i);
-    });
-    sOffs[i] = () => ref.off('value', h); offs.push(sOffs[i]);
-  }
-  function studentPaint(i){
+  function paintS(i){
     const el = list.querySelector(`.lv-item[data-i="${i}"]`); if (!el || !pub) return;
     const q = pub.q[i], voted = i in mine;
     el.classList.toggle('open', q.open);
@@ -190,13 +195,92 @@ function liveVote(box, cfg){
     el.querySelectorAll('[data-k]').forEach(b => { b.disabled = !q.open || voted; b.classList.toggle('right', voted && +b.dataset.k === mine[i]); });
     el.querySelector('.lv-msg').textContent = voted ? '✅ 투표했어요.' : q.open ? '👆 내 생각과 같은 쪽을 눌러요.' : '⏳ 선생님이 투표를 시작하면 누를 수 있어요.';
     const res = el.querySelector('.lv-res');
-    if (q.show) drawRes(i, res, true); else res.innerHTML = '';
+    if (q.show) drawRes(i, res); else res.innerHTML = '';
   }
+  LIVE.bar(box, [['teacher', '🧑‍🏫 교사: 실시간 투표 열기'], ['student', '🙋 학생: 방 코드로 참여'], ['hand', '✋ 손으로 세기']], m => ({teacher: () => teacher(false), student, hand})[m](), 'hand');
+}
 
-  box.querySelectorAll('.lv-bar [data-m]').forEach(b => b.onclick = () => {
-    box.querySelectorAll('.lv-bar .btn').forEach(x => x.classList.toggle('line', x !== b));
-    ({teacher, student, hand})[b.dataset.m]();
-  });
-  hand();
-  box.querySelectorAll('.lv-bar .btn').forEach(x => x.classList.toggle('line', x.dataset.m !== 'hand'));
+/* ============ 2) 실시간 모으기 판 ============
+   cfg = {act, title, limit(기기당 제출 수, 기본 3),
+          conf()           : (교사) 학생에게 보낼 설정 문자열 — 없으면 생략
+          input(el, send, conf, role) : 학생 입력 화면을 el에 만든다. send(문자열) → Promise
+          render(posts, el, role, conf): 모은 값 보여 주기. posts = [{id, v}] (숨긴 것 제외)
+          text(v)          : 교사 숨기기 목록에 보일 짧은 글 (기본: v 앞 40자)} */
+function liveBoard(box, cfg){
+  const act = cfg.act, limit = cfg.limit || 3, esc = LIVE.esc;
+  const text = cfg.text || (v => String(v).slice(0, 40));
+  let room = null, code = null, pub = null, offs = [], posts = {}, sent = 0, lastConf = null;
+  box.innerHTML = `<div class="lv-top"></div><div class="lv-body"></div>`;
+  const top = box.querySelector('.lv-top'), body = box.querySelector('.lv-body');
+  const cleanup = () => { offs.forEach(f => f()); offs = []; posts = {}; };
+  const visible = () => Object.entries(posts).filter(([id]) => !(pub.hide || {})[id]).map(([id, v]) => ({id, v}));
+  function listenPosts(after){
+    const ref = LIVE.db.ref(`posts/${code}/${pub.round}`);
+    const h = ref.on('value', s => {
+      posts = {}; const v = s.val() || {};
+      Object.entries(v).forEach(([d, arr]) => Object.entries(arr || {}).forEach(([n, val]) => posts[d + '_' + n] = val));
+      after();
+    });
+    offs.push(() => ref.off('value', h));
+  }
+  function off(){ cleanup(); top.innerHTML = '<p class="hint">💻 반 친구들과 실시간으로 모으려면 위 버튼을 누르세요. 선생님이 방을 열고, 학생은 방 코드로 참여해요. 이름은 저장되지 않아요.</p>'; body.innerHTML = ''; }
+
+  async function teacher(fresh){
+    cleanup(); top.innerHTML = '<p class="hint">실시간 서버에 연결하는 중…</p>'; body.innerHTML = '';
+    try { room = await LIVE.teacherRoom(act, {open: false, show: false, round: 1, cfg: cfg.conf ? cfg.conf() : ''}, fresh); } catch(e){ return LIVE.failBox(top); }
+    code = room.code; pub = room.pub; pub.hide = pub.hide || {};
+    top.innerHTML = ''; top.appendChild(LIVE.roomBar(code, () => teacher(true)));
+    body.innerHTML = `<div class="lv-item"><p><b>${esc(cfg.title || '실시간 모으기')}</b><span class="lv-st"></span></p>
+      <div class="lv-ctl"><button class="btn" data-a="open"></button><button class="btn line" data-a="show"></button>${cfg.conf ? '<button class="btn line" data-a="conf">📤 지금 설정을 학생에게 보내기</button>' : ''}<button class="btn line" data-a="again">🔄 모두 지우고 새로 받기</button></div>
+      <div class="lv-msg"></div><details style="margin-top:6px"><summary class="hint">🙈 부적절한 제출물 숨기기 (눌러서 펼치기)</summary><div class="lv-mod"></div></details></div><div class="lv-out"></div>`;
+    const it = body.querySelector('.lv-item'), out = body.querySelector('.lv-out');
+    const paint = () => { it.classList.toggle('open', pub.open); it.querySelector('.lv-st').textContent = pub.open ? '받는 중' : '닫힘';
+      it.querySelector('[data-a=open]').textContent = pub.open ? '⏹ 받기 마감' : '▶ 받기 시작';
+      it.querySelector('[data-a=show]').textContent = pub.show ? '🙈 학생 화면에서 결과 숨기기' : '📊 학생 화면에 결과 공개'; };
+    const draw = () => {
+      const all = Object.entries(posts);
+      it.querySelector('.lv-msg').textContent = `제출 ${all.length}개 · 참여 기기 ${new Set(all.map(([id]) => id.split('_')[0])).size}대`;
+      it.querySelector('.lv-mod').innerHTML = all.map(([id, v]) => `<button data-id="${id}" class="${pub.hide[id] ? 'hid' : ''}" title="눌러서 숨기기/보이기">${esc(text(v))}</button>`).join('') || '<span class="hint">아직 제출물이 없어요.</span>';
+      it.querySelectorAll('.lv-mod [data-id]').forEach(b => b.onclick = () => { const id = b.dataset.id; if (pub.hide[id]) delete pub.hide[id]; else pub.hide[id] = true; room.save(); draw(); });
+      cfg.render(visible(), out, 'teacher', pub.cfg);
+    };
+    it.querySelector('[data-a=open]').onclick = () => { pub.open = !pub.open; paint(); room.save(); };
+    it.querySelector('[data-a=show]').onclick = () => { pub.show = !pub.show; paint(); room.save(); };
+    if (cfg.conf) it.querySelector('[data-a=conf]').onclick = () => { pub.cfg = cfg.conf(); room.save(); feedback(it.querySelector('.lv-msg'), true, '📤 설정을 보냈어요.'); };
+    it.querySelector('[data-a=again]').onclick = () => { if (!confirm('지금까지 받은 제출물을 모두 지우고 새로 받을까요?')) return; pub.round++; pub.hide = {}; pub.open = false; pub.show = false; paint(); room.save(); cleanupPosts(); listenPosts(draw); draw(); };
+    const cleanupPosts = () => { offs.forEach(f => f()); offs = []; posts = {}; };
+    paint(); listenPosts(draw); draw();
+  }
+  function student(){
+    cleanup(); body.innerHTML = '';
+    LIVE.joinForm(top, act, (c, p) => { code = c; pub = p; studentRoom(); });
+  }
+  function studentRoom(){
+    top.innerHTML = `<div class="lv-room"><span>참여한 방</span><span class="code">${code}</span><span class="hint">이름은 저장되지 않아요. 친구를 존중하는 말만 보내요.</span></div>`;
+    body.innerHTML = `<div class="lv-item"><p><b>${esc(cfg.title || '실시간 모으기')}</b><span class="lv-st"></span></p><div class="lv-in"></div><div class="lv-msg"></div></div><div class="lv-out"></div>`;
+    const it = body.querySelector('.lv-item'), inEl = body.querySelector('.lv-in'), out = body.querySelector('.lv-out');
+    let round = null;
+    const mineCount = () => Object.keys(posts).filter(id => id.startsWith(LIVE.dev() + '_')).length;
+    const send = v => {
+      if (!pub.open) return Promise.reject(new Error('closed'));
+      const n = mineCount(); if (n >= limit) return Promise.reject(new Error('limit'));
+      return LIVE.db.ref(`posts/${code}/${pub.round}/${LIVE.dev()}/${n}`).set(String(v).slice(0, 1500)).catch(e => { throw e; });
+    };
+    const paint = () => {
+      it.classList.toggle('open', pub.open); it.querySelector('.lv-st').textContent = pub.open ? '받는 중' : '닫힘';
+      const n = mineCount();
+      it.querySelector('.lv-msg').textContent = !pub.open ? '⏳ 선생님이 받기를 시작하면 보낼 수 있어요.' : n >= limit ? `✅ ${limit}개를 모두 보냈어요.` : `보낸 개수 ${n} / ${limit}`;
+      inEl.querySelectorAll('button,input,textarea,select').forEach(x => x.disabled = !pub.open || n >= limit);
+      if (pub.show) cfg.render(visible(), out, 'student', pub.cfg); else out.innerHTML = '';
+    };
+    const ref = LIVE.db.ref('rooms/' + code + '/pub');
+    const h = ref.on('value', s => {
+      if (!s.exists()) return; pub = s.val(); pub.hide = pub.hide || {};
+      if (pub.cfg !== lastConf || !inEl.childElementCount){ lastConf = pub.cfg; inEl.innerHTML = ''; cfg.input(inEl, v => send(v).then(paint), pub.cfg, 'student'); }
+      if (round !== pub.round){ round = pub.round; offs.filter((_, k) => k > 0).forEach(f => f()); offs = offs.slice(0, 1); listenPosts(paint); }
+      paint();
+    });
+    offs.push(() => ref.off('value', h));
+  }
+  LIVE.bar(box, [['teacher', '🧑‍🏫 교사: 실시간으로 모으기'], ['student', '🙋 학생: 방 코드로 참여'], ['off', '혼자 하기']], m => ({teacher: () => teacher(false), student, off})[m](), 'off');
 }

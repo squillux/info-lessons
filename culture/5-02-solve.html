@@ -16,6 +16,8 @@
 .board h4{margin:0 0 8px;font-family:var(--cute);font-weight:400;font-size:1.3rem;color:var(--brand)}
 .board p{margin:6px 0}
 .checks label{display:block;padding:4px 0}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.gal .board h4{font-size:1.1rem}
 </style>
 </head>
 <body data-unit="5" data-title="디지털 기술로 사회 문제 해결하기" data-sub="중1 Ⅴ단원 · 디지털 사회의 의미와 특성 · 미래엔 195쪽">
@@ -52,6 +54,12 @@
     </div>
 
     <div class="card">
+      <h3>🖼️ 모둠 해결안 갤러리 <span class="tag-opt">실시간</span></h3>
+      <p>완성한 해결안 보드를 보내면 반 전체의 해결안이 한 화면에 모여요. 선생님이 결과를 공개하면 다른 모둠의 해결안도 볼 수 있어요. (모둠당 2개까지, 이름은 저장되지 않아요.)</p>
+      <div id="gallery"></div>
+    </div>
+
+    <div class="card">
       <h3>✅ 활동 평가하기</h3>
       <p>발표를 마친 뒤 스스로 점검해 보세요.</p>
       <div class="checks" id="checks"></div>
@@ -74,6 +82,7 @@
 </main>
 <script src="../assets/contents.js"></script>
 <script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
 <script>
 renderChoice($('#match'), [
   {icon:'🚑', t:'[의료] 응급 환자가 생겼을 때 빈 응급실을 찾느라 구급차가 여러 병원을 돌아다녀요.', a:0, e:'병원의 응급실 정보를 네트워크로 실시간 공유하면 가장 가까운 빈 병상을 바로 찾을 수 있어요.'},
@@ -99,6 +108,22 @@ function draw(){
 const CH = ['현재 우리 사회의 문제 중 디지털 기술로 해결할 수 있는 문제를 찾았다.', '문제를 해결하기 위한 디지털 기술을 골라 해결 방법을 제시했다.', '다른 모둠의 발표를 듣고 좋은 점을 찾았다.'];
 $('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
 $$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 멋져요! 모두 해냈어요.' : `${n} / ${CH.length}`; });
+
+liveBoard($('#gallery'), {act: '5-02', title: '우리 모둠 해결안 보내기', limit: 2,
+  text: v => { try { return JSON.parse(v).p.slice(0, 30); } catch(e){ return '?'; } },
+  input(el, send){
+    el.innerHTML = '<p class="hint">위의 ①~④를 채운 뒤 보내요.</p><button class="btn">📤 우리 모둠 해결안 보내기</button>';
+    el.querySelector('button').onclick = () => {
+      const d = {f: $('#field').value, p: $('#prob').value.trim().slice(0, 300), t: [...chosen].join(', '), h: $('#how').value.trim().slice(0, 500)};
+      if (!d.p || !d.h) return alert('문제(②)와 해결 방법(④)을 먼저 적어 주세요.');
+      send(JSON.stringify(d)).catch(() => {});
+    };
+  },
+  render(posts, el){
+    const L = s => String(s || '').replace(/[<>&]/g, '');
+    el.innerHTML = posts.length ? '<div class="gal">' + posts.map((x, k) => { let d = {}; try { d = JSON.parse(x.v); } catch(e){} return '<div class="board"><h4>📢 ' + (k + 1) + '. ' + L(d.f) + '</h4><p><b>문제</b> ' + L(d.p) + '</p><p><b>기술</b> ' + L(d.t) + '</p><p><b>방법</b> ' + L(d.h) + '</p></div>'; }).join('') + '</div>' : '<p class="hint">아직 보낸 해결안이 없어요.</p>';
+  },
+});
 
 renderQuiz($('#quiz'), [
   {q:'디지털 기술로 사회 문제를 해결할 때 가장 먼저 할 일은?', o:['가장 최신 기술부터 고른다','해결할 문제를 구체적으로 정한다','기기를 구입한다'], a:1, e:'문제를 정확히 정해야 알맞은 기술을 고를 수 있어요.'},

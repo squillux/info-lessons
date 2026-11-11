@@ -67,4 +67,5 @@
 - Firebase 프로젝트 `info-lessons-live-sq` (Realtime Database, asia-southeast1). 보안 규칙은 `firebase/database.rules.json`, 배포: `firebase deploy --only database --project info-lessons-live-sq`
 - 저장되는 것: 방 코드(4자리), 문항의 열림·공개 상태, `기기 임의 번호 → 선택지 번호`. **이름 등 학생 정보는 저장하지 않습니다.**
 - 교사 조작은 방을 만든 기기에 저장된 비밀 키로만 가능합니다(학생은 투표 시작·종료·공개를 바꿀 수 없음). 연결이 안 되면 '손으로 세기' 모드를 씁니다.
-- 연결된 활동: Ⅴ-3 디지털 사회와 직업의 변화(우리 반 생각은?), Ⅴ-4 디지털 윤리 상황판(의견이 갈리는 규칙)
+- 실시간 투표(liveVote): Ⅴ-3 직업의 변화, Ⅴ-4 디지털 윤리 상황판
+- 실시간 모으기(liveBoard, 교사 숨기기 기능): Ⅱ-12 설문 문항, Ⅱ-19 워드 클라우드, Ⅱ-23 맛집 평점, Ⅴ-2 해결안 갤러리, Ⅴ-13 카드 뉴스 갤러리
