@@ -286,10 +286,13 @@ body{padding-bottom:56px}
     });
     let box = $id('gaToday');
     const td = S.today && S.today.d === today() ? Object.keys(S.today.a || {}) : [];
-    if (!td.length || typeof contentsList === 'undefined'){ if (box) box.remove(); return; }
+    if (teacher || typeof contentsList === 'undefined'){ if (box) box.remove(); return; }
     if (!box){ box = document.createElement('div'); box.id = 'gaToday'; box.className = 'ga-today'; const m = document.querySelector('main'); m && m.prepend(box); }
     const items = td.map(id => contentsList.find(c => actOf(c.href) === id)).filter(Boolean);
-    box.innerHTML = '<b>📌 오늘의 활동</b><br>' + items.map(c => `<a href="${esc(c.href)}">${esc(c.icon || '')} ${esc(c.title)}${S.prog && S.prog[actOf(c.href)] && S.prog[actOf(c.href)].d ? ' ✅' : ''}</a>`).join('');
+    const ids = contentsList.map(c => actOf(c.href)).filter(Boolean), op = ids.filter(id => S.open && S.open[id]), pg = S.prog || {};
+    const nd = ids.filter(id => pg[id] && pg[id].d).length, ning = ids.filter(id => pg[id] && !pg[id].d).length;
+    const mine = `<div style="margin-top:${items.length ? 8 : 0}px"><b>📈 나의 학습</b> · 열린 활동 ${op.length}개 · ✅ 완료 ${nd}개 · 진행 중 ${ning}개${op.length && op.every(id => pg[id] && pg[id].d) ? ' · 🎉 열린 활동을 모두 끝냈어요!' : ''}</div>`;
+    box.innerHTML = (items.length ? '<b>📌 오늘의 활동</b><br>' : '') + items.map(c => `<a href="${esc(c.href)}">${esc(c.icon || '')} ${esc(c.title)}${S.prog && S.prog[actOf(c.href)] && S.prog[actOf(c.href)].d ? ' ✅' : ''}</a>`).join('') + mine;
   }
   let mo = null;   // 단원 버튼으로 카드가 다시 그려지면 표시를 다시 붙임
   function watchCards(){

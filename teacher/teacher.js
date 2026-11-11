@@ -109,7 +109,7 @@
   function vOpen(v){
     v.insertAdjacentHTML('beforeend', `<div class="card"><h3>🔓 ${cname(T.c)} 활동 열기·잠금</h3>
       <p class="hint">처음에는 모든 활동이 잠겨 있어요. 스위치를 켠 활동만 학생이 할 수 있고, 학생 화면에 바로 반영돼요. <b>📌 오늘</b>을 누르면 학생 목차 맨 위에 '오늘의 활동'으로 보이고, 그 활동도 함께 열려요.</p><div id="useg"></div>
-      ${typeof LOGIN_ON !== 'undefined' && !LOGIN_ON ? `<p class="feedback show bad">⚠️ 지금은 <b>학생 로그인이 꺼져 있어서</b> 학생들은 로그인 없이 모든 활동을 할 수 있고, 잠금과 기록이 적용되지 않아요. 명단 등록과 개인 코드 준비는 미리 해 둘 수 있어요. (켜기: assets/contents.js의 LOGIN_ON)</p>` : ''}
+      ${typeof LOGIN_ON !== 'undefined' && !LOGIN_ON ? `<p class="feedback show bad">⚠️ 지금은 <b>학생 로그인이 꺼져 있어서</b> 학생들은 로그인 없이 모든 활동을 할 수 있고, 잠금과 기록이 적용되지 않아요. 명단 등록과 개인 코드 준비는 미리 해 둘 수 있어요. (켜기: assets/contents.js의 LOGIN_ON) <a href="../index.html?login" target="_blank">🔐 로그인을 켠 체험관 미리 보기 ↗</a> (이 기기에서는 교사 모드로 열려요. 학생 화면은 학번·개인 코드로 확인)</p>` : ''}
       <div class="row"><button class="btn ghost" id="allOn">이 단원 모두 열기</button><button class="btn line" id="allOff">이 단원 모두 잠그기</button><button class="btn line" id="clrToday">오늘의 활동 비우기</button></div>
       <div class="acts" id="acts"></div>
       <details class="noprint" style="margin-top:14px"><summary><b>📋 이 반의 열림 설정을 다른 반에 복사</b></summary>
@@ -185,7 +185,7 @@
       const nA = st.filter(s => att[s.sid]).length, nV = st.filter(s => vis[s.sid]).length;
       t.innerHTML = `<tr><th>번호</th><th class="l">이름</th><th>출석 (${nA}/${st.length})</th><th>첫 접속</th><th>마지막 접속</th><th>접속 횟수 (${nV}명)</th></tr>` + st.map(s => {
         const a = att[s.sid], x = vis[s.sid];
-        return `<tr><td>${s.no}</td><td class="l">${esc(s.n)}</td><td class="click ${a ? 'ok' : 'no'}" data-s="${s.sid}">${a ? '✅ ' + hm(a.t) + (a.k === 'T' ? ' (교사)' : '') : '❌'}</td><td>${x ? hm(x.f) : ''}</td><td>${x ? hm(x.l) : ''}</td><td>${x ? x.n : ''}</td></tr>`;
+        return `<tr><td>${s.no}</td><td class="l">${esc(s.n)}</td><td class="click ${a ? 'ok' : 'no'}" data-s="${s.sid}">${a ? '✅ ' + hm(a.t) + (a.k === 'T' ? ' (교사)' : '') : '미출석'}</td><td>${x ? hm(x.f) : ''}</td><td>${x ? hm(x.l) : ''}</td><td>${x ? x.n : ''}</td></tr>`;
       }).join('');
       t.querySelectorAll('td[data-s]').forEach(td => td.onclick = () => {
         const sid = td.dataset.s, p = `attend/${T.c}/${d()}/${sid}`, nm = (T.roster[sid] || {}).n;
@@ -237,7 +237,7 @@
       const a = ACTS.find(x => x.id === id), st = students(T.c), by = {};
       st.forEach(s => { const r = (P[s.sid] || {})[id]; if (r && r.q) Object.entries(r.q).forEach(([qid, q]) => { const b = by[qid] = by[qid] || {n: 0, sum: 0, t: q.t, wrong: {}}; b.n++; b.sum += q.b; (q.w ? q.w.split(',') : []).forEach(w => { if (w !== '') b.wrong[w] = (b.wrong[w] || 0) + 1; }); }); });
       const done = st.filter(s => ((P[s.sid] || {})[id] || {}).d).length, started = st.filter(s => (P[s.sid] || {})[id]).length;
-      $('#pd').innerHTML = `<div class="panel"><h3>${esc(a.icon)} ${esc(a.title)} · 반 통계</h3><p>시작 ${started}명 · 완료 ${done}명 / ${st.length}명</p>${Object.keys(by).length ? Object.entries(by).map(([qid, b]) => `<p><b>확인 미션 (${esc(qid)})</b> · 푼 학생 ${b.n}명 · 평균 최고 점수 ${(b.sum / b.n).toFixed(1)} / ${b.t}</p>
+      $('#pd').innerHTML = `<div class="panel"><h3>${esc(a.icon)} ${esc(a.title)} · 반 통계</h3><p>시작 ${started}명 · 완료 ${done}명 / ${st.length}명</p>${Object.keys(by).length ? Object.entries(by).map(([qid, b]) => `<p><b>${Object.keys(by).length > 1 ? '확인 미션 ' + esc(qid.replace(/^quiz/, '') || '1') : '확인 미션'}</b> · 푼 학생 ${b.n}명 · 평균 최고 점수 ${(b.sum / b.n).toFixed(1)} / ${b.t}</p>
         <table class="t"><tr><th>문항</th><th class="l">마지막 풀이에서 틀린 학생 수</th></tr>${Array.from({length: b.t}, (_, i) => { const w = b.wrong[i] || 0; return `<tr><td>${i + 1}번</td><td class="l"><span class="bar" style="width:${Math.round(w / b.n * 160)}px"></span> ${w}명</td></tr>`; }).join('')}</table>`).join('') : '<p class="hint">아직 확인 미션을 푼 학생이 없어요.</p>'}</div>`;
       $('#pd').scrollIntoView({behavior: 'smooth', block: 'nearest'});
     };
@@ -342,10 +342,17 @@
     $('#rPrint').onclick = () => {
       const st = students(T.c); if (!st.length) return alert('명단이 없어요.');
       const url = location.href.replace(/teacher\/.*$/, '');
-      const w = open('', '_blank'); if (!w) return alert('팝업이 막혔어요. 팝업을 허용해 주세요.');
-      w.document.write(`<!doctype html><meta charset="utf-8"><title>개인 코드 쪽지 ${cname(T.c)}</title><style>body{font-family:sans-serif;margin:10mm}.g{display:grid;grid-template-columns:1fr 1fr;gap:4mm}.s{border:1px dashed #888;border-radius:6px;padding:4mm;page-break-inside:avoid;font-size:12pt}.s b{font-size:15pt}.c{font-family:Consolas,monospace;font-size:20pt;letter-spacing:3px;font-weight:bold}.u{font-size:9pt;color:#555}</style>
-        <div class="g">${st.map(s => `<div class="s">정보 개념 체험관 · ${cname(T.c)} ${s.no}번 <b>${esc(s.n)}</b><br>학번 <b>${s.sid}</b> &nbsp; 개인 코드 <span class="c">${esc(T.pins[s.sid] || '')}</span><div class="u">${esc(url)} · 개인 코드는 비밀번호예요. 친구에게 알려 주지 마세요.</div></div>`).join('')}</div><script>print()<\/script>`);
-      w.document.close();
+      // 팝업 차단을 피하려고 화면 안의 보이지 않는 틀(iframe)에서 인쇄
+      let fr = $('#slipFrame'); if (fr) fr.remove();
+      fr = document.createElement('iframe'); fr.id = 'slipFrame'; fr.title = '개인 코드 쪽지';
+      fr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+      document.body.appendChild(fr);
+      const d = fr.contentDocument;
+      d.open();
+      d.write(`<!doctype html><meta charset="utf-8"><title>개인 코드 쪽지 ${cname(T.c)}</title><style>body{font-family:sans-serif;margin:10mm}.g{display:grid;grid-template-columns:1fr 1fr;gap:4mm}.s{border:1px dashed #888;border-radius:6px;padding:4mm;page-break-inside:avoid;font-size:12pt}.s b{font-size:15pt}.c{font-family:Consolas,monospace;font-size:20pt;letter-spacing:3px;font-weight:bold}.u{font-size:9pt;color:#555}</style>
+        <div class="g">${st.map(s => `<div class="s">정보 개념 체험관 · ${cname(T.c)} ${s.no}번 <b>${esc(s.n)}</b><br>학번 <b>${s.sid}</b> &nbsp; 개인 코드 <span class="c">${esc(T.pins[s.sid] || '')}</span><div class="u">${esc(url)} · 개인 코드는 비밀번호예요. 친구에게 알려 주지 마세요.</div></div>`).join('')}</div>`);
+      d.close();
+      setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e){ alert('인쇄 창을 열지 못했어요.'); } }, 300);
     };
     soft = draw; draw();
   }
