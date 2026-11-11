@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>양팔 저울로 가벼운 제품 찾기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.boxes{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.boxes button{width:64px;height:64px;border:3px solid var(--line);border-radius:14px;background:#fff;font-size:1.4rem;font-weight:800;color:var(--ink);position:relative}
+.boxes button.L{border-color:#3b6cf6;background:#e8f0ff}
+.boxes button.R{border-color:#ff7aa2;background:#ffeef3}
+.boxes button small{position:absolute;bottom:2px;left:0;right:0;font-size:.6rem}
+.scale{width:100%;max-width:420px;display:block;margin:6px auto}
+.log{background:var(--bg);border-radius:12px;padding:8px 12px;min-height:40px;font-size:.92rem}
+.cmp{width:100%;border-collapse:collapse}
+.cmp td,.cmp th{border:1px solid var(--line);padding:6px 8px;text-align:center}
+</style>
+</head>
+<body data-unit="3" data-title="양팔 저울로 가벼운 제품 찾기" data-sub="중1 Ⅲ단원 · 알고리즘의 비교·분석 · 미래엔 88~89쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 알고리즘</span>
+  <h1>양팔 저울로 가벼운 제품 찾기</h1>
+  <p class="lead">같은 문제도 여러 알고리즘으로 해결할 수 있어요. 무게가 같아 보이는 제품 7개 중 <b>불량품 1개만 가벼워요</b>. 양팔 저울을 <b>가장 적게</b> 써서 찾아봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>두 개씩 차례로 달아 보는 방법과, 여러 개를 한꺼번에 달아 보는 방법 중 어느 쪽이 더 빠를까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>⚖️ 직접 달아 보기</h3>
+      <p>제품을 누를 때마다 <b>왼쪽 접시 → 오른쪽 접시 → 빼기</b>로 바뀌어요. 양쪽에 올리고 <b>[저울 달기]</b>를 누르세요. 가벼운 제품을 찾았다면 <b>[이것이 불량품!]</b>으로 골라요.</p>
+      <div class="boxes" id="boxes"></div>
+      <svg class="scale" id="scale" viewBox="0 0 420 150"></svg>
+      <div class="ctrl"><button class="btn" id="weigh">⚖️ 저울 달기</button><select class="inp" id="guess" style="width:auto"></select><button class="btn line" id="pick">이것이 불량품!</button><button class="btn line" id="new">새 문제</button></div>
+      <div class="log" id="log"></div>
+    </div>
+
+    <div class="card">
+      <h3>📊 두 알고리즘 비교</h3>
+      <div class="scroll-x"><table class="cmp">
+        <tr><th></th><th>알고리즘 1<br>두 개씩 비교하기</th><th>알고리즘 2<br>세 묶음으로 나누어 비교하기</th></tr>
+        <tr><th>방법</th><td>1번↔2번, 3번↔4번, 5번↔6번 차례로 달아요. 모두 같으면 7번이 불량품.</td><td>(1·2·3) ↔ (4·5·6)을 달아요. 같으면 7번, 다르면 가벼운 쪽 3개 중 2개를 다시 달아요.</td></tr>
+        <tr><th>7개일 때 최대 비교 횟수</th><td><b>3번</b></td><td><b>2번</b></td></tr>
+        <tr><th>100개일 때 최대 비교 횟수</th><td><b id="a1"></b></td><td><b id="a2"></b></td></tr>
+      </table></div>
+      <p>제품 수 <input class="inp" id="n" type="number" value="100" min="3" max="10000" style="width:110px"> 개일 때 비교 횟수를 계산해 보세요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>같은 문제도 여러 알고리즘으로 해결할 수 있어요. 데이터가 많아질수록 <b>비교 횟수(수행 시간)</b>의 차이가 커지므로, 알고리즘을 비교·분석해 <b>효율적인 알고리즘</b>을 골라야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 88~89쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+let bad, side, count, done;
+function newGame(){ bad = Math.floor(Math.random() * 7); side = Array(7).fill(''); count = 0; done = false; $('#log').innerHTML = '저울을 사용한 횟수: 0번'; draw(0); }
+function draw(tilt){
+  $('#boxes').innerHTML = side.map((s, i) => `<button class="${s}" data-i="${i}">${i + 1}<small>${s === 'L' ? '왼쪽' : s === 'R' ? '오른쪽' : ''}</small></button>`).join('');
+  $$('#boxes button').forEach(b => b.onclick = () => { if (done) return; const i = +b.dataset.i; side[i] = side[i] === '' ? 'L' : side[i] === 'L' ? 'R' : ''; draw(0); });
+  const a = tilt * 12, L = side.map((s, i) => s === 'L' ? i + 1 : 0).filter(Boolean), R = side.map((s, i) => s === 'R' ? i + 1 : 0).filter(Boolean);
+  $('#scale').innerHTML = `<polygon points="200,140 185,60 215,60" fill="#c8cfe0"/><g transform="rotate(${a} 200 60)"><line x1="70" y1="60" x2="330" y2="60" stroke="#555" stroke-width="6"/>
+    <line x1="80" y1="60" x2="80" y2="95" stroke="#888"/><line x1="320" y1="60" x2="320" y2="95" stroke="#888"/>
+    <rect x="40" y="95" width="80" height="10" rx="5" fill="#3b6cf6"/><rect x="280" y="95" width="80" height="10" rx="5" fill="#ff7aa2"/>
+    <text x="80" y="90" text-anchor="middle" font-size="14" font-weight="800">${L.join(' ')}</text><text x="320" y="90" text-anchor="middle" font-size="14" font-weight="800">${R.join(' ')}</text></g>`;
+  $('#guess').innerHTML = side.map((_, i) => `<option value="${i}">${i + 1}번</option>`).join('');
+}
+$('#weigh').onclick = () => {
+  if (done) return;
+  const L = side.map((s, i) => s === 'L' ? i : -1).filter(i => i >= 0), R = side.map((s, i) => s === 'R' ? i : -1).filter(i => i >= 0);
+  if (!L.length || !R.length) return feedback($('#log'), false, '양쪽 접시에 제품을 올려 주세요.');
+  if (L.length !== R.length) return feedback($('#log'), false, '양쪽 접시에 같은 개수를 올려야 비교할 수 있어요.');
+  count++; const w = s => s.length * 10 - (s.includes(bad) ? 1 : 0), d = w(L) - w(R);
+  draw(d > 0 ? -1 : d < 0 ? 1 : 0);   // 무거운 쪽 접시가 내려가도록
+  $('#log').innerHTML = `${count}번째: [${L.map(i => i + 1).join(', ')}] vs [${R.map(i => i + 1).join(', ')}] → <b>${d === 0 ? '무게가 같아요' : (d < 0 ? '왼쪽' : '오른쪽') + '이 더 가벼워요'}</b><br>저울을 사용한 횟수: ${count}번`;
+};
+$('#pick').onclick = () => {
+  if (done) return; const g = +$('#guess').value;
+  if (g === bad){ done = true; feedback($('#log'), true, `🎉 정답! ${g + 1}번이 불량품이에요. 저울을 ${count}번 썼어요. ${count <= 2 ? '최소 횟수로 찾았어요!' : '2번 만에 찾는 방법도 있어요. 아래 알고리즘 2를 참고해 보세요.'}`); }
+  else feedback($('#log'), false, `❌ ${g + 1}번은 불량품이 아니에요. 확실해질 때까지 더 달아 보세요.`);
+};
+$('#new').onclick = newGame; newGame();
+const calc = () => { const n = Math.max(3, +$('#n').value || 3); $('#a1').textContent = Math.floor(n / 2) + '번'; let k = 0, m = 1; while (m < n){ m *= 3; k++; } $('#a2').textContent = k + '번'; };
+$('#n').oninput = calc; calc();
+renderQuiz($('#quiz'), [
+  {q:'제품이 많아질수록 두 알고리즘의 비교 횟수 차이는?', o:['줄어든다','커진다','항상 같다'], a:1, e:'100개면 50번과 5번으로 차이가 매우 커져요.'},
+  {q:'효율적인 알고리즘이란?', o:['수행 시간이 짧고 자원을 적게 쓰는 알고리즘','명령이 가장 많은 알고리즘','항상 첫 번째로 떠오른 알고리즘'], a:0, e:'같은 문제를 더 빠르고 적은 자원으로 해결하는 알고리즘이에요.'},
+]);
+</script>
+</body>
+</html>

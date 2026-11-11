@@ -1,0 +1,20 @@
+/* 엔트리 블록 모양 흉내 (읽기용 코드 표시) */
+.code{background:#f7f9fd;border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:.92rem;line-height:1.5;overflow-x:auto}
+.blk{display:inline-block;border-radius:8px;padding:3px 10px;margin:2px 0;color:#fff;font-weight:700;white-space:nowrap}
+.blk.ev{background:#2fb04a;border-radius:16px 16px 8px 8px}
+.blk.mv{background:#a751e3}
+.blk.lk{background:#e457dc}
+.blk.fl{background:#19baea}
+.blk.jd{background:#4cb3ff}
+.blk.cl{background:#f4b400}
+.blk.vr{background:#dd47d8}
+.blk.ls{background:#ff9b3f}
+.blk.fn{background:#de5c91}
+.blk.pn{background:#19b4a5}
+.blk .v{display:inline-block;background:#fff;color:#333;border-radius:10px;padding:0 8px;margin:0 2px;font-weight:800}
+.blk .v.in{min-width:2.5em;text-align:center}
+.ind{margin-left:22px;border-left:4px solid #19baea;padding-left:6px}
+.ind.jd{border-color:#4cb3ff}
+.line.hl .blk{outline:3px solid var(--pink);outline-offset:1px}
+.line.bug .blk{outline:3px dashed #e53935}
+.code .line{display:block}

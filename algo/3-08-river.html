@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강 건너기 퍼즐</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.river{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:6px;align-items:stretch;min-height:190px}
+.bank{background:#d8f2c9;border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;justify-content:center}
+.water{background:linear-gradient(#bfe3ff,#8cc8f5);border-radius:16px;display:flex;align-items:center;padding:8px}
+.boat{background:#a1673a;border-radius:0 0 40px 40px;min-width:110px;min-height:70px;padding:6px;display:flex;gap:6px;align-items:center;justify-content:center;transition:margin .4s}
+.boat.R{margin-left:auto}
+.tok{font-size:2.2rem;border:2px solid transparent;border-radius:12px;background:#fff;padding:2px 6px;cursor:pointer}
+.tok:focus-visible{outline:3px solid var(--brand)}
+.log{background:var(--bg);border-radius:12px;padding:8px 12px;font-size:.9rem;max-height:160px;overflow:auto}
+</style>
+</head>
+<body data-unit="3" data-title="강 건너기 퍼즐" data-sub="중1 Ⅲ단원 · 알고리즘 설계 · 미래엔 98쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 알고리즘 설계</span>
+  <h1>강 건너기 퍼즐</h1>
+  <p class="lead">농부가 🐕 개, 🐐 염소, 🥬 배추를 가지고 강을 건너려고 해요. 조건을 지키며 <b>가장 적은 횟수</b>로 모두 건너는 알고리즘을 설계해 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제 이해</h2>
+    <div class="card">
+      <p><b>조건</b> ① 농부는 개, 염소, 배추 중 하나만 배에 태울 수 있어요. ② 농부가 없을 때 개와 염소가 함께 있으면 개가 염소를 물어요. ③ 농부가 없을 때 염소와 배추가 함께 있으면 염소가 배추를 먹어요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>⛵ 강 건너기</h3>
+      <p>농부가 있는 쪽의 동물·채소를 눌러 배에 태우거나 내려요. <b>[건너기]</b>를 누르면 농부가 배를 몰고 건너가요.</p>
+      <div class="river"><div class="bank" id="L"></div><div class="water"><div class="boat" id="boat"></div></div><div class="bank" id="R"></div></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="go">⛵ 건너기</button><button class="btn line" id="undo">한 번 되돌리기</button><button class="btn line" id="reset">처음부터</button></div>
+      <div class="feedback" id="fb"></div>
+      <p><b>건넌 횟수: <span id="n">0</span></b></p>
+      <p>🔢 <b>상태를 숫자로 구조화하기</b> <span class="hint">(출발 쪽 0, 도착 쪽 1 · 순서: 🧑‍🌾 농부, 🐕 개, 🐐 염소, 🥬 배추)</span><br>초기 상태 <code>0 0 0 0</code> → 현재 상태 <code id="vec">0 0 0 0</code> → 목표 상태 <code>1 1 1 1</code></p>
+      <div class="log" id="log"></div>
+    </div>
+
+    <div class="card">
+      <h3>🧩 핵심 요소와 알고리즘 정리</h3>
+      <div id="key"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>문제를 해결하려면 <b>조건(규칙)</b>을 핵심 요소로 정리하고, 상태를 <b>0과 1 같은 수행 가능한 형태로 구조화</b>하며, 상태가 어떻게 바뀌는지 따져 보며 알고리즘을 설계해요. 이 퍼즐은 <b>7번</b>이면 모두 건널 수 있어요. 핵심은 "염소를 다시 데려오는 것"이에요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 98쪽(부록 249~250쪽) 활동을 바탕으로 재구성 · 상태를 숫자로 구조화하기 참고: 비상교육 94~95쪽</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const NAME = {dog: '🐕 개', goat: '🐐 염소', cab: '🥬 배추'}, EM = {dog: '🐕', goat: '🐐', cab: '🥬'};
+let S, hist;
+function reset(){ S = {side: 'L', boat: null, L: ['dog', 'goat', 'cab'], R: [], n: 0, over: false}; hist = []; $('#log').innerHTML = ''; draw(); feedback($('#fb'), true, '시작! 농부(🧑‍🌾)는 왼쪽에 있어요.'); }
+const clone = o => JSON.parse(JSON.stringify(o));
+function danger(bank){ return (bank.includes('dog') && bank.includes('goat')) ? '🐕 개가 🐐 염소를 물었어요!' : (bank.includes('goat') && bank.includes('cab')) ? '🐐 염소가 🥬 배추를 먹었어요!' : null; }
+const vec = () => [S.side === 'R' ? 1 : 0, ...['dog', 'goat', 'cab'].map(k => S.R.includes(k) || (S.boat === k && S.side === 'R') ? 1 : 0)].join(' ');
+function draw(){
+  ['L', 'R'].forEach(s => { $('#' + s).innerHTML = S[s].map(k => `<button class="tok" data-k="${k}" data-s="${s}" title="${NAME[k]}">${EM[k]}</button>`).join('') + (S.side === s && !S.boat && false ? '' : ''); });
+  $('#boat').className = 'boat ' + S.side; $('#boat').innerHTML = '🧑‍🌾' + (S.boat ? `<button class="tok" data-k="${S.boat}" data-s="B">${EM[S.boat]}</button>` : '');
+  $$('.tok').forEach(b => b.onclick = () => {
+    if (S.over) return; const k = b.dataset.k, s = b.dataset.s;
+    if (s === 'B'){ S[S.side].push(k); S.boat = null; }
+    else { if (s !== S.side) return feedback($('#fb'), false, '농부가 있는 쪽에서만 태울 수 있어요.'); if (S.boat) return feedback($('#fb'), false, '배에는 하나만 태울 수 있어요. 먼저 내려 주세요.'); S[s] = S[s].filter(x => x !== k); S.boat = k; }
+    draw();
+  });
+  $('#n').textContent = S.n; $('#vec').textContent = vec();
+}
+$('#go').onclick = () => {
+  if (S.over) return;
+  hist.push(clone(S));
+  const from = S.side, to = from === 'L' ? 'R' : 'L', d = danger(S[from]);
+  S.side = to; S.n++;
+  $('#log').insertAdjacentHTML('beforeend', `<div>${S.n}. 농부가 ${S.boat ? NAME[S.boat] + '와(과) 함께' : '혼자'} ${to === 'R' ? '건너갔어요 ➡️' : '돌아왔어요 ⬅️'} <code data-v></code></div>`);
+  if (S.boat){ S[to].push(S.boat); S.boat = null; }
+  draw(); const lc = $('#log').lastElementChild?.querySelector('[data-v]'); if (lc) lc.textContent = '상태 ' + vec();
+  if (d){ S.over = true; return feedback($('#fb'), false, `💥 ${d} 조건 ${d.includes('물') ? '②' : '③'}을 어겼어요. [한 번 되돌리기]로 다시 해 보세요.`); }
+  if (S.R.length === 3){ S.over = true; return feedback($('#fb'), true, S.n === 7 ? '🎉 성공! 최소 횟수인 7번 만에 모두 건넜어요!' : `🎉 성공! ${S.n}번 만에 건넜어요. 7번 만에 건너는 방법도 찾아보세요.`); }
+  feedback($('#fb'), true, '안전해요. 계속 진행하세요.');
+};
+$('#undo').onclick = () => { if (!hist.length) return; S = hist.pop(); $('#log').lastElementChild?.remove(); draw(); feedback($('#fb'), true, '한 번 되돌렸어요.'); };
+$('#reset').onclick = reset; reset();
+
+renderChoice($('#key'), [
+  {icon:'🐐', t:'처음에 가장 먼저 데리고 건너야 하는 것은?', a:1, e:'염소를 남겨 두면 개 또는 배추와 문제가 생겨요. 염소를 먼저 옮겨요.'},
+  {icon:'🔁', t:'개(또는 배추)를 건너편에 내려놓은 뒤 돌아올 때 함께 데려와야 하는 것은?', a:1, e:'건너편에 개와 염소(또는 염소와 배추)가 함께 남지 않도록 염소를 다시 데려와요.'},
+], ['🐕 개', '🐐 염소', '🥬 배추']);
+
+renderQuiz($('#quiz'), [
+  {q:'강 건너기 문제에서 모두 안전하게 건너는 최소 횟수는?', o:['3번','5번','7번'], a:2, e:'건너가기 4번, 돌아오기 3번으로 모두 7번이에요.'},
+  {q:'이 문제의 핵심 요소가 아닌 것은?', o:['배에는 하나만 태울 수 있다','농부가 없으면 염소와 배추를 함께 둘 수 없다','배의 색깔'], a:2, e:'배의 색깔은 문제 해결과 관계없어요.'},
+]);
+</script>
+</body>
+</html>

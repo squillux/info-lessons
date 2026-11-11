@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>문제의 상태와 추상화</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.picks button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;color:var(--ink)}
+.picks button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.picks button.ok{border-color:var(--mint);background:var(--mint-soft)}
+.picks button.no{border-color:var(--pink);background:var(--pink-soft)}
+.map{width:100%;max-width:560px;background:#fff;border:2px solid var(--line);border-radius:14px}
+.map .st{cursor:pointer}
+.route{font-weight:700;margin:6px 0}
+</style>
+</head>
+<body data-unit="3" data-title="문제의 상태와 추상화" data-sub="중1 Ⅲ단원 · 문제의 이해와 추상화 · 미래엔 81~84쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 문제 해결</span>
+  <h1>문제의 상태와 추상화</h1>
+  <p class="lead">문제는 <b>초기 상태</b>, <b>현재 상태</b>, <b>목표 상태</b>로 구분할 수 있어요. <b>추상화</b>는 복잡한 문제에서 해결에 꼭 필요한 <b>핵심 요소</b>만 남겨 간단하게 만드는 과정이에요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>지하철 노선도는 실제 지도와 다르게 역 사이 거리나 건물이 그려져 있지 않아요. 그래도 길을 찾는 데 문제가 없는 이유는 무엇일까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧭 초기·현재·목표 상태</h3>
+      <p>최대 200kg까지 실을 수 있는 엘리베이터로 이삿짐 상자들을 최소 횟수로 옮기려고 해요.</p>
+      <div id="state"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔍 핵심 요소 고르기</h3>
+      <p><b>① 벽돌 깨기 게임</b>을 만들 때 꼭 필요한 요소 3가지를 고르세요.</p>
+      <div class="picks" id="p1"></div>
+      <p class="hint" id="m1"></p>
+      <p style="margin-top:12px"><b>② 학생들의 평균 성적</b>을 구할 때 표에서 필요한 열을 모두 고르세요.</p>
+      <div class="picks" id="p2"></div>
+      <p class="hint" id="m2"></p>
+    </div>
+
+    <div class="card">
+      <h3>🚇 추상화한 노선도로 가장 빠른 길 찾기</h3>
+      <p>가상의 노선도예요. 역 사이 숫자는 걸리는 시간(분)이고, <b>갈아타면 4분</b>이 더 걸려요. <b>출발역</b>에서 시작해 이어진 역을 차례로 눌러 <b>도착역</b>까지 가 보세요.</p>
+      <svg class="map" id="map" viewBox="0 0 560 300"></svg>
+      <p class="route" id="route"></p>
+      <div class="ctrl"><button class="btn line" id="undo">한 칸 되돌리기</button><button class="btn line" id="clear">처음부터</button></div>
+      <div class="feedback" id="mFb"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>문제를 해결하려면 먼저 <b>초기·현재·목표 상태</b>를 정의하고, <b>추상화</b>로 핵심 요소(예: 역의 연결과 이동 시간)만 남겨 단순하게 만들어요. 그러면 해결 방법(알고리즘)을 찾기 쉬워져요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 81~84쪽 내용을 바탕으로 재구성 · 노선도는 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#state'), [
+  {icon:'📦', t:'이삿짐 상자를 아직 하나도 옮기지 않은 상태', a:0, e:'문제를 풀기 전의 처음 모습, 초기 상태예요.'},
+  {icon:'🛗', t:'엘리베이터로 상자를 몇 개 옮기고 있는 상태', a:1, e:'문제를 풀어 가는 중간 단계, 현재 상태예요.'},
+  {icon:'🏠', t:'이삿짐을 모두 옮긴 상태', a:2, e:'도달하고 싶은 모습, 목표 상태예요.'},
+], ['초기 상태', '현재 상태', '목표 상태']);
+
+function picks(box, msg, items, need, good){
+  const sel = new Set();
+  $(box).innerHTML = items.map(t => `<button>${t}</button>`).join('');
+  $$(box + ' button').forEach(b => b.onclick = () => {
+    const t = b.textContent; sel.has(t) ? sel.delete(t) : sel.add(t); b.classList.toggle('on');
+    $$(box + ' button').forEach(x => x.classList.remove('ok', 'no'));
+    if (sel.size === need){ const ok = [...sel].every(x => good.includes(x)); $$(box + ' button.on').forEach(x => x.classList.add(good.includes(x.textContent) ? 'ok' : 'no'));
+      $(msg).textContent = ok ? '⭕ 정답! 이 요소만 있으면 문제를 해결할 수 있어요.' : '❌ 빨간 요소는 없어도 문제를 해결할 수 있어요.'; }
+    else $(msg).textContent = `${sel.size} / ${need}개 골랐어요.`;
+  });
+}
+picks('#p1', '#m1', ['벽돌', '배경 화면', '음악', '공', '벽돌 모양', '공의 크기', '막대', '공의 색깔'], 3, ['벽돌', '공', '막대']);
+picks('#p2', '#m2', ['학번', '이름', '전화번호', '취미', '국어 점수', '정보 점수', '수학 점수', '영어 점수'], 6, ['학번', '이름', '국어 점수', '정보 점수', '수학 점수', '영어 점수']);
+
+// 가상 노선도: [이름, x, y]
+const S = [['출발', 40, 150], ['해솔', 140, 70], ['누리', 140, 230], ['다온', 260, 150], ['가람', 280, 50], ['라온', 380, 230], ['도착', 520, 150], ['별빛', 400, 90]];
+// [a, b, 분, 노선]
+const E = [[0, 1, 3, 'A'], [1, 4, 4, 'A'], [4, 7, 3, 'A'], [7, 6, 4, 'A'], [0, 2, 2, 'B'], [2, 3, 3, 'B'], [3, 7, 2, 'B'], [2, 5, 6, 'C'], [5, 6, 3, 'C'], [1, 3, 2, 'D'], [3, 5, 3, 'D']];
+const COL = {A: '#3b6cf6', B: '#16b8a6', C: '#ff7aa2', D: '#ffb020'};
+let path = [0];
+const edge = (a, b) => E.find(e => (e[0] === a && e[1] === b) || (e[0] === b && e[1] === a));
+const cost = p => { let t = 0, line = null; for (let i = 1; i < p.length; i++){ const e = edge(p[i - 1], p[i]); t += e[2]; if (line && line !== e[3]) t += 4; line = e[3]; } return t; };
+function best(){ let b = Infinity, bp = null; const go = (p) => { const u = p[p.length - 1]; if (u === 6){ const c = cost(p); if (c < b){ b = c; bp = p.slice(); } return; } E.forEach(e => { const v = e[0] === u ? e[1] : e[1] === u ? e[0] : -1; if (v >= 0 && !p.includes(v)) go([...p, v]); }); }; go([0]); return [b, bp]; }
+const [BEST, BP] = best();
+function draw(){
+  const used = new Set(); for (let i = 1; i < path.length; i++) used.add(E.indexOf(edge(path[i - 1], path[i])));
+  $('#map').innerHTML = E.map((e, i) => { const [a, b] = [S[e[0]], S[e[1]]]; return `<line x1="${a[1]}" y1="${a[2]}" x2="${b[1]}" y2="${b[2]}" stroke="${COL[e[3]]}" stroke-width="${used.has(i) ? 9 : 5}" opacity="${used.has(i) ? 1 : .55}" stroke-linecap="round"/><text x="${(a[1] + b[1]) / 2 + 6}" y="${(a[2] + b[2]) / 2 - 6}" font-size="13" font-weight="700" fill="#333">${e[2]}</text>`; }).join('') +
+    S.map(([n, x, y], i) => `<g class="st" data-i="${i}"><circle cx="${x}" cy="${y}" r="${path.includes(i) ? 15 : 12}" fill="${i === path[path.length - 1] ? '#ff7aa2' : '#fff'}" stroke="#1f2a44" stroke-width="3"/><text x="${x}" y="${y + 32}" font-size="13" text-anchor="middle" font-weight="700">${n}</text></g>`).join('') +
+    `<text x="10" y="20" font-size="12" fill="#666">노선: <tspan fill="${COL.A}">■A</tspan> <tspan fill="${COL.B}">■B</tspan> <tspan fill="${COL.C}">■C</tspan> <tspan fill="${COL.D}">■D</tspan></text>`;
+  $$('#map .st').forEach(g => g.onclick = () => { const v = +g.dataset.i, u = path[path.length - 1]; if (path.includes(v) || !edge(u, v)) return feedback($('#mFb'), false, '바로 이어진 역만 누를 수 있어요.'); path.push(v); draw(); });
+  const t = cost(path);
+  $('#route').textContent = path.map(i => S[i][0]).join(' → ') + `  (${t}분)`;
+  if (path[path.length - 1] === 6) feedback($('#mFb'), t === BEST, t === BEST ? `🎉 가장 빠른 길이에요! ${BEST}분. 갈아타는 시간까지 고려했어요.` : `도착! ${t}분 걸렸어요. 더 빠른 길(${BEST}분)이 있어요. 갈아타는 횟수도 생각해 보세요.`);
+  else $('#mFb').className = 'feedback';
+}
+$('#undo').onclick = () => { if (path.length > 1) path.pop(); draw(); };
+$('#clear').onclick = () => { path = [0]; draw(); };
+draw();
+
+renderQuiz($('#quiz'), [
+  {q:'복잡한 문제에서 핵심 요소만 남겨 간단하게 만드는 과정은?', o:['추상화','디버깅','정렬'], a:0, e:'추상화는 문제 해결을 위한 핵심 요소를 추출하는 과정이에요.'},
+  {q:'지하철로 가장 빠른 길을 찾을 때 필요하지 않은 정보는?', o:['역 사이 이동 시간','갈아타는 데 걸리는 시간','역 출구 앞 가게 이름'], a:2, e:'문제 해결에 필요 없는 정보는 추상화로 지워요.'},
+]);
+</script>
+</body>
+</html>

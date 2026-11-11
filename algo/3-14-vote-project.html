@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>투표 프로그램 프로젝트</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.order{display:grid;gap:6px;max-width:580px}
+.order button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;color:var(--ink)}
+.order button.done{border-color:var(--mint);background:var(--mint-soft)}
+.order .n{display:inline-block;min-width:1.8em;font-weight:800;color:var(--mint)}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.roles label{border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:#fff;font-weight:700}
+.roles input{font:inherit;font-weight:400;width:100%;padding:4px 8px;border:2px solid var(--line);border-radius:10px;margin-top:4px;background:var(--panel);color:var(--ink)}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.picks button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;color:var(--ink)}
+.picks button.ok{border-color:var(--mint);background:var(--mint-soft)}
+.picks button.no{border-color:var(--pink);background:var(--pink-soft)}
+</style>
+</head>
+<body data-unit="3" data-title="투표 프로그램 프로젝트" data-sub="중1 Ⅲ단원 · 프로젝트 · 미래엔 126~131쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 프로젝트</span>
+  <h1>투표 프로그램 프로젝트</h1>
+  <p class="lead">학급 회장 선거를 종이 투표로 하면 준비와 개표에 시간이 오래 걸려요. <b>문제 이해 → 추상화 → 알고리즘 설계 → 프로그래밍</b> 순서로 전자 투표 프로그램을 만들어 봐요. 모둠원이 역할을 나누어 <b>협력</b>해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제 이해</h2>
+    <div class="card">
+      <p>초기 상태: 직접 손으로 투표하고 개표를 해야 하는 상태 → 목표 상태: 전자 투표 프로그램으로 투표하고 개표가 끝난 상태. 어떤 기능이 필요할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>프로젝트 진행</h2>
+    <div class="card">
+      <h3>🗳️ 먼저 체험하기: 실시간 전자 투표 <span class="tag-opt">실시간 투표</span></h3>
+      <p>이 체험관의 실시간 투표도 하나의 투표 프로그램이에요. 가상 후보로 투표해 보고, 어떤 기능이 들어 있는지 찾아보세요. (이름은 저장되지 않아요.)</p>
+      <p class="hint">💻 선생님이 [교사] 버튼으로 방을 열고 QR 코드를 보여 주면 학생들이 바로 참여해요.</p>
+      <div id="vote"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔍 추상화: 핵심 요소 고르기</h3>
+      <p>투표 프로그램에 꼭 필요한 요소를 모두 고르세요. (5개)</p>
+      <div class="picks" id="key"></div>
+      <p class="hint" id="kmsg"></p>
+    </div>
+
+    <div class="card">
+      <h3>🔢 알고리즘 설계: 순서대로 놓기</h3>
+      <div class="order" id="order"></div>
+      <div class="feedback" id="oFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🤝 협력 개발: 역할 나누기</h3>
+      <p>모둠원이 각자 맡을 부분을 정해 보세요. (저장되지 않아요. 캡처하거나 인쇄하세요.)</p>
+      <div class="roles">
+        <label>🎨 화면과 오브젝트<input placeholder="모둠원"></label>
+        <label>🗃️ 변수와 리스트(후보, 득표수)<input placeholder="모둠원"></label>
+        <label>🔁 투표·개표 알고리즘<input placeholder="모둠원"></label>
+        <label>🐞 테스트와 디버깅<input placeholder="모둠원"></label>
+      </div>
+      <p class="hint" style="margin-top:8px">💡 다른 학문 분야와도 협력할 수 있어요. 예: 과학 시간에 배운 우주 쓰레기 문제를 해결하는 '우주 청소 로켓' 시뮬레이션(교과서 132~138쪽)</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>정리</h2>
+    <div class="card">
+      <p>실생활 문제를 프로그래밍으로 해결하려면 <b>문제 이해 → 추상화 → 알고리즘 설계 → 프로그래밍 → 디버깅</b> 과정을 거쳐요. 역할을 나누어 <b>협력</b>하면 더 크고 복잡한 프로그램도 만들 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 126~138쪽 프로젝트를 바탕으로 재구성 · 후보는 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
+<script>
+liveVote($('#vote'), {act: '3-14', items: [{t: '가상 학급 회장 선거: 누구를 뽑을까요?', sub: '기호 1 🐱 "쉬는 시간을 즐겁게!" · 기호 2 🐶 "깨끗한 교실 만들기!" · 기호 3 🐰 "모두가 친한 반!"', opts: ['1번 🐱', '2번 🐶', '3번 🐰']}]});
+
+const KEY = ['후보 이름', '후보별 득표수', '투표 버튼', '한 사람 한 표(중복 투표 막기)', '개표 결과 출력', '후보의 키', '투표소 벽 색깔', '배경 음악'];
+const GOOD = KEY.slice(0, 5); const sel = new Set();
+$('#key').innerHTML = KEY.map(k => `<button>${k}</button>`).join('');
+$$('#key button').forEach(b => b.onclick = () => {
+  const k = b.textContent; sel.has(k) ? sel.delete(k) : sel.add(k); b.classList.toggle('ok', sel.has(k) && GOOD.includes(k)); b.classList.toggle('no', sel.has(k) && !GOOD.includes(k));
+  const right = [...sel].filter(x => GOOD.includes(x)).length, wrong = sel.size - right;
+  $('#kmsg').textContent = right === 5 && !wrong ? '⭕ 핵심 요소를 모두 골랐어요! 이것들이 변수·리스트·조건이 돼요.' : wrong ? '빨간 요소는 투표 기능과 관계없어요.' : `${right} / 5`;
+});
+
+const STEPS = ['후보 리스트와 후보별 득표수(0)를 준비한다.', '투표자에게 후보를 보여 주고 선택을 입력받는다.', '이미 투표했는지 확인하고, 처음이면 선택한 후보의 득표수에 1을 더한다.', '투표가 끝날 때까지 2~3을 반복한다.', '득표수를 비교해 가장 많이 받은 후보를 출력한다.'];
+let nx = 0;
+$('#order').innerHTML = STEPS.map((s, i) => [s, i]).sort(() => Math.random() - .5).map(([s, i]) => `<button data-i="${i}"><span class="n"></span>${s}</button>`).join('');
+$$('#order button').forEach(b => b.onclick = () => {
+  if (b.classList.contains('done')) return;
+  if (+b.dataset.i === nx){ b.classList.add('done'); b.querySelector('.n').textContent = ++nx + '.'; feedback($('#oFb'), true, nx === STEPS.length ? '🎉 알고리즘 완성! 이제 엔트리로 프로그래밍해 보세요.' : '⭕'); }
+  else feedback($('#oFb'), false, '❌ 이보다 먼저 할 일이 있어요.');
+});
+
+renderQuiz($('#quiz'), [
+  {q:'투표 프로그램에서 후보별 득표수를 순서대로 저장하기에 알맞은 것은?', o:['리스트','함수 이름','배경 그림'], a:0, e:'후보 순서대로 득표수를 저장하는 리스트가 알맞아요.'},
+  {q:'한 사람이 여러 번 투표하지 못하게 하려면 필요한 것은?', o:['투표 여부를 확인하는 조건(선택 구조)','더 큰 화면','배경 음악'], a:0, e:'이미 투표했는지 확인하는 조건이 필요해요.'},
+]);
+</script>
+</body>
+</html>

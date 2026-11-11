@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>집에서 학교까지 가장 빠른 길</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.map{width:100%;max-width:560px;background:#fff;border:2px solid var(--line);border-radius:14px;display:block}
+.map .nd{cursor:pointer}
+.tbl2{border-collapse:collapse;font-size:.92rem;margin-top:8px}
+.tbl2 td,.tbl2 th{border:1px solid var(--line);padding:4px 10px;text-align:center}
+.tbl2 tr.done td{background:var(--mint-soft)}
+</style>
+</head>
+<body data-unit="3" data-title="집에서 학교까지 가장 빠른 길" data-sub="중1 Ⅲ단원 · 알고리즘 설계 · 미래엔 96~97쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 알고리즘 설계</span>
+  <h1>집에서 학교까지 가장 빠른 길</h1>
+  <p class="lead">지도를 장소(●)와 길(—), 걸리는 시간(분)만 남겨 <b>추상화</b>했어요. 다음 알고리즘으로 집에서 학교까지 가장 빠른 길을 찾아봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>알고리즘 이해</h2>
+    <div class="card">
+      <p><b>알고리즘</b> ① 집에서 갈 수 있는 장소까지의 시간을 적는다. ② 아직 확정하지 않은 장소 중 <b>집에서부터 걸리는 시간이 가장 짧은 곳</b>을 확정한다. ③ 확정한 곳을 거쳐 갈 수 있는 장소의 시간을 계산해 더 짧으면 고친다. ④ 학교가 확정될 때까지 ②~③을 반복한다.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🗺️ 한 단계씩 확정하기</h3>
+      <p>표에서 <b>아직 확정하지 않은 곳 중 시간이 가장 짧은 장소</b>를 지도에서 눌러 확정하세요.</p>
+      <svg class="map" id="map" viewBox="0 0 560 320"></svg>
+      <div class="scroll-x"><table class="tbl2" id="tbl"></table></div>
+      <div class="feedback" id="fb"></div>
+      <div class="ctrl" style="margin-top:6px"><button class="btn line" id="reset">처음부터</button></div>
+    </div>
+
+    <div class="card">
+      <h3>🤔 생각해 보기</h3>
+      <div id="think"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>지도를 장소와 길, 시간으로 <b>추상화</b>하고, 가장 가까운 곳부터 차례로 확정하는 <b>알고리즘</b>을 반복하면 가장 빠른 길을 찾을 수 있어요. 길 찾기 앱도 비슷한 원리로 경로를 계산해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 96~97쪽 활동을 바탕으로 재구성 · 지도는 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const N = [['🏠 집', 60, 160], ['🏪 편의점', 170, 60], ['🌳 공원', 180, 250], ['✏️ 문구점', 300, 150], ['📚 도서관', 330, 40], ['🏀 체육관', 360, 270], ['🏫 학교', 500, 160]];
+const E = [[0, 1, 4], [0, 2, 6], [0, 3, 12], [1, 3, 5], [1, 4, 8], [2, 3, 3], [2, 5, 9], [3, 4, 4], [3, 5, 5], [3, 6, 10], [4, 6, 6], [5, 6, 4]];
+let dist, prev, done;
+function reset(){ dist = N.map(() => Infinity); prev = N.map(() => -1); done = N.map(() => false); dist[0] = 0; done[0] = true; relax(0); $('#fb').className = 'feedback'; draw(); }
+function relax(u){ E.forEach(([a, b, w]) => { const v = a === u ? b : b === u ? a : -1; if (v >= 0 && !done[v] && dist[u] + w < dist[v]){ dist[v] = dist[u] + w; prev[v] = u; } }); }
+const pathTo = v => { const p = []; while (v >= 0){ p.unshift(v); v = prev[v]; } return p; };
+function draw(){
+  const onPath = new Set(); if (done[6]){ const p = pathTo(6); for (let i = 1; i < p.length; i++) onPath.add(p[i - 1] + '-' + p[i]); }
+  $('#map').innerHTML = E.map(([a, b, w]) => { const A = N[a], B = N[b], hot = onPath.has(a + '-' + b) || onPath.has(b + '-' + a);
+    return `<line x1="${A[1]}" y1="${A[2]}" x2="${B[1]}" y2="${B[2]}" stroke="${hot ? '#ff7aa2' : '#9aa6c0'}" stroke-width="${hot ? 8 : 4}" stroke-linecap="round"/><rect x="${(A[1] + B[1]) / 2 - 12}" y="${(A[2] + B[2]) / 2 - 11}" width="24" height="20" rx="6" fill="#fff" stroke="#ccd"/><text x="${(A[1] + B[1]) / 2}" y="${(A[2] + B[2]) / 2 + 4}" text-anchor="middle" font-size="12" font-weight="800">${w}</text>`; }).join('') +
+    N.map(([n, x, y], i) => `<g class="nd" data-i="${i}"><circle cx="${x}" cy="${y}" r="22" fill="${done[i] ? '#d9f6f1' : '#fff'}" stroke="${done[i] ? '#16b8a6' : '#1f2a44'}" stroke-width="3"/><text x="${x}" y="${y + 6}" text-anchor="middle" font-size="18">${n.split(' ')[0]}</text><text x="${x}" y="${y + 40}" text-anchor="middle" font-size="12" font-weight="700">${n.split(' ')[1]}</text></g>`).join('');
+  $$('#map .nd').forEach(g => g.onclick = () => pick(+g.dataset.i));
+  $('#tbl').innerHTML = '<tr><th>장소</th>' + N.map(n => `<th>${n[0].split(' ')[1]}</th>`).join('') + '</tr><tr><th>집에서부터 시간</th>' + N.map((_, i) => `<td style="${done[i] ? 'background:var(--mint-soft);font-weight:800' : ''}">${dist[i] === Infinity ? '?' : dist[i] + '분'}${done[i] ? ' ✔' : ''}</td>`).join('') + '</tr>';
+}
+function pick(v){
+  if (done[6]) return;
+  if (done[v]) return feedback($('#fb'), false, '이미 확정한 장소예요.');
+  const cand = N.map((_, i) => i).filter(i => !done[i] && dist[i] < Infinity), m = Math.min(...cand.map(i => dist[i]));
+  if (dist[v] === Infinity) return feedback($('#fb'), false, '아직 확정한 장소에서 바로 갈 수 없는 곳이에요.');
+  if (dist[v] !== m) return feedback($('#fb'), false, `❌ 확정하지 않은 곳 중 시간이 가장 짧은 곳은 ${m}분 걸리는 곳이에요.`);
+  done[v] = true; relax(v); draw();
+  if (v === 6) feedback($('#fb'), true, `🎉 학교 확정! 가장 빠른 길: ${pathTo(6).map(i => N[i][0].split(' ')[1]).join(' → ')} (${dist[6]}분)`);
+  else feedback($('#fb'), true, `⭕ ${N[v][0].split(' ')[1]} 확정(${dist[v]}분). 이곳을 거쳐 가는 시간을 계산해 표가 바뀌었어요.`);
+}
+$('#reset').onclick = reset; reset();
+
+renderChoice($('#think'), [
+  {icon:'🛣️', t:'집에서 문구점까지 바로 가는 길(12분)이 있는데도 다른 길을 거쳐 가는 이유는?', a:0, e:'편의점이나 공원을 거쳐 가는 것이 더 빨라요(4+5=9분, 6+3=9분).'},
+  {icon:'🚧', t:'문구점 앞 길이 공사 중이라면?', a:1, e:'길(엣지)의 시간이 바뀌면 같은 알고리즘으로 다시 계산하면 돼요.'},
+], ['거쳐 가는 길이 더 짧아서', '알고리즘으로 다시 계산한다']);
+
+renderQuiz($('#quiz'), [
+  {q:'이 알고리즘에서 다음에 확정하는 장소는?', o:['집에서 가장 먼 곳','확정하지 않은 곳 중 집에서부터 시간이 가장 짧은 곳','이름이 가장 짧은 곳'], a:1, e:'가장 가까운 곳부터 차례로 확정해요.'},
+  {q:'지도에서 건물 모양, 색깔을 지우고 장소와 길, 시간만 남기는 과정은?', o:['추상화','디버깅','정렬'], a:0, e:'문제 해결에 필요한 핵심 요소만 남겼어요.'},
+]);
+</script>
+</body>
+</html>

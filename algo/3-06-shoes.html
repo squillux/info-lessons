@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>신발 찾기: 정렬과 탐색</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.shelf{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:8px 0}
+.shelf button{height:56px;border:2px solid var(--line);border-radius:10px;background:#f4f6fb;font-weight:800;color:var(--ink);font-size:.85rem}
+.shelf button.open{background:#fff}
+.shelf button.hit{border-color:var(--mint);background:var(--mint-soft)}
+.cnt{font-family:var(--cute);font-size:1.6rem;color:var(--brand)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.two>div{border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff}
+@media (max-width:520px){.shelf{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body data-unit="3" data-title="신발 찾기: 정렬과 탐색" data-sub="중1 Ⅲ단원 · 알고리즘 설계 · 미래엔 94~95쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 알고리즘 설계</span>
+  <h1>신발 찾기: 정렬과 탐색</h1>
+  <p class="lead">신발 가게의 한쪽은 신발이 뒤죽박죽이고, 다른 쪽은 <b>크기순으로 정리(정렬)</b>되어 있어요. 손님은 <b>230mm</b>와 <b>250mm</b> 신발을 찾고 있어요. 상자를 열어 찾아봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제 이해</h2>
+    <div class="card">
+      <p>초기 상태: 원하는 신발을 찾지 못한 상태 → 목표 상태: 230mm와 250mm 신발을 모두 찾은 상태. 어느 쪽 진열대에서 찾는 것이 빠를까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📦 정리되지 않은 진열대 (알고리즘 1)</h3>
+      <p>상자를 하나씩 눌러 열어 보세요. 열어 본 상자 수가 비교 횟수예요.</p>
+      <div class="shelf" id="sh1"></div>
+      <p>비교 횟수 <span class="cnt" id="n1">0</span> <span id="f1"></span></p>
+    </div>
+
+    <div class="card">
+      <h3>📏 크기순으로 정리된 진열대 (알고리즘 2)</h3>
+      <p>앞(작은 쪽)에서부터 하나씩 비교해요. 230mm를 찾은 뒤에는 <b>그 다음 칸부터</b> 250mm를 찾으면 돼요. 정렬되어 있으니 원하는 크기보다 큰 신발이 나오면 더 볼 필요도 없어요.</p>
+      <div class="shelf" id="sh2"></div>
+      <div class="ctrl"><button class="btn" id="step2">▶ 한 칸 비교</button><button class="btn line" id="auto2">⏩ 끝까지</button></div>
+      <p>비교 횟수 <span class="cnt" id="n2">0</span> <span id="f2"></span></p>
+    </div>
+
+    <div class="card">
+      <h3>🧠 정렬 알고리즘과 탐색 알고리즘</h3>
+      <div class="two">
+        <div><b>정렬 알고리즘</b><br>데이터를 크기 등 일정한 규칙에 따라 순서대로 나열하는 방법이에요.</div>
+        <div><b>탐색 알고리즘</b><br>데이터에서 원하는 값을 찾는 방법이에요.</div>
+      </div>
+      <div id="which" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>데이터가 <b>정렬</b>되어 있으면 <b>탐색</b>이 훨씬 빨라져요. 정리되지 않은 곳에서는 운이 나쁘면 모든 상자를 열어야 하지만, 정렬된 곳에서는 찾은 위치에서 이어서 찾거나 범위를 줄일 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 94~95쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const SIZES = [200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275];
+const mix = SIZES.slice().sort(() => Math.random() - .5);
+let n1 = 0, found1 = new Set();
+$('#sh1').innerHTML = mix.map((s, i) => `<button data-i="${i}">?</button>`).join('');
+$$('#sh1 button').forEach(b => b.onclick = () => {
+  if (b.classList.contains('open') || found1.size === 2) return;
+  const s = mix[+b.dataset.i]; b.textContent = s; b.classList.add('open'); n1++;
+  if (s === 230 || s === 250){ b.classList.add('hit'); found1.add(s); }
+  $('#n1').textContent = n1; $('#f1').textContent = found1.size === 2 ? `✅ 두 신발을 모두 찾았어요! (전체 ${mix.length}칸 중 ${n1}칸 확인)` : `찾은 신발: ${[...found1].join(', ') || '없음'}`;
+});
+let i2 = 0, n2 = 0, want = 230;
+$('#sh2').innerHTML = SIZES.map(s => `<button class="open">${s}</button>`).join('');
+const step = () => {
+  if (want === null) return false;
+  const b = $$('#sh2 button')[i2]; n2++; b.style.outline = '3px solid var(--brand)';
+  if (SIZES[i2] === want){ b.classList.add('hit'); want = want === 230 ? 250 : null; }
+  i2++; $('#n2').textContent = n2;
+  $('#f2').textContent = want === null ? `✅ 두 신발을 모두 찾았어요! 230mm를 찾은 다음 칸부터 이어서 찾았기 때문에 ${n2}번이면 충분해요.` : `지금 찾는 크기: ${want}mm`;
+  return want !== null;
+};
+$('#step2').onclick = step;
+$('#auto2').onclick = () => { const t = setInterval(() => { if (!step()) clearInterval(t); }, 120); };
+
+renderChoice($('#which'), [
+  {icon:'📚', t:'도서관 책을 청구 기호 순서로 꽂아 둔다.', a:0, e:'일정한 규칙에 따라 나열하는 정렬이에요.'},
+  {icon:'🔍', t:'학생 명부에서 "김하늘" 학생을 찾는다.', a:1, e:'원하는 값을 찾는 탐색이에요.'},
+  {icon:'🏃', t:'체육 시간에 키 순서대로 줄을 선다.', a:0, e:'키 순서로 나열하는 정렬이에요.'},
+], ['정렬', '탐색']);
+
+renderQuiz($('#quiz'), [
+  {q:'정리되지 않은 진열대에서 신발을 찾을 때 최악의 경우는?', o:['처음 연 상자에서 찾는다','모든 상자를 열어 봐야 한다'], a:1, e:'운이 나쁘면 마지막 상자까지 열어야 해요.'},
+  {q:'데이터를 일정한 규칙에 따라 순서대로 나열하는 알고리즘은?', o:['탐색 알고리즘','정렬 알고리즘','반복 알고리즘'], a:1, e:'정렬해 두면 탐색이 빨라져요.'},
+]);
+</script>
+</body>
+</html>

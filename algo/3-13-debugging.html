@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디버깅 탐정</title>
+<link rel="stylesheet" href="../assets/common.css">
+<link rel="stylesheet" href="../assets/blocks.css">
+<style>
+.dbg{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px}
+.watch{border:2px solid var(--line);border-radius:14px;padding:8px 12px;background:#fff;font-size:.95rem}
+.watch b{color:var(--brand)}
+.code .line{cursor:pointer;border-radius:8px;padding:1px 2px}
+.code .line.sel{background:var(--pink-soft)}
+@media (max-width:640px){.dbg{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-unit="3" data-title="디버깅 탐정" data-sub="중1 Ⅲ단원 · 함수와 디버깅 · 미래엔 124~125쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 프로그래밍</span>
+  <h1>디버깅 탐정</h1>
+  <p class="lead"><b>디버깅</b>은 프로그램에서 발생한 논리적 오류나 비정상적인 연산(버그)을 찾아내 원인을 밝히고 고치는 과정이에요. <b>디버거</b>로 프로그램을 <b>한 단계씩 실행</b>하며 변수의 값을 살피면 오류를 찾기 쉬워요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>프로그램이 실행은 되는데 결과가 이상할 때, 어디서부터 확인해야 할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🐞 사건 파일</h3>
+      <div class="seg" id="cases"></div>
+      <p id="desc"></p>
+      <div class="dbg">
+        <div><div class="code" id="code"></div><p class="hint">한 단계씩 실행해 변수를 살핀 뒤, 오류가 있는 줄을 눌러 고르세요.</p></div>
+        <div class="watch"><div>🔎 디버거 · 변수 보기</div><div id="vars"></div><div id="outp" style="margin-top:6px"></div></div>
+      </div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="step">⏭ 한 단계씩 실행</button><button class="btn line" id="runall">▶ 끝까지 실행</button><button class="btn line" id="restart">처음부터</button><button class="btn line" id="fix">🛠 고른 줄 고치기</button></div>
+      <div class="feedback" id="fb"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>디버깅</b>은 오류를 찾아 고치는 과정이에요. 디버거로 <b>한 단계씩 실행</b>하며 <b>변수의 값</b>이 예상과 다른 곳을 찾으면 오류의 원인을 빠르게 찾을 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 124~125쪽 내용을 바탕으로 재구성 · 블록 모양은 엔트리를 흉내 낸 그림이에요</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+/* 각 사건: lines(블록), bug(오류 줄), fixed(고친 줄), run(fixed) → [{line, vars, out}] 실행 기록 */
+const CASES = [
+  {name: '① 1~10의 합', desc: '1부터 10까지 더하면 55가 나와야 하는데 45가 나와요.',
+   lines: f => [['vr', '합계 를 0 (으)로 정하기'], ['vr', '숫자 를 1 (으)로 정하기'], ['fl', f ? '10 번 반복하기' : '9 번 반복하기'], ['vr', '  합계 에 숫자 만큼 더하기', 1], ['vr', '  숫자 에 1 만큼 더하기', 1], ['lk', '합계 을(를) 말하기']], bug: 2,
+   run(f){ const t = []; let s = 0, n = 1; t.push([0, {합계: 0}]); t.push([1, {합계: 0, 숫자: 1}]); for (let i = 0; i < (f ? 10 : 9); i++){ t.push([2, {합계: s, 숫자: n, 반복: i + 1}]); s += n; t.push([3, {합계: s, 숫자: n, 반복: i + 1}]); n++; t.push([4, {합계: s, 숫자: n, 반복: i + 1}]); } t.push([5, {합계: s, 숫자: n}, `🗣️ ${s}`]); return t; }, want: 55},
+  {name: '② 홀짝 판별', desc: '7을 넣었는데 "짝수"라고 말해요.',
+   lines: f => [['fl', '숫자를 입력하세요. 묻고 대답 기다리기 (대답: 7)'], ['jd', f ? '만일 대답 ÷ 2 의 나머지 = 0 (이)라면' : '만일 대답 ÷ 2 의 나머지 = 1 (이)라면'], ['lk', '  짝수입니다. 말하기', 1], ['jd', '아니면'], ['lk', '  홀수입니다. 말하기', 1]], bug: 1,
+   run(f){ const r = 7 % 2, c = f ? r === 0 : r === 1; return [[0, {대답: 7}], [1, {대답: 7, 나머지: r, 조건: c ? '참' : '거짓'}], c ? [2, {대답: 7}, '🗣️ 짝수입니다.'] : [4, {대답: 7}, '🗣️ 홀수입니다.']]; }, want: '홀수입니다.'},
+  {name: '③ 점수 누적', desc: '퀴즈 3문제를 모두 맞혀 30점이어야 하는데 10점이 나와요.',
+   lines: f => f ? [['vr', '점수 를 0 (으)로 정하기'], ['fl', '3 번 반복하기'], ['jd', '  만일 정답이라면', 1], ['vr', '    점수 에 10 만큼 더하기', 2], ['lk', '점수 을(를) 말하기']] : [['fl', '3 번 반복하기'], ['vr', '  점수 를 0 (으)로 정하기', 1], ['jd', '  만일 정답이라면', 1], ['vr', '    점수 에 10 만큼 더하기', 2], ['lk', '점수 을(를) 말하기']], bug: 1,
+   run(f){ const t = []; let p = 0; if (f) t.push([0, {점수: 0}]); for (let i = 0; i < 3; i++){ t.push([f ? 1 : 0, {점수: p, 반복: i + 1}]); if (!f){ p = 0; t.push([1, {점수: p, 반복: i + 1}]); } t.push([2, {점수: p, 반복: i + 1, 정답: '참'}]); p += 10; t.push([3, {점수: p, 반복: i + 1}]); } t.push([4, {점수: p}, `🗣️ ${p}점`]); return t; }, want: 30},
+];
+let C = 0, fixed = false, trace = [], k = 0, sel = -1;
+const CLS = {vr: 'vr', fl: 'fl', jd: 'jd', lk: 'lk'};
+function load(i){
+  C = i; fixed = false; sel = -1; $$('#cases button').forEach((b, j) => b.classList.toggle('active', j === i));
+  $('#desc').innerHTML = '🧾 ' + CASES[i].desc; $('#fb').className = 'feedback'; restart();
+}
+function restart(){ trace = CASES[C].run(fixed); k = 0; drawCode(-1); $('#vars').innerHTML = '<span class="hint">아직 실행하지 않았어요.</span>'; $('#outp').textContent = ''; }
+function drawCode(hl){
+  const L = CASES[C].lines(fixed);
+  $('#code').innerHTML = `<span class="line"><span class="blk ev">▶ 시작하기 버튼을 클릭했을 때</span></span>` + L.map(([c, t, d], i) => `<span class="line${i === hl ? ' hl' : ''}${i === sel ? ' sel' : ''}" data-i="${i}" style="margin-left:${(d || 0) * 22}px"><span class="blk ${CLS[c]}">${t.trim()}</span></span>`).join('');
+  $$('#code .line[data-i]').forEach(l => l.onclick = () => { sel = +l.dataset.i; drawCode(hl); });
+}
+function show(st){ const [line, vars, out] = st; drawCode(line); $('#vars').innerHTML = Object.entries(vars).map(([n, v]) => `${n} = <b>${v}</b>`).join('<br>'); if (out) $('#outp').textContent = out; }
+$('#step').onclick = () => { if (k < trace.length) show(trace[k++]); if (k >= trace.length) done(); };
+$('#runall').onclick = () => { while (k < trace.length) show(trace[k++]); done(); };
+$('#restart').onclick = restart;
+function done(){ const out = $('#outp').textContent; const ok = out.includes(String(CASES[C].want)); feedback($('#fb'), ok, ok ? '🎉 결과가 올바르게 나왔어요!' + (fixed ? ' 디버깅 성공!' : '') : '⚠️ 결과가 예상과 달라요. 변수 값이 이상해지는 줄을 찾아 눌러 보세요.'); }
+$('#fix').onclick = () => {
+  if (fixed) return feedback($('#fb'), true, '이미 고쳤어요. 다른 사건도 해결해 보세요.');
+  if (sel < 0) return feedback($('#fb'), false, '먼저 오류가 있다고 생각하는 줄을 눌러 고르세요.');
+  if (sel !== CASES[C].bug) return feedback($('#fb'), false, '❌ 이 줄은 문제가 없어요. 한 단계씩 실행하며 변수 값을 다시 살펴보세요.');
+  fixed = true; sel = -1; restart(); feedback($('#fb'), true, '🛠 오류가 있는 줄을 고쳤어요! 다시 실행해 결과를 확인해 보세요.');
+};
+$('#cases').innerHTML = CASES.map(c => `<button>${c.name}</button>`).join('');
+$$('#cases button').forEach((b, i) => b.onclick = () => load(i));
+load(0);
+
+renderQuiz($('#quiz'), [
+  {q:'프로그램의 오류를 찾아 원인을 밝히고 고치는 과정은?', o:['디버깅','추상화','정렬'], a:0, e:'오류(버그)를 없애는(de-) 과정이라 디버깅이라고 해요.'},
+  {q:'디버거의 "한 단계씩 실행" 기능이 도움이 되는 이유는?', o:['프로그램이 더 빨라져서','명령마다 변수의 값이 어떻게 바뀌는지 확인할 수 있어서','블록 색이 바뀌어서'], a:1, e:'예상과 달라지는 순간을 찾으면 오류의 위치를 알 수 있어요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>숫자 맞히기 업다운 게임</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.chat{background:#b9cfe6;border-radius:18px;padding:12px;display:grid;gap:6px;max-height:300px;overflow:auto}
+.chat .me{justify-self:end;background:#fff8b0;border-radius:14px 4px 14px 14px;padding:6px 12px}
+.chat .you{justify-self:start;background:#fff;border-radius:4px 14px 14px 14px;padding:6px 12px}
+.race{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.race>div{border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff}
+.race .big{font-family:var(--cute);font-size:2rem;color:var(--brand)}
+.strip{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--bg);margin-top:6px}
+.strip i{flex:1}
+.strip i.cut{background:#d5dbe8}
+.strip i.hit{background:var(--pink)}
+.sumx{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.sumx>div{border-radius:14px;padding:10px 12px;background:var(--bg)}
+</style>
+</head>
+<body data-unit="3" data-title="숫자 맞히기 업다운 게임" data-sub="중1 Ⅲ단원 · 알고리즘의 비교·분석 · 미래엔 90~91쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 알고리즘</span>
+  <h1>숫자 맞히기 업다운 게임</h1>
+  <p class="lead">1부터 100까지 중 친구가 생각한 수를 맞혀요. 내가 말한 수보다 크면 <b>업</b>, 작으면 <b>다운</b>이라고 알려 줘요. <b>차례대로 맞히기</b>와 <b>반으로 나누어 맞히기</b> 중 어느 알고리즘이 더 효율적일까요?</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>두꺼운 사전에서 단어를 찾을 때 첫 쪽부터 한 장씩 넘기나요, 아니면 중간쯤을 펼쳐 앞뒤로 좁혀 가나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🎮 내가 직접 맞히기</h3>
+      <p>컴퓨터가 1~100 중 하나를 골랐어요. 숫자를 입력해 맞혀 보세요.</p>
+      <div class="chat" id="chat"></div>
+      <div class="ctrl" style="margin-top:8px"><input class="inp" id="g" type="number" min="1" max="100" style="width:120px"><button class="btn" id="go">말하기</button><button class="btn line" id="again">새 게임</button></div>
+    </div>
+
+    <div class="card">
+      <h3>🏁 두 알고리즘 경주</h3>
+      <p>친구가 생각한 수를 정하고, 두 알고리즘이 각각 몇 번 만에 맞히는지 비교해 보세요. 회색은 정답이 아니라고 지워진 범위예요.</p>
+      <div class="ctrl">친구가 생각한 수 <input class="inp" id="t" type="number" min="1" max="100" value="78" style="width:110px"><button class="btn" id="race">▶ 경주 시작</button></div>
+      <div class="race" style="margin-top:10px">
+        <div><b>알고리즘 1 · 차례대로</b><br>1, 2, 3, …<div class="big" id="c1">-</div><div class="strip" id="s1"></div></div>
+        <div><b>알고리즘 2 · 반으로 나누어</b><br>50, 75, 87, …<div class="big" id="c2">-</div><div class="strip" id="s2"></div></div>
+      </div>
+      <p class="hint" id="rmsg"></p>
+    </div>
+
+    <div class="card">
+      <h3>➕ 1부터 100까지 더하기도 알고리즘에 따라</h3>
+      <div class="sumx">
+        <div><b>알고리즘 1 · 순서대로 더하기</b><br>1+2+3+…+100<br>덧셈 <b id="o1"></b>번</div>
+        <div><b>알고리즘 2 · 규칙 이용하기</b><br>(1+100)+(2+99)+… = 101 × 50<br>계산 <b>2</b>번 (더하기 1번, 곱하기 1번)</div>
+      </div>
+      <p>끝 수 <input class="inp" id="nn" type="number" value="100" min="2" max="1000000" style="width:130px"> → 합계 <b id="sv"></b></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>차례대로 찾는 방법은 최악의 경우 100번, <b>반으로 나누어 찾는 방법</b>은 최대 7번이면 찾을 수 있어요. 같은 결과라도 알고리즘에 따라 수행 횟수와 시간이 크게 달라지므로 <b>효율적인 알고리즘</b>을 선택해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 90~91쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+let secret, tries;
+const say = (cls, t) => { $('#chat').insertAdjacentHTML('beforeend', `<div class="${cls}">${t}</div>`); $('#chat').scrollTop = 1e6; };
+function newGame(){ secret = 1 + Math.floor(Math.random() * 100); tries = 0; $('#chat').innerHTML = ''; say('you', '1부터 100 중에 하나를 생각했어요! 🤔'); }
+$('#go').onclick = () => { const v = Math.trunc(+$('#g').value); if (!(v >= 1 && v <= 100)) return; tries++; say('me', v);
+  if (v === secret) say('you', `🎉 정답! ${tries}번 만에 맞혔어요. ${tries <= 7 ? '반으로 나누어 찾는 방법을 썼나요?' : '7번 안에 맞히는 방법이 있어요!'}`);
+  else say('you', v < secret ? '⬆️ 업!' : '⬇️ 다운!');
+  $('#g').value = ''; $('#g').focus(); };
+$('#g').onkeydown = e => { if (e.key === 'Enter') $('#go').click(); };
+$('#again').onclick = newGame; newGame();
+
+let timer = null;
+$('#race').onclick = () => {
+  clearInterval(timer);
+  const T = Math.min(100, Math.max(1, Math.trunc(+$('#t').value) || 1));
+  let a = 1, lo = 1, hi = 100, n1 = 0, n2 = 0, d1 = false, d2 = false;
+  const strip = (el, f) => el.innerHTML = Array.from({length: 100}, (_, i) => `<i class="${f(i + 1)}"></i>`).join('');
+  timer = setInterval(() => {
+    if (!d1){ n1++; if (a === T) d1 = true; else a++; }
+    if (!d2){ n2++; const m = Math.floor((lo + hi) / 2); if (m === T) d2 = true; else if (m < T) lo = m + 1; else hi = m - 1; }
+    $('#c1').textContent = n1 + '번' + (d1 ? ' ✅' : ''); $('#c2').textContent = n2 + '번' + (d2 ? ' ✅' : '');
+    strip($('#s1'), v => v === T && d1 ? 'hit' : v < a ? 'cut' : ''); strip($('#s2'), v => v === T && d2 ? 'hit' : (v < lo || v > hi) ? 'cut' : '');
+    if (d1 && d2){ clearInterval(timer); $('#rmsg').textContent = `차례대로: ${n1}번, 반으로 나누어: ${n2}번. 반으로 나누는 방법은 한 번 비교할 때마다 남은 후보가 절반으로 줄어요.`; }
+  }, 60);
+};
+const sumU = () => { const n = Math.max(2, Math.trunc(+$('#nn').value) || 2); $('#o1').textContent = (n - 1).toLocaleString(); $('#sv').textContent = (n * (n + 1) / 2).toLocaleString(); };
+$('#nn').oninput = sumU; sumU();
+
+renderQuiz($('#quiz'), [
+  {q:'1부터 100까지 중 한 수를 반으로 나누어 찾는 알고리즘으로 맞힐 때 최대 몇 번이면 될까?', o:['7번','50번','100번'], a:0, e:'한 번에 후보가 절반으로 줄어 100 → 50 → 25 → … 최대 7번이면 돼요.'},
+  {q:'섞여 있는 숫자 카드 중 하나를 찾을 때는 반으로 나누어 찾는 방법이 항상 더 효율적이다.', o:['⭕','❌'], a:1, e:'반으로 나누어 찾으려면 데이터가 크기순으로 정렬되어 있어야 해요.'},
+]);
+</script>
+</body>
+</html>

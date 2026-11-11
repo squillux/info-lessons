@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>줄서기 알고리즘 설계</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.cust{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cust input{width:58px;font:inherit;padding:4px 6px;border:2px solid var(--line);border-radius:10px;text-align:center;background:var(--panel);color:var(--ink)}
+.gantt{margin-top:10px}
+.gantt .row{display:grid;grid-template-columns:5.5em 1fr;gap:6px;align-items:center;margin:4px 0}
+.gantt .bar{position:relative;height:30px;background:var(--bg);border-radius:8px}
+.gantt .bar i{position:absolute;top:2px;bottom:2px;border-radius:6px;font-style:normal;font-size:.75rem;color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.res>div{border:2px solid var(--line);border-radius:16px;padding:10px 12px;background:#fff}
+.res .big{font-family:var(--cute);font-size:1.8rem;color:var(--brand)}
+.algo{background:var(--bg);border-radius:12px;padding:8px 12px;font-size:.92rem}
+</style>
+</head>
+<body data-unit="3" data-title="줄서기 알고리즘 설계" data-sub="중1 Ⅲ단원 · 알고리즘 설계 · 미래엔 92~93쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 알고리즘 설계</span>
+  <h1>줄서기 알고리즘 설계</h1>
+  <p class="lead"><b>알고리즘 설계</b>는 문제를 해결하는 과정을 계획하는 거예요. 마트 계산대에서 손님들이 줄을 서는 방법을 바꾸면 모두가 계산을 마치는 시간이 어떻게 달라질까요?</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제 이해</h2>
+    <div class="card">
+      <p>계산대는 3대, 손님은 9명이에요. 맨 앞 손님은 물건이 많아 계산에 10분이 걸리고, 나머지 8명은 3분씩 걸려요. 모든 손님이 계산을 가장 빨리 마치려면 줄을 어떻게 서야 할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🛒 두 알고리즘 시뮬레이션</h3>
+      <div class="algo"><b>알고리즘 1 · 여러 줄 서기</b>: 계산대마다 3명씩 줄을 서서 자기 줄에서만 기다려요.<br><b>알고리즘 2 · 한 줄 서기</b>: 한 줄로 서 있다가, 빈 계산대가 생기면 맨 앞 사람이 그곳으로 가요.</div>
+      <p style="margin-top:10px">손님별 계산 시간(분)을 바꿔 볼 수도 있어요.</p>
+      <div class="cust" id="cust"></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="run">▶ 비교하기</button><button class="btn line" id="reset">처음 값으로</button></div>
+      <div class="res" style="margin-top:10px">
+        <div><b>알고리즘 1 · 여러 줄</b><div class="big" id="t1">-</div><div class="gantt" id="g1"></div></div>
+        <div><b>알고리즘 2 · 한 줄</b><div class="big" id="t2">-</div><div class="gantt" id="g2"></div></div>
+      </div>
+      <p class="hint" id="msg"></p>
+    </div>
+
+    <div class="card">
+      <h3>🔢 알고리즘 2를 순서대로 표현하기</h3>
+      <div id="steps"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>같은 문제도 알고리즘을 어떻게 설계하느냐에 따라 결과가 달라져요. 한 줄 서기처럼 <b>빈 자원을 바로 활용하는 알고리즘</b>은 모든 손님이 계산을 마치는 시간을 줄여요. 은행 번호표, 공항 수속 줄도 같은 원리예요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 92~93쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const DEF = [10, 3, 3, 3, 3, 3, 3, 3, 3], COLS = ['#3b6cf6', '#16b8a6', '#ff7aa2', '#ffb020', '#a24bd6', '#26a69a', '#ef6c00', '#5c6bc0', '#8d6e63'];
+const drawCust = v => { $('#cust').innerHTML = v.map((t, i) => `<label>${i + 1}번<br><input type="number" min="1" max="30" value="${t}"></label>`).join(''); };
+drawCust(DEF);
+function sim(times, single){
+  const lanes = [[], [], []], free = [0, 0, 0];
+  times.forEach((t, i) => {
+    let k = single ? free.indexOf(Math.min(...free)) : i % 3;
+    const s = free[k]; lanes[k].push([i, s, t]); free[k] = s + t;
+  });
+  return {lanes, end: Math.max(...free)};
+}
+function gantt(el, r, max){
+  el.innerHTML = r.lanes.map((L, k) => `<div class="row"><span>계산대 ${k + 1}</span><div class="bar">${L.map(([i, s, t]) => `<i style="left:${s / max * 100}%;width:${t / max * 100}%;background:${COLS[i]}">${i + 1}번</i>`).join('')}</div></div>`).join('');
+}
+$('#run').onclick = () => {
+  const times = $$('#cust input').map(x => Math.max(1, Math.min(30, Math.trunc(+x.value) || 1)));
+  const a = sim(times, false), b = sim(times, true), max = Math.max(a.end, b.end);
+  $('#t1').textContent = a.end + '분'; $('#t2').textContent = b.end + '분'; gantt($('#g1'), a, max); gantt($('#g2'), b, max);
+  $('#msg').textContent = b.end < a.end ? `한 줄 서기가 ${a.end - b.end}분 더 빨라요. 여러 줄 서기는 10분 걸리는 손님 뒤에 선 사람들이 오래 기다려요.` : b.end === a.end ? '이번에는 두 방법의 시간이 같아요. 손님마다 시간이 비슷하면 차이가 작아요.' : '이번에는 여러 줄 서기가 더 빨라요.';
+};
+$('#reset').onclick = () => { drawCust(DEF); $('#run').click(); };
+$('#run').click();
+
+const STEPS = ['모든 손님이 한 줄로 선다.', '비어 있는 계산대가 있는지 확인한다.', '비어 있는 계산대가 있다면 맨 앞 손님이 그 계산대로 이동한다.', '계산을 마친 손님은 나간다.', '모든 손님이 계산을 마칠 때까지 2~4를 반복한다.'];
+renderChoice($('#steps'), STEPS.map((s, i) => ({t: s, a: i, e: `${i + 1}단계예요.`})), ['1단계', '2단계', '3단계', '4단계', '5단계']);
+
+renderQuiz($('#quiz'), [
+  {q:'처음 값으로 비교했을 때, 모든 손님이 계산을 마치는 시간이 더 짧은 알고리즘은?', o:['여러 줄 서기','한 줄 서기'], a:1, e:'한 줄 서기는 16분 대신 12분이면 모두 계산을 마쳐요.'},
+  {q:'알고리즘 설계란?', o:['문제를 해결하는 과정을 계획하는 것','프로그램의 오류를 찾는 것','데이터를 저장하는 것'], a:0, e:'문제를 이해하고 해결 과정을 계획하는 것이 알고리즘 설계예요.'},
+]);
+</script>
+</body>
+</html>

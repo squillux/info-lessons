@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ⅲ단원 정리 퀴즈</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>.self label{display:block;padding:6px 0;border-bottom:1px dashed var(--line)}</style>
+</head>
+<body data-unit="3" data-title="Ⅲ단원 정리 퀴즈" data-sub="중1 Ⅲ단원 · 단원 정리 · 미래엔 99, 139, 142쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 단원 정리</span>
+  <h1>Ⅲ단원 정리 퀴즈</h1>
+  <p class="lead">문제 해결과 알고리즘, 프로그래밍의 핵심 개념을 정리해 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>이 단원에서 만든 알고리즘 중 가장 "효율적"이라고 느낀 것은 무엇이었나요? 왜 그렇게 생각했나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>정리 퀴즈</h2>
+    <div class="card">
+      <h3>🧭 문제 해결과 알고리즘</h3>
+      <div id="q1"></div>
+    </div>
+    <div class="card">
+      <h3>💻 프로그래밍</h3>
+      <div id="q2"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>스스로 점검</h2>
+    <div class="card">
+      <p>할 수 있게 된 것에 체크해 보세요. (저장되지 않아요.)</p>
+      <div class="self" id="self"></div>
+      <p class="hint" id="selfMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>문제를 <b>상태로 정의</b>하고 <b>추상화</b>해 <b>알고리즘</b>을 설계하고 비교해 효율적인 방법을 골라요. 프로그래밍에서는 <b>변수·리스트, 연산, 중첩 제어 구조, 함수</b>를 활용하고 <b>디버깅</b>으로 오류를 고쳐요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 99, 139, 142쪽 정리 활동을 바탕으로 새로 구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderQuiz($('#q1'), [
+  {q:'문제를 풀기 전의 처음 모습을 무엇이라고 할까?', o:['목표 상태','초기 상태','현재 상태'], a:1, e:'초기 상태 → 현재 상태 → 목표 상태로 문제를 정의해요.'},
+  {q:'복잡한 문제에서 핵심 요소만 남기는 과정은?', o:['추상화','디버깅','반복'], a:0, e:'추상화로 문제를 단순하게 만들어요.'},
+  {q:'알고리즘의 조건 중 "정해진 단계 뒤에 반드시 끝나야 한다"는 것은?', o:['명확성','유한성','입력'], a:1, e:'끝없이 실행되면 알고리즘이 아니에요.'},
+  {q:'1~100 중 한 수를 반으로 나누어 찾을 때 최대 비교 횟수는?', o:['7번','50번','100번'], a:0, e:'한 번에 후보가 절반씩 줄어요.'},
+  {q:'신발이 크기순으로 정리되어 있으면 더 빨리 찾을 수 있는 이유는?', o:['데이터가 정렬되어 있어서','상자가 예뻐서','신발이 적어서'], a:0, e:'정렬된 데이터는 탐색이 빨라요.'},
+]);
+renderQuiz($('#q2'), [
+  {q:'여러 데이터를 순서대로 저장하는 구조는?', o:['변수','리스트','함수'], a:1, e:'리스트는 항목 번호로 데이터를 관리해요.'},
+  {q:'(5 > 3) 그리고 (2 > 4)의 결과는?', o:['참','거짓'], a:1, e:'"그리고"는 두 조건이 모두 참이어야 참이에요.'},
+  {q:'반복 구조 안에 선택 구조가 들어 있는 것을 무엇이라고 할까?', o:['중첩 제어 구조','순차 구조','매개변수'], a:0, e:'제어 구조 안에 다른 제어 구조가 들어 있어요.'},
+  {q:'여러 명령을 하나로 묶어 이름을 붙이고 다시 쓸 수 있게 한 것은?', o:['함수','리스트','디버거'], a:0, e:'함수에 매개변수를 두면 다양하게 활용해요.'},
+  {q:'프로그램의 오류를 찾아 고치는 과정은?', o:['추상화','디버깅','정렬'], a:1, e:'한 단계씩 실행하며 변수 값을 살펴요.'},
+]);
+const SELF = ['문제의 초기·현재·목표 상태를 정의하고 핵심 요소를 찾을 수 있다.', '알고리즘을 자연어·의사 코드·순서도로 표현할 수 있다.', '여러 알고리즘을 비교해 더 효율적인 것을 고를 수 있다.', '변수와 리스트를 활용한 프로그램을 만들 수 있다.', '논리 연산과 중첩 제어 구조를 활용할 수 있다.', '함수를 만들고, 디버깅으로 오류를 고칠 수 있다.', '실생활 문제를 친구들과 협력해 프로그래밍으로 해결할 수 있다.'];
+$('#self').innerHTML = SELF.map(s => `<label><input type="checkbox"> ${s}</label>`).join('');
+$$('#self input').forEach(i => i.onchange = () => { const n = $$('#self input:checked').length; $('#selfMsg').textContent = n === SELF.length ? '🎉 Ⅲ단원을 완벽하게 정리했어요!' : `${n} / ${SELF.length} · 체크하지 못한 내용은 해당 활동을 다시 해 보세요.`; });
+</script>
+</body>
+</html>

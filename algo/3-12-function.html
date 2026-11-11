@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>함수 만들기와 매개변수</title>
+<link rel="stylesheet" href="../assets/common.css">
+<link rel="stylesheet" href="../assets/blocks.css">
+<style>
+.wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.wrap canvas{border:2px solid var(--line);border-radius:14px;width:320px;max-width:100%;height:auto;background:#fff}
+.code input{width:52px;font:inherit;font-weight:800;border:0;border-radius:10px;text-align:center}
+.cmpx{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.cmpx>div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.cmpx .big{font-family:var(--cute);font-size:1.8rem;color:var(--brand)}
+</style>
+</head>
+<body data-unit="3" data-title="함수 만들기와 매개변수" data-sub="중1 Ⅲ단원 · 함수와 디버깅 · 미래엔 118~122, 125쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 프로그래밍</span>
+  <h1>함수 만들기와 매개변수</h1>
+  <p class="lead"><b>함수</b>는 어떤 특별한 작업을 수행하도록 여러 개의 명령을 하나로 묶어 이름을 붙인 것이에요. 함수에 <b>매개변수</b>를 두면 호출할 때 값(예: 크기)을 전달해 다양하게 쓸 수 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>크기가 다른 집 모양 5개를 그리려면 같은 블록을 5번 복사해야 할까요? 더 간단한 방법은 없을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🏠 '집 그리기(크기)' 함수</h3>
+      <div class="wrap">
+        <div class="code">
+          <span class="line"><span class="blk fn">함수 정의하기 집 그리기 <span class="v">크기</span></span></span>
+          <div class="ind" style="border-color:#de5c91"><span class="line"><span class="blk fl">4 번 반복하기 → <span class="v">크기</span> 만큼 움직이기, 90° 회전하기</span></span>
+            <span class="line"><span class="blk mv">지붕: <span class="v">크기</span> 만큼 움직이기, 120° 회전하기 (3번)</span></span></div>
+          <hr style="border:0;border-top:1px dashed var(--line)">
+          <span class="line"><span class="blk ev">▶ 시작하기 버튼을 클릭했을 때</span></span>
+          <span class="line"><span class="blk vr">크기 를 <input id="s0" type="number" value="80" min="10" max="120"> (으)로 정하기</span></span>
+          <span class="line"><span class="blk fl"><input id="rep" type="number" value="4" min="1" max="8"> 번 반복하기</span></span>
+          <div class="ind"><span class="line"><span class="blk fn">집 그리기 <span class="v">크기</span></span></span><span class="line"><span class="blk mv">옆으로 이동하기</span></span><span class="line"><span class="blk vr">크기 에 <input id="dv" type="number" value="-15" min="-30" max="30"> 만큼 더하기</span></span></div>
+        </div>
+        <div><canvas id="cv" width="320" height="240"></canvas><div class="ctrl"><button class="btn" id="run">▶ 실행</button></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📏 함수를 쓰면 얼마나 짧아질까?</h3>
+      <div class="cmpx">
+        <div><b>함수 없이</b><br>집 하나에 블록 약 8개 × 집 <span id="k1"></span>개<div class="big" id="b1"></div></div>
+        <div><b>함수를 쓰면</b><br>함수 정의 8개 + 호출 프로그램 6개<div class="big" id="b2"></div></div>
+      </div>
+      <p class="hint">함수의 장점: 같은 코드를 여러 번 쓰지 않아도 되고, 고칠 때 함수 한 곳만 고치면 돼요. 복잡한 프로그램을 작은 작업으로 나누어 만들 수도 있어요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🎯 함수와 매개변수 이해하기</h3>
+      <div id="pred"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>함수</b>는 여러 명령을 하나로 묶은 것으로, 반복되는 코드를 줄이고 프로그램을 이해·수정하기 쉽게 해요. <b>매개변수</b>로 값을 전달하면 하나의 함수로 다양한 결과(크기가 다른 모양 등)를 만들 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 118~122, 125쪽 내용을 바탕으로 재구성 · 블록 모양은 엔트리를 흉내 낸 그림이에요</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/turtle.js"></script>
+<script>
+const T = new Turtle($('#cv'));
+const v = (id, lo, hi) => Math.max(lo, Math.min(hi, Math.trunc(+$('#' + id).value) || 0));
+// 왼쪽 아래에서 오른쪽을 보고 시작 → 벽(정사각형) → 왼쪽 위로 이동 → 지붕(정삼각형의 두 변) → 처음 방향으로 되돌리기
+function house(s){ const c = []; for (let i = 0; i < 4; i++) c.push(['fd', s], ['lt', 90]); c.push(['pu'], ['lt', 90], ['fd', s], ['rt', 90], ['pd'], ['lt', 60], ['fd', s], ['rt', 120], ['fd', s], ['lt', 60]); return c; }
+$('#run').onclick = () => {
+  let s = v('s0', 10, 120); const n = v('rep', 1, 8), d = v('dv', -30, 30);
+  const cmds = [['pu'], ['go', -150, -100], ['pd']], cols = ['#3b6cf6', '#16b8a6', '#ff7aa2', '#ffb020', '#a24bd6'];
+  let x = -150;
+  for (let i = 0; i < n; i++){ if (s <= 0) break; cmds.push(['color', cols[i % 5]], ['pu'], ['go', x, -100], ['pd']); cmds.push(...house(s)); x += s + 10; s += d; }
+  // 거북이는 오른쪽(0°)을 보고 시작 → 위로 그리기 위해 왼쪽 회전 기준으로 집을 그림
+  T.run(cmds, {delay: 14});
+  $('#k1').textContent = n; $('#b1').textContent = (8 * n) + '개'; $('#b2').textContent = '14개';
+};
+$('#run').click();
+
+renderChoice($('#pred'), [
+  {icon:'📦', t:'"집 그리기" 처럼 여러 명령을 하나로 묶어 이름을 붙인 것은?', a:0, e:'함수예요. 이름으로 불러(호출해) 사용해요.'},
+  {icon:'🔢', t:'"집 그리기 (50)"에서 50처럼 함수에 전달하는 값을 받는 것은?', a:1, e:'매개변수가 값을 받아 함수 안에서 사용해요.'},
+  {icon:'🛠️', t:'모든 집의 지붕 모양을 바꾸려면 어디를 고치면 될까?', a:2, e:'함수 정의 한 곳만 고치면 모든 호출에 반영돼요.'},
+], ['함수', '매개변수', '함수 정의 한 곳']);
+
+renderQuiz($('#quiz'), [
+  {q:'함수를 사용할 때의 장점이 아닌 것은?', o:['반복되는 코드를 줄인다','프로그램을 고치기 쉽다','프로그램이 항상 더 느려진다'], a:2, e:'함수는 코드를 짧고 이해하기 쉽게 만들어요.'},
+  {q:'크기를 바꿔 가며 같은 모양을 그리고 싶을 때 함수에 추가하면 좋은 것은?', o:['매개변수','신호','리스트 삭제'], a:0, e:'매개변수로 크기를 전달하면 하나의 함수로 여러 크기를 그려요.'},
+]);
+</script>
+</body>
+</html>

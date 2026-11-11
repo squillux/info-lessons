@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연산 실험실</title>
+<link rel="stylesheet" href="../assets/common.css">
+<link rel="stylesheet" href="../assets/blocks.css">
+<style>
+.lab{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:1.1rem}
+.lab input,.lab select{font:inherit;padding:4px 8px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);width:90px}
+.lab select{width:auto}
+.res{font-family:var(--cute);font-size:1.6rem}
+.tf{display:inline-block;border-radius:10px;padding:2px 12px;font-weight:800}
+.tf.t{background:var(--mint-soft);color:#0d7d71}
+.tf.f{background:var(--pink-soft);color:#c2185b}
+.ride{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.ride .gate{font-size:3rem}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{min-width:120px}
+</style>
+</head>
+<body data-unit="3" data-title="연산 실험실" data-sub="중1 Ⅲ단원 · 다양한 연산 · 미래엔 108~110쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 프로그래밍</span>
+  <h1>연산 실험실</h1>
+  <p class="lead"><b>연산</b>은 데이터를 처리해 결과를 만드는 것이에요. 숫자를 계산하는 <b>산술 연산</b>, 크기를 비교해 참·거짓을 내는 <b>비교 연산</b>, 조건을 논리적으로 판단하는 <b>논리 연산</b>이 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>놀이 기구 입구의 "키 110cm 이상 탑승 가능" 표지판을 컴퓨터가 판단한다면, 어떤 계산이 필요할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧮 산술 연산과 비교 연산</h3>
+      <div class="lab"><input id="x" type="number" value="10"><select id="op"><option>+</option><option>-</option><option>×</option><option>/</option><option value="%">나머지</option><option>=</option><option>!=</option><option>&gt;</option><option>&lt;</option><option>≥</option><option>≤</option></select><input id="y" type="number" value="3"> → <span class="res" id="r"></span></div>
+      <p class="hint" id="rk"></p>
+    </div>
+
+    <div class="card">
+      <h3>🔀 논리 연산: 그리고(AND), 또는(OR), 아니다(NOT)</h3>
+      <p>두 조건의 참·거짓을 바꿔 가며 결과를 확인하세요.</p>
+      <div class="sw"><button class="btn line" id="A"></button><button class="btn line" id="B"></button></div>
+      <div class="scroll-x"><table class="tbl" id="logic" style="margin-top:8px"></table></div>
+    </div>
+
+    <div class="card">
+      <h3>🎢 놀이 기구 탑승 안내 프로그램</h3>
+      <div class="code">
+        <span class="line"><span class="blk ev">▶ 시작하기 버튼을 클릭했을 때</span></span>
+        <span class="line"><span class="blk fl">키를 입력하세요. 을(를) 묻고 대답 기다리기</span></span>
+        <span class="line"><span class="blk jd">만일 <span class="v">대답 &lt; <input id="t1" type="number" value="100" style="width:56px"></span> (이)라면 → "탑승할 수 없습니다."</span></span>
+        <span class="line"><span class="blk jd">만일 <span class="v">대답 ≥ <span id="t1b"></span></span> 그리고 <span class="v">대답 &lt; <input id="t2" type="number" value="110" style="width:56px"></span> (이)라면 → "보호자와 함께 탑승해야 합니다."</span></span>
+        <span class="line"><span class="blk jd">만일 <span class="v">대답 ≥ <span id="t2b"></span></span> (이)라면 → "혼자 탑승할 수 있습니다."</span></span>
+      </div>
+      <div class="ride" style="margin-top:8px">
+        <label>키 <input class="inp" id="h" type="range" min="80" max="160" value="105" style="width:200px"> <b id="hv"></b>cm</label>
+        <span class="gate" id="gate"></span><b id="say"></b>
+      </div>
+      <p class="hint">기준값(100, 110)을 바꿔 다른 놀이 기구의 규칙도 만들어 보세요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🎯 결과 예측하기</h3>
+      <div id="pred"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>산술 연산</b>(+, -, ×, /)은 계산 결과를, <b>비교 연산</b>(=, ≠, &gt;, &lt;, ≥, ≤)과 <b>논리 연산</b>(그리고, 또는, 아니다)은 <b>참 또는 거짓</b>을 결과로 내요. "그리고"는 두 조건이 모두 참일 때만, "또는"은 하나만 참이어도 참이에요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 108~110쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+function calc(){
+  const x = +$('#x').value, y = +$('#y').value, op = $('#op').value;
+  const tf = v => `<span class="tf ${v ? 't' : 'f'}">${v ? '참(true)' : '거짓(false)'}</span>`;
+  const m = {'+': x + y, '-': x - y, '×': x * y, '/': y === 0 ? '나눌 수 없음' : +(x / y).toFixed(3), '%': y === 0 ? '나눌 수 없음' : x % y, '=': tf(x === y), '!=': tf(x !== y), '>': tf(x > y), '<': tf(x < y), '≥': tf(x >= y), '≤': tf(x <= y)};
+  $('#r').innerHTML = m[op]; $('#rk').textContent = ['+', '-', '×', '/', '%'].includes(op) ? '산술 연산: 계산 결과가 숫자로 나와요.' : '비교 연산: 결과가 참 또는 거짓으로 나와요.';
+}
+['#x', '#y', '#op'].forEach(s => $(s).oninput = $(s).onchange = calc); calc();
+
+let A = true, B = false;
+function logic(){
+  $('#A').textContent = `조건 A: ${A ? '참' : '거짓'}`; $('#B').textContent = `조건 B: ${B ? '참' : '거짓'}`;
+  const tf = v => `<span class="tf ${v ? 't' : 'f'}">${v ? '참' : '거짓'}</span>`;
+  $('#logic').innerHTML = `<tr><th>A 그리고 B</th><th>A 또는 B</th><th>A (이)가 아니다</th></tr><tr><td>${tf(A && B)}</td><td>${tf(A || B)}</td><td>${tf(!A)}</td></tr>`;
+}
+$('#A').onclick = () => { A = !A; logic(); }; $('#B').onclick = () => { B = !B; logic(); }; logic();
+
+function ride(){
+  const h = +$('#h').value, t1 = +$('#t1').value, t2 = +$('#t2').value;
+  $('#hv').textContent = h; $('#t1b').textContent = t1; $('#t2b').textContent = t2;
+  const [g, s] = h < t1 ? ['⛔', '탑승할 수 없습니다.'] : h < t2 ? ['👨‍👧', '보호자와 함께 탑승해야 합니다.'] : ['🎢', '혼자 탑승할 수 있습니다.'];
+  $('#gate').textContent = g; $('#say').textContent = `"${s}"`;
+}
+['#h', '#t1', '#t2'].forEach(s => $(s).oninput = ride); ride();
+
+renderChoice($('#pred'), [
+  {icon:'🧮', t:'17 ÷ 5의 나머지는?', a:1, e:'17 = 5 × 3 + 2 이므로 나머지는 2예요.'},
+  {icon:'⚖️', t:'(8 > 3) 그리고 (2 > 5) 의 결과는?', a:3, e:'두 번째 조건이 거짓이라 "그리고"의 결과는 거짓이에요.'},
+  {icon:'🔀', t:'(8 > 3) 또는 (2 > 5) 의 결과는?', a:2, e:'하나만 참이어도 "또는"의 결과는 참이에요.'},
+], ['3', '2', '참', '거짓']);
+
+renderQuiz($('#quiz'), [
+  {q:'두 값의 크기를 비교해 참 또는 거짓을 결과로 내는 연산은?', o:['산술 연산','비교 연산','논리 연산'], a:1, e:'=, ≠, >, <, ≥, ≤가 비교 연산자예요.'},
+  {q:'키가 100cm 이상이고 110cm 미만인지 확인하는 데 알맞은 논리 연산은?', o:['그리고','또는','아니다'], a:0, e:'두 조건을 모두 만족해야 하므로 "그리고"를 써요.'},
+]);
+</script>
+</body>
+</html>

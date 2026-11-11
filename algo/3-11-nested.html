@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>순차·선택·반복과 중첩 제어 구조</title>
+<link rel="stylesheet" href="../assets/common.css">
+<link rel="stylesheet" href="../assets/blocks.css">
+<style>
+.wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.wrap canvas{border:2px solid var(--line);border-radius:14px;width:300px;max-width:100%;height:auto;background:#fff}
+.code input{width:52px;font:inherit;font-weight:800;border:0;border-radius:10px;text-align:center;padding:0 4px}
+.nums{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.nums span{border-radius:8px;padding:2px 8px;font-weight:700}
+.nums .o{background:var(--yellow-soft)}
+.nums .e{background:var(--brand-soft)}
+</style>
+</head>
+<body data-unit="3" data-title="순차·선택·반복과 중첩 제어 구조" data-sub="중1 Ⅲ단원 · 중첩 제어 구조 · 미래엔 112~115쪽">
+<main>
+  <span class="badge">중1 Ⅲ단원 · 프로그래밍</span>
+  <h1>순차·선택·반복과 중첩 제어 구조</h1>
+  <p class="lead"><b>제어 구조</b>는 명령의 실행 순서를 정하는 구조로, <b>순차</b>(차례대로), <b>선택</b>(조건에 따라), <b>반복</b>(여러 번)이 있어요. 제어 구조 안에 또 다른 제어 구조를 넣는 것을 <b>중첩 제어 구조</b>라고 해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>정사각형 하나를 그리는 명령을 36번 반복하면서 조금씩 회전하면 어떤 모양이 나올까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧭 어떤 제어 구조일까?</h3>
+      <div id="kind"></div>
+    </div>
+
+    <div class="card">
+      <h3>🌸 반복 속 반복: 꽃 모양 그리기</h3>
+      <p>값을 바꾸고 실행해 보세요. 바깥 반복 × 안쪽 반복만큼 선이 그려져요.</p>
+      <div class="wrap">
+        <div class="code">
+          <span class="line"><span class="blk ev">▶ 시작하기 버튼을 클릭했을 때</span></span>
+          <span class="line"><span class="blk fl"><input id="outer" type="number" value="12" min="1" max="72"> 번 반복하기</span></span>
+          <div class="ind"><span class="line"><span class="blk fl"><input id="inner" type="number" value="4" min="1" max="12"> 번 반복하기</span></span>
+            <div class="ind"><span class="line"><span class="blk mv">이동 방향으로 <input id="len" type="number" value="70" min="5" max="140"> 만큼 움직이기</span></span><span class="line"><span class="blk mv">방향을 <input id="turn" type="number" value="90" min="1" max="359"> ° 회전하기</span></span></div>
+            <span class="line"><span class="blk mv">방향을 (360 ÷ 바깥 반복)° 회전하기</span></span></div>
+        </div>
+        <div><canvas id="cv" width="300" height="300"></canvas><div class="ctrl"><button class="btn" id="draw">▶ 실행</button></div><p class="hint" id="info"></p></div>
+      </div>
+      <p class="hint">💡 안쪽 반복을 3, 회전을 120으로 바꾸면? 5와 144로 바꾸면?</p>
+    </div>
+
+    <div class="card">
+      <h3>🔢 반복 속 선택: 홀수와 짝수 나누기</h3>
+      <div class="code">
+        <span class="line"><span class="blk vr">숫자 를 <span class="v">1</span> (으)로 정하기</span></span>
+        <span class="line"><span class="blk fl"><input id="cnt" type="number" value="20" min="1" max="60"> 번 반복하기</span></span>
+        <div class="ind"><span class="line"><span class="blk jd">만일 <span class="v">숫자 ÷ 2 의 나머지 = 0</span> (이)라면 → 짝수 상자에 넣기 · 아니면 → 홀수 상자에 넣기</span></span>
+          <span class="line"><span class="blk vr">숫자 에 <span class="v">1</span> 만큼 더하기</span></span></div>
+      </div>
+      <div class="ctrl" style="margin-top:6px"><button class="btn" id="oe">▶ 실행</button></div>
+      <div class="nums" id="nums"></div>
+      <p class="hint" id="oeMsg"></p>
+    </div>
+
+    <div class="card">
+      <h3>🎯 실행 결과 예측하기</h3>
+      <div id="pred"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>제어 구조에는 <b>순차, 선택, 반복</b>이 있어요. 반복 안의 반복, 반복 안의 선택처럼 제어 구조를 겹쳐 쓰는 <b>중첩 제어 구조</b>를 활용하면 복잡한 문제도 짧은 프로그램으로 해결할 수 있어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 112~115쪽 내용을 바탕으로 재구성 · 블록 모양은 엔트리를 흉내 낸 그림이에요</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/turtle.js"></script>
+<script>
+renderChoice($('#kind'), [
+  {icon:'🍳', t:'물을 붓고 → 끓이고 → 면을 넣는다.', a:0, e:'명령을 차례대로 실행하는 순차 구조예요.'},
+  {icon:'☔', t:'비가 오면 우산을 챙기고, 아니면 모자를 챙긴다.', a:1, e:'조건에 따라 다른 명령을 실행하는 선택 구조예요.'},
+  {icon:'🏃', t:'운동장을 5바퀴 돈다.', a:2, e:'같은 명령을 여러 번 실행하는 반복 구조예요.'},
+  {icon:'🎵', t:'노래를 3번 부르는데, 매번 후렴에서 박수를 2번 친다.', a:3, e:'반복 안에 반복이 들어 있는 중첩 제어 구조예요.'},
+], ['순차', '선택', '반복', '중첩']);
+
+const T = new Turtle($('#cv'));
+const val = (id, lo, hi) => Math.max(lo, Math.min(hi, Math.trunc(+$('#' + id).value) || lo));
+$('#draw').onclick = () => {
+  const o = val('outer', 1, 72), n = val('inner', 1, 12), L = val('len', 5, 140), a = val('turn', 1, 359), cmds = [['go', 0, 0]];
+  const cols = ['#3b6cf6', '#16b8a6', '#ff7aa2', '#ffb020', '#a24bd6'];
+  for (let i = 0; i < o; i++){ cmds.push(['color', cols[i % cols.length]]); for (let j = 0; j < n; j++){ cmds.push(['fd', L], ['rt', a]); } cmds.push(['rt', 360 / o]); }
+  T.run(cmds, {delay: 16});
+  $('#info').textContent = `그린 선: ${o} × ${n} = ${o * n}개 · 블록 몇 개로 이렇게 많은 선을 그렸어요!`;
+};
+$('#draw').click();
+
+$('#oe').onclick = () => {
+  const c = val('cnt', 1, 60); let odd = 0, even = 0;
+  $('#nums').innerHTML = Array.from({length: c}, (_, i) => { const v = i + 1, e = v % 2 === 0; e ? even++ : odd++; return `<span class="${e ? 'e' : 'o'}">${v}</span>`; }).join('');
+  $('#oeMsg').textContent = `홀수 ${odd}개(노랑), 짝수 ${even}개(파랑) · 반복할 때마다 조건을 판단했어요.`;
+};
+$('#oe').click();
+
+renderChoice($('#pred'), [
+  {icon:'🔁', t:'"3번 반복하기" 안에 "4번 반복하기 → 앞으로 움직이기"가 있으면 몇 번 움직일까?', a:2, e:'3 × 4 = 12번이에요.'},
+  {icon:'⬛', t:'"4번 반복하기 → 100만큼 움직이기, 90° 회전하기"를 실행하면?', a:0, e:'4번 직진하며 90°씩 돌면 정사각형이에요.'},
+  {icon:'🔺', t:'"3번 반복하기 → 100만큼 움직이기, 120° 회전하기"를 실행하면?', a:1, e:'3번 직진하며 120°씩 돌면 정삼각형이에요.'},
+], ['정사각형', '정삼각형', '12번', '7번']);
+
+renderQuiz($('#quiz'), [
+  {q:'제어 구조 안에 또 다른 제어 구조가 포함된 것은?', o:['순차 구조','중첩 제어 구조','변수'], a:1, e:'반복 속 반복, 반복 속 선택 등이 중첩 제어 구조예요.'},
+  {q:'1부터 20까지 홀수와 짝수를 나눌 때 필요한 중첩 제어 구조는?', o:['반복 속 선택','선택 속 순차','순차만'], a:0, e:'20번 반복하면서 매번 조건(나머지가 0인지)을 판단해요.'},
+]);
+</script>
+</body>
+</html>
