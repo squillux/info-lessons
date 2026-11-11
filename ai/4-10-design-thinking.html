@@ -67,6 +67,7 @@
       <div class="checks" id="checks"></div>
       <p class="hint" id="chkMsg"></p>
     </div>
+    <div class="card" id="rubric"></div>
   </section>
 
   <section class="step sum">
@@ -111,6 +112,7 @@ liveBoard($('#live'), {act: '4-09', title: '우리 모둠 착한 인공지능 �
 const CH = ['훈련 데이터의 양은 충분한가?', '편향된 데이터를 사용하지 않았는가?', '새로운 데이터를 입력해 정확도를 평가했는가?', '수집한 데이터가 의도적으로 왜곡되거나 개인 정보를 침해하지 않는가?', '개발한 인공지능 시스템이 인간 중심적인가?', '개발한 인공지능 시스템이 문제 해결에 효율적인가?'];
 $('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
 $$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 모든 기준을 점검했어요!' : `${n} / ${CH.length}`; });
+rubric($('#rubric'), {"std":"04-04, 04-05","rows":[["공감과 문제 정의","사용자의 어려움을 구체적으로 파악하고 인공지능으로 해결할 문제를 명확히 정의함","문제를 정의했으나 구체성이 부족함","문제를 정의하지 못함"],["인공지능 적용","문제에 알맞은 모델 종류·클래스·데이터를 선택하고 이유를 설명함","모델과 데이터를 선택했으나 이유가 부족함","부적절한 모델·데이터를 선택함"],["데이터와 윤리","데이터의 양·품질·대표성과 개인 정보·편향 문제를 점검하고 해결 방안을 제시함","윤리적 문제를 일부만 고려함","윤리적 문제를 고려하지 않음"],["평가와 개선","테스트 데이터로 평가하고 결과에 따라 개선함","평가했으나 개선이 부족함","평가하지 않음"]]});
 </script>
 </body>
 </html>

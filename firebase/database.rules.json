@@ -3,7 +3,7 @@
     "keys": {
       "$room": {
         ".read": false,
-        ".write": "!data.exists()",
+        ".write": "!data.exists() || (!newData.exists() && ((root.child('idx/' + $room).val() < now - 2592000000) || (root.child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists() && !newData.parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists())))",
         ".validate": "$room.matches(/^[0-9]{4}$/) && newData.isString() && newData.val().length >= 20 && newData.val().length <= 64"
       }
     },
@@ -13,7 +13,8 @@
           ".read": false,
           ".write": "$sec === root.child('keys/' + $room).val()",
           ".validate": "newData.hasChildren(['t']) && newData.child('t').isNumber()"
-        }
+        },
+        ".write": "!newData.exists() && (root.child('idx/' + $room).val() < now - 2592000000)"
       }
     },
     "rooms": {
@@ -65,7 +66,8 @@
               ".validate": "$id.matches(/^[a-z0-9]{12,32}_[0-9]{1,2}$/) && newData.isBoolean()"
             }
           }
-        }
+        },
+        ".write": "(!newData.exists() && ((root.child('idx/' + $room).val() < now - 2592000000) || (root.child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists() && !newData.parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists())))"
       }
     },
     "votes": {
@@ -78,7 +80,8 @@
               ".validate": "$dev.matches(/^[a-z0-9]{12,32}$/) && newData.isNumber() && newData.val() >= 0 && newData.val() < 10"
             }
           }
-        }
+        },
+        ".write": "(!newData.exists() && ((root.child('idx/' + $room).val() < now - 2592000000) || (root.child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists() && !newData.parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists())))"
       }
     },
     "posts": {
@@ -91,7 +94,15 @@
               ".validate": "$dev.matches(/^[a-z0-9]{12,32}$/) && $n.matches(/^[0-9]{1,2}$/) && newData.isString() && newData.val().length <= 1500"
             }
           }
-        }
+        },
+        ".write": "(!newData.exists() && ((root.child('idx/' + $room).val() < now - 2592000000) || (root.child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists() && !newData.parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists())))"
+      }
+    },
+    "idx": {
+      ".read": true,
+      "$room": {
+        ".write": "(newData.exists() && newData.val() === newData.parent().parent().child('rooms/' + $room + '/pub/t').val()) || (!newData.exists() && ((root.child('idx/' + $room).val() < now - 2592000000) || (root.child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists() && !newData.parent().parent().child('ctl/' + $room + '/' + root.child('keys/' + $room).val()).exists())))",
+        ".validate": "newData.isNumber()"
       }
     }
   }

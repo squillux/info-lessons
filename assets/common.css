@@ -131,3 +131,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .card{box-shadow:none;break-inside:avoid}
   body{--fs:14px}
 }
+.mission-steps{margin:6px 0;padding-left:1.4em;line-height:1.7}
+.mission-check{border-top:1px dashed var(--line);margin-top:8px;padding-top:6px}
+.mission-check label{display:block;padding:3px 0}
+.rubric summary{cursor:pointer;font-weight:800}
+.rubric table{border-collapse:collapse;font-size:.88rem;margin-top:8px;width:100%}
+.rubric th,.rubric td{border:1px solid var(--line);padding:5px 8px;vertical-align:top;text-align:left}
+.rubric tr:first-child th{background:var(--bg)}
+.explain-in{font:inherit;width:100%;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);margin:4px 0 6px}

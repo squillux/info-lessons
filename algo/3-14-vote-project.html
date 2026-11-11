@@ -55,6 +55,14 @@
     </div>
 
     <div class="card">
+      <h3>👫 짝 프로그래밍 타이머</h3>
+      <p>두 사람이 컴퓨터 한 대로 함께 코딩해요. <b>🧑‍💻 운전자</b>는 블록을 조립하고, <b>🧭 안내자</b>는 알고리즘을 보며 다음 할 일과 오류를 알려 줘요. 시간이 끝나면 역할을 바꿔요.</p>
+      <div class="ctrl"><label>바꾸는 간격 <select class="inp" id="pmin" style="width:auto"><option value="3">3분</option><option value="5" selected>5분</option><option value="7">7분</option></select></label><button class="btn" id="pgo">▶ 시작</button><button class="btn line" id="pstop">■ 멈춤</button></div>
+      <p style="font-size:1.3rem;margin:8px 0"><b id="prole">🧑‍💻 운전자: 짝 A · 🧭 안내자: 짝 B</b> <span class="pill" id="ptime">5:00</span></p>
+      <p class="hint" id="pmsg">역할이 바뀔 때 소리와 함께 알려 줘요.</p>
+    </div>
+
+    <div class="card">
       <h3>🤝 협력 개발: 역할 나누기</h3>
       <p>모둠원이 각자 맡을 부분을 정해 보세요. (저장되지 않아요. 캡처하거나 인쇄하세요.)</p>
       <div class="roles">
@@ -65,11 +73,13 @@
       </div>
       <p class="hint" style="margin-top:8px">💡 다른 학문 분야와도 협력할 수 있어요. 예: 과학 시간에 배운 우주 쓰레기 문제를 해결하는 '우주 청소 로켓' 시뮬레이션(교과서 132~138쪽)</p>
     </div>
+    <div class="card" id="entryMission"></div>
   </section>
 
   <section class="step">
     <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
     <div class="card" id="quiz"></div>
+    <div class="card" id="rubric"></div>
   </section>
 
   <section class="step sum">
@@ -84,6 +94,13 @@
 <script src="../assets/common.js"></script>
 <script src="../assets/live.js"></script>
 <script>
+let pt = null, left = 0, swapN = 0;
+const beep = () => { try { const a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; o.connect(g); g.connect(a.destination); g.gain.value = .15; o.start(); o.stop(a.currentTime + .4); } catch(e){} };
+const roleText = () => swapN % 2 ? '🧑‍💻 운전자: 짝 B · 🧭 안내자: 짝 A' : '🧑‍💻 운전자: 짝 A · 🧭 안내자: 짝 B';
+const tick = () => { left--; $('#ptime').textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0'); if (left <= 0){ swapN++; beep(); $('#prole').textContent = roleText(); $('#pmsg').textContent = `🔄 역할을 바꿔요! (${swapN}번째 교대)`; left = +$('#pmin').value * 60; } };
+$('#pgo').onclick = () => { clearInterval(pt); left = +$('#pmin').value * 60; $('#prole').textContent = roleText(); pt = setInterval(tick, 1000); $('#pmsg').textContent = '시작했어요!'; };
+$('#pstop').onclick = () => { clearInterval(pt); $('#pmsg').textContent = '멈췄어요.'; };
+
 liveVote($('#vote'), {act: '3-14', items: [{t: '가상 학급 회장 선거: 누구를 뽑을까요?', sub: '기호 1 🐱 "쉬는 시간을 즐겁게!" · 기호 2 🐶 "깨끗한 교실 만들기!" · 기호 3 🐰 "모두가 친한 반!"', opts: ['1번 🐱', '2번 🐶', '3번 🐰']}]});
 
 const KEY = ['후보 이름', '후보별 득표수', '투표 버튼', '한 사람 한 표(중복 투표 막기)', '개표 결과 출력', '후보의 키', '투표소 벽 색깔', '배경 음악'];
@@ -108,6 +125,8 @@ renderQuiz($('#quiz'), [
   {q:'투표 프로그램에서 후보별 득표수를 순서대로 저장하기에 알맞은 것은?', o:['리스트','함수 이름','배경 그림'], a:0, e:'후보 순서대로 득표수를 저장하는 리스트가 알맞아요.'},
   {q:'한 사람이 여러 번 투표하지 못하게 하려면 필요한 것은?', o:['투표 여부를 확인하는 조건(선택 구조)','더 큰 화면','배경 음악'], a:0, e:'이미 투표했는지 확인하는 조건이 필요해요.'},
 ]);
+entryMission($('#entryMission'), {"title":"학급 회장 전자 투표 프로그램","goal":"모둠별로 역할을 나누어 투표 프로그램을 완성해요. (교과서 126~131쪽)","need":["리스트: 후보, 득표수","블록: 묻고 대답 기다리기, 반복, 만일, 리스트 항목 바꾸기"],"steps":["후보 리스트와 득표수 리스트(모두 0)를 만든다.","투표자 수만큼 반복하며 \"몇 번 후보를 뽑을까요?\"를 묻는다.","대답이 1~후보 수 사이이면 해당 득표수에 1을 더하고, 아니면 \"다시 입력하세요\"를 말한다.","반복이 끝나면 득표수가 가장 많은 후보를 말한다."],"check":["후보와 득표수를 리스트로 관리했다.","잘못된 번호를 입력하면 다시 묻는다.","모둠원이 맡은 부분을 합쳐 하나의 프로그램으로 완성했다."]});
+rubric($('#rubric'), {"std":"03-08, 03-09","rows":[["문제 이해·추상화","초기·목표 상태와 핵심 요소(후보, 득표수, 중복 방지)를 모두 정의함","핵심 요소 일부가 빠짐","문제를 정의하지 못함"],["알고리즘 설계","입력 검사와 개표까지 포함한 알고리즘을 순서대로 표현함","알고리즘에 일부 빠진 단계가 있음","알고리즘이 불완전함"],["프로그래밍","리스트·반복·선택을 활용해 바르게 동작하는 프로그램을 작성함","대부분 동작하나 일부 오류가 있음","프로그램이 동작하지 않음"],["협력","역할을 나누어 맡고 결과를 합쳐 완성하며 서로 도움","역할을 나누었으나 협력이 부족함","협력하지 않음"]]});
 </script>
 </body>
 </html>

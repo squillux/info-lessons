@@ -41,6 +41,7 @@
       <div class="ctrl" style="margin-top:8px"><button class="btn" id="step">⏭ 한 단계씩 실행</button><button class="btn line" id="runall">▶ 끝까지 실행</button><button class="btn line" id="restart">처음부터</button><button class="btn line" id="fix">🛠 고른 줄 고치기</button></div>
       <div class="feedback" id="fb"></div>
     </div>
+    <div class="card" id="entryMission"></div>
   </section>
 
   <section class="step">
@@ -102,6 +103,7 @@ renderQuiz($('#quiz'), [
   {q:'프로그램의 오류를 찾아 원인을 밝히고 고치는 과정은?', o:['디버깅','추상화','정렬'], a:0, e:'오류(버그)를 없애는(de-) 과정이라 디버깅이라고 해요.'},
   {q:'디버거의 "한 단계씩 실행" 기능이 도움이 되는 이유는?', o:['프로그램이 더 빨라져서','명령마다 변수의 값이 어떻게 바뀌는지 확인할 수 있어서','블록 색이 바뀌어서'], a:1, e:'예상과 달라지는 순간을 찾으면 오류의 위치를 알 수 있어요.'},
 ]);
+entryMission($('#entryMission'), {"title":"디버거로 오류 고치기","goal":"일부러 오류가 있는 프로그램을 만들고, 엔트리의 디버그 모드(한 단계씩 실행)로 찾아 고쳐요. (교과서 124쪽)","need":["엔트리 [디버그] 기능"],"steps":["1부터 10까지 더하는 프로그램을 만들되 반복 횟수를 9로 잘못 넣는다.","디버그 모드로 한 단계씩 실행하며 변수 값을 확인한다.","오류가 있는 블록을 찾아 고치고 다시 실행한다."],"check":["한 단계씩 실행하며 변수 값을 확인했다.","오류의 원인을 말로 설명할 수 있다.","고친 뒤 결과가 55인지 확인했다."]});
 </script>
 </body>
 </html>

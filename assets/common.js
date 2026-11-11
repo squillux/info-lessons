@@ -17,7 +17,9 @@ const bin = (n, w) => n.toString(2).padStart(w, '0');
         <button class="tool" id="fsBtn" title="전체 화면">⛶ <span>전체 화면</span></button>
       </div></div><div class="prog"><i></i></div>`;
   h.querySelector('.ttl b').textContent = d.title || document.title;
-  h.querySelector('.ttl small').textContent = d.sub || '';
+  let std = '';   // 관련 성취기준 표시 (contents.js의 std)
+  try { const p = location.pathname; const e = (typeof contentsList !== 'undefined') && contentsList.find(c => c.href.endsWith('/') ? (p.endsWith(c.href) || p.endsWith(c.href + 'index.html')) : p.endsWith(c.href)); if (e && e.std) std = ' · [9정' + e.std + ']'; } catch (e) {}
+  h.querySelector('.ttl small').textContent = (d.sub || '') + std;
   document.body.prepend(h);
   const root = document.documentElement;   // 글자 크기는 html 기준(rem)이므로 html에 적용
   try { if (localStorage.getItem('big')) root.classList.add('big'); } catch (e) {}
@@ -154,3 +156,55 @@ function renderChoice(box, items, options, onDone){
 }
 
 function feedback(el, ok, msg){ el.textContent = msg; el.className = 'feedback show ' + (ok ? 'ok' : 'bad'); }
+
+/* 엔트리로 만들어 보기 미션 카드: entryMission(box, {title, goal, need:[], steps:[], check:[]}) */
+function entryMission(box, m){
+  const esc = s => String(s).replace(/[<>&]/g, c => ({'<': '&lt;', '>': '&gt;', '&': '&amp;'}[c]));
+  box.innerHTML = `<h3>🧩 엔트리로 만들어 보기 <span class="tag-opt">실습 미션</span></h3>
+    <p><b>${esc(m.title)}</b><br>${esc(m.goal)}</p>
+    ${m.need ? `<p class="hint">필요한 것: ${m.need.map(esc).join(' · ')}</p>` : ''}
+    <ol class="mission-steps">${m.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+    <p><a class="btn" href="https://playentry.org/ws" target="_blank" rel="noopener">엔트리 열기 ↗</a></p>
+    <div class="mission-check"><b>✅ 스스로 점검</b>${m.check.map(c => `<label><input type="checkbox"> ${esc(c)}</label>`).join('')}<p class="hint"></p></div>`;
+  const ins = box.querySelectorAll('.mission-check input'), msg = box.querySelector('.mission-check .hint');
+  ins.forEach(i => i.onchange = () => { const n = [...ins].filter(x => x.checked).length; msg.textContent = n === ins.length ? '🎉 미션 완료! 친구와 프로그램을 바꿔 실행해 보세요.' : `${n} / ${ins.length}`; });
+}
+
+/* 프로젝트 평가 기준표(교사용): rubric(box, {std, rows:[[평가 요소, 상, 중, 하], ...]}) */
+function rubric(box, r){
+  const esc = s => String(s).replace(/[<>&]/g, c => ({'<': '&lt;', '>': '&gt;', '&': '&amp;'}[c]));
+  box.innerHTML = `<details class="rubric"><summary>📏 평가 기준표 (교사용 · 성취기준 [9정${esc(r.std)}])</summary>
+    <div class="scroll-x"><table><tr><th>평가 요소</th><th>상</th><th>중</th><th>하</th></tr>${r.rows.map(([k, a, b, c]) => `<tr><th>${esc(k)}</th><td>${esc(a)}</td><td>${esc(b)}</td><td>${esc(c)}</td></tr>`).join('')}</table></div>
+    <p class="hint">성취수준(A~E)과 학교 평가 계획에 맞게 조정해 사용하세요.</p></details>`;
+}
+
+/* 내 말로 설명하기: explainIt(box, {q, words:[꼭 넣을 낱말], ex:예시 답안}) — 저장하지 않음 */
+function explainIt(box, m){
+  const esc = s => String(s).replace(/[<>&]/g, c => ({'<': '&lt;', '>': '&gt;', '&': '&amp;'}[c]));
+  box.innerHTML = `<h3>✍️ 내 말로 설명하기</h3><p>${esc(m.q)}</p>
+    <p class="hint">꼭 넣을 낱말: ${m.words.map(w => `<span class="pill" data-w="${esc(w)}">${esc(w)}</span>`).join(' ')}</p>
+    <textarea rows="3" class="explain-in" placeholder="친구에게 설명하듯 2~3문장으로 써 보세요. (저장되지 않아요)"></textarea>
+    <div class="ctrl"><button class="btn line" data-ex>💡 예시 답안 보기</button></div><p class="explain-ex hint" hidden>${esc(m.ex)}</p>`;
+  const ta = box.querySelector('textarea');
+  ta.oninput = () => box.querySelectorAll('[data-w]').forEach(p => { const ok = ta.value.includes(p.dataset.w); p.style.background = ok ? 'var(--mint-soft)' : ''; p.textContent = (ok ? '✓ ' : '') + p.dataset.w; });
+  box.querySelector('[data-ex]').onclick = () => { box.querySelector('.explain-ex').hidden = false; };
+}
+
+/* 🔊 읽어 주기: 지금 열린 마지막 활동 카드의 글을 소리로 읽음 (브라우저 음성 합성, 인터넷·저장 필요 없음) */
+(function speakTool(){
+  if (!('speechSynthesis' in window)) return;
+  const tools = document.querySelector('header.top .tools'); if (!tools) return;
+  const b = document.createElement('button'); b.className = 'tool'; b.title = '지금 활동의 글을 소리로 읽어 줘요'; b.innerHTML = '🔊 <span>읽어 주기</span>';
+  b.onclick = () => {
+    if (speechSynthesis.speaking){ speechSynthesis.cancel(); b.innerHTML = '🔊 <span>읽어 주기</span>'; return; }
+    const cards = [...document.querySelectorAll('main .card')].filter(c => !c.closest('.locked') && c.offsetParent !== null);
+    const vis = cards.filter(c => { const r = c.getBoundingClientRect(); return r.bottom > 80 && r.top < innerHeight; });
+    const target = vis[0] || cards[cards.length - 1]; if (!target) return;
+    const text = [...target.querySelectorAll('h3, p, li, .choice > p, .q > p')].map(e => e.innerText.trim()).filter(Boolean).join('. ').slice(0, 1200);
+    const u = new SpeechSynthesisUtterance(text); u.lang = 'ko-KR'; u.rate = .95;
+    u.onend = u.onerror = () => b.innerHTML = '🔊 <span>읽어 주기</span>';
+    target.classList.add('pop'); setTimeout(() => target.classList.remove('pop'), 700);
+    speechSynthesis.speak(u); b.innerHTML = '⏹ <span>멈추기</span>';
+  };
+  tools.prepend(b);
+})();

@@ -72,6 +72,7 @@
       <div class="checks" id="checks"></div>
       <p class="hint" id="chkMsg"></p>
     </div>
+    <div class="card" id="rubric"></div>
   </section>
 
   <section class="step sum">
@@ -128,6 +129,7 @@ liveBoard($('#gallery'), {act: '5-13', title: '우리 모둠 카드 뉴스 개�
 });
 
 $$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 준비 완료! 이제 카드 뉴스를 만들어 보세요.' : `${n} / ${CH.length}`; });
+rubric($('#rubric'), {"std":"05-02, 05-03","rows":[["주제와 사례","주제에 맞는 실제 사례를 조사하고 출처를 밝힘","사례를 조사했으나 출처가 불분명함","사례가 없음"],["실천 방안","개인과 사회의 실천 방안을 구체적으로 제시함","실천 방안이 일반적이거나 한쪽만 제시함","실천 방안이 없음"],["저작권 준수","이미지·글꼴의 저작권과 CCL 조건을 확인하고 지킴","일부 자료의 저작권 확인이 부족함","저작권을 고려하지 않음"],["전달력","핵심 메시지가 간결하고 명확하게 드러남","메시지가 다소 산만함","메시지가 드러나지 않음"]]});
 </script>
 </body>
 </html>

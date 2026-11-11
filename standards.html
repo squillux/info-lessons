@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성취기준-활동 대응표</title>
+<link rel="stylesheet" href="assets/common.css">
+<style>
+.std-t{width:100%;border-collapse:collapse;font-size:.92rem;margin:8px 0 22px}
+.std-t th,.std-t td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+.std-t th{background:var(--bg);white-space:nowrap}
+.std-t td a{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand);text-decoration:none;font-weight:700;font-size:.85rem}
+.std-t td a.o{background:var(--bg);color:var(--muted)}
+@media print{.top,.no-print{display:none}}
+</style>
+</head>
+<body>
+<main>
+  <p class="no-print"><a class="btn line" href="index.html">◀ 체험관으로</a> <button class="btn line" onclick="print()">🖨️ 인쇄</button></p>
+  <h1>성취기준-활동 대응표</h1>
+  <p class="lead">2022 개정 교육과정 중학교 정보 성취기준별로 체험관 활동을 정리했어요. 파란색은 ★ 핵심 활동, 회색은 ☆ 선택 활동이에요.</p>
+  <div id="out"></div>
+</main>
+<script src="assets/contents.js"></script>
+<script>
+const STD = {
+  '01-01': '컴퓨팅 시스템의 구성요소와 동작 원리를 이해하고, 운영 체제의 기능을 분석한다.',
+  '01-02': '피지컬 컴퓨팅의 개념을 이해하고, 생활 속에서 적용된 사례 조사를 통해 컴퓨팅 시스템의 필요성과 가치를 판단한다.',
+  '01-03': '문제 해결 목적에 맞는 피지컬 컴퓨팅 구성요소를 선택하여 시스템을 구상한다.',
+  '02-01': '실생활의 데이터가 디지털 형태로 변환되어 활용되는 긍정적 가치를 탐색하고, 다양한 데이터를 디지털 형태로 표현한다.',
+  '02-02': '문제 해결에 적합한 데이터를 수집하고, 목적에 맞게 구분하여 관리한다.',
+  '02-03': '실생활의 데이터를 표, 다이어그램 등 다양한 형태로 구조화한다.',
+  '02-04': '사례를 중심으로 데이터 간의 관계를 파악하고, 데이터에 기반하여 의미를 해석한다.',
+  '02-05': '여러 학문 분야의 사례를 중심으로 데이터를 수집·분석하여 융합적으로 문제를 해결한다.',
+  '03-01': '문제의 상태를 정의하고 수행 가능한 형태로 구조화한다.',
+  '03-02': '문제 해결을 위한 추상화의 중요성을 이해하고, 핵심요소를 중심으로 알고리즘을 표현한다.',
+  '03-03': '알고리즘의 중요성을 이해하고, 문제를 해결하는 다양한 알고리즘을 비교·분석한다.',
+  '03-04': '사례를 중심으로 문제 해결에 적합한 전략을 선택하여 알고리즘을 설계한다.',
+  '03-05': '데이터를 순차적으로 저장할 수 있는 구조를 활용하여 문제 해결 프로그램을 작성한다.',
+  '03-06': '논리 연산과 중첩 제어 구조를 활용하여 문제를 해결하는 프로그램을 작성한다.',
+  '03-07': '프로그램 작성에서 함수를 활용하고, 프로그램 수행 결과를 디버거로 분석하여 오류를 수정한다.',
+  '03-08': '실생활의 문제를 탐색하여 발견하고, 프로그래밍을 통해 해결한다.',
+  '03-09': '다양한 학문 분야의 문제 해결을 위해 협력하여 소프트웨어를 개발한다.',
+  '04-01': '인공지능의 개념과 특성을 설명하고 인공지능 소프트웨어를 구별한다.',
+  '04-02': '인공지능 학습에서 데이터의 중요성을 이해하고, 학습에 필요한 데이터를 수집하여 분류한다.',
+  '04-03': '다양한 데이터를 활용하여 인공지능 시스템을 구성하고 적용한다.',
+  '04-04': '인공지능 시스템으로 해결 가능한 문제를 발견하고, 문제 해결에 적합한 인공지능 시스템을 적용한다.',
+  '04-05': '인공지능 학습에 필요한 데이터의 수집과 활용에서 발생하는 윤리적인 문제의 해결 방안을 구상한다.',
+  '05-01': '디지털 사회의 특성을 탐구하고, 사회 변화에 따른 직업의 변화를 탐구한다.',
+  '05-02': '디지털 사회의 구성원으로서 편리하고 안전한 생활을 위한 규칙에 대해 민주적으로 논의하고 실천 방안을 수립한다.',
+  '05-03': '사례를 중심으로 디지털 공간에서 함께 살아가기 위해 개인 정보 및 권리와 저작권을 보호하는 실천 방법을 탐구한다.',
+};
+const roman = ['', 'Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ'];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const covers = (c, code) => { if (!c.std) return false; return c.std.split(/,\s*/).some(p => { if (p.includes('~')){ const [a, b] = p.split('~'), [u, s] = a.split('-'); return code.startsWith(u + '-') && +code.split('-')[1] >= +s && +code.split('-')[1] <= +b; } return p === code; }); };
+document.getElementById('out').innerHTML = unitList.map(u => {
+  const codes = Object.keys(STD).filter(k => +k.slice(0, 2) === u.unit);
+  return `<h2>${roman[u.unit]} ${esc(u.name)}</h2><div class="scroll-x"><table class="std-t"><tr><th>성취기준</th><th>내용</th><th>관련 활동</th></tr>` +
+    codes.map(k => `<tr><th>[9정${k}]</th><td>${esc(STD[k])}</td><td>${contentsList.filter(c => covers(c, k)).map(c => `<a class="${c.core === false ? 'o' : ''}" href="${esc(c.href)}">${c.icon || ''} ${esc(c.title)}</a>`).join('')}</td></tr>`).join('') + '</table></div>';
+}).join('');
+</script>
+</body>
+</html>

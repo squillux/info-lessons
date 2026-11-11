@@ -76,6 +76,7 @@ table.grid2 select{font:inherit;padding:2px 4px;border-radius:6px;border:1px sol
       <h3>🤔 리스트일까, 테이블일까?</h3>
       <div id="pick"></div>
     </div>
+    <div class="card" id="explainIt"></div>
   </section>
 
   <section class="step">
@@ -145,6 +146,7 @@ renderQuiz($('#quiz'), [
   {q:'테이블에서 가로 방향으로 나열된 데이터의 집합은?', o:['행','열'], a:0, e:'가로는 행, 세로는 열이에요.'},
   {q:'테이블로 구조화하면 좋은 점은?', o:['많은 데이터를 일정한 기준으로 간결하게 정리하고 계산하기 쉽다','데이터 간의 상하 관계를 보여 준다'], a:0, e:'상하 관계는 다이어그램(계층형)이 잘 보여 줘요.'},
 ]);
+explainIt($('#explainIt'), {"q":"흩어진 메모를 표로 정리하면 무엇이 좋은지 \"행\"과 \"열\"을 넣어 설명해 보세요.","words":["행","열","비교"],"ex":"표로 정리하면 한 행에는 한 대상의 정보가, 한 열에는 같은 종류의 정보가 모여 있어서 원하는 정보를 빨리 찾고 서로 비교하기 쉬워요."});
 </script>
 </body>
 </html>

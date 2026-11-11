@@ -35,6 +35,9 @@ const LIVE = (() => {
 .lv-mod button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:3px 8px;font-size:.85rem;color:var(--ink)}
 .lv-mod button.hid{text-decoration:line-through;opacity:.45}
 .lv-out{margin-top:10px}
+.lv-keep{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:2px dashed var(--line);border-radius:14px;padding:8px 10px;margin:-4px 0 12px}
+.lv-keep .btn{font-size:.85rem;padding:5px 10px}
+.lv-keep .hint{flex-basis:100%;margin:0}
 .lv-room .qr{background:#fff;padding:6px;border-radius:10px;line-height:0}
 .lv-room .qr img,.lv-room .qr canvas{width:120px;height:120px}
 .lv-url{font-size:.85rem;word-break:break-all}
@@ -63,6 +66,29 @@ const LIVE = (() => {
     }).then(() => db);
   }
   /* 교사 방: 같은 활동의 이전 방이 있으면 이어서, 없으면 새로 만든다 */
+  /* 보관 기간(KEEP_DAYS일)이 지난 방은 교사가 새 방을 열 때 자동으로 지움 (무료 요금제에서는 서버 예약 삭제를 쓸 수 없어서) */
+  const KEEP_DAYS = 30;
+  async function prune(){
+    try {
+      const s = await db.ref('idx').once('value'), cut = Date.now() - KEEP_DAYS * 86400000, old = Object.entries(s.val() || {}).filter(([, t]) => t < cut).slice(0, 15);
+      for (const [c] of old) await db.ref().update({[`rooms/${c}`]: null, [`votes/${c}`]: null, [`posts/${c}`]: null, [`keys/${c}`]: null, [`ctl/${c}`]: null, [`idx/${c}`]: null}).catch(() => {});
+    } catch(e){}
+  }
+  /* 결과를 스프레드시트로: CSV 내려받기(엑셀·구글 시트에서 열림), 표 복사(붙여넣기) */
+  const stamp = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`; };
+  function download(name, rows){
+    const csv = '﻿' + rows.map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'})); a.download = `${name}_${stamp()}.csv`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  const copyTSV = rows => navigator.clipboard?.writeText(rows.map(r => r.map(v => String(v ?? '').replace(/[\t\n]/g, ' ')).join('\t')).join('\n'));
+  function keepBar(name, getRows, room, after){
+    const d = document.createElement('div'); d.className = 'lv-keep';
+    d.innerHTML = '<b>💾 기록 남기기</b><button class="btn line" data-k="csv">📥 결과 내려받기(CSV)</button><button class="btn line" data-k="copy">📋 표 복사</button><button class="btn line" data-k="del">🗑 수업 끝 · 기록 지우기</button><span class="hint">내려받은 파일은 엑셀·구글 시트에서 열려요. 표 복사 후 시트에 붙여 넣어도 돼요. 기록은 ' + KEEP_DAYS + '일이 지나면 자동으로 지워져요.</span>';
+    d.querySelector('[data-k=csv]').onclick = () => download(name, getRows());
+    d.querySelector('[data-k=copy]').onclick = e => { const p = copyTSV(getRows()); p && p.then(() => e.target.textContent = '✅ 복사했어요').catch(() => {}); };
+    d.querySelector('[data-k=del]').onclick = async () => { if (!confirm('이 방의 모든 투표·제출 기록을 서버에서 지울까요? 지운 기록은 되살릴 수 없어요. (먼저 결과를 내려받으세요)')) return; await room.erase().catch(() => alert('지우지 못했어요. 인터넷 연결을 확인해 주세요.')); after(); };
+    return d;
+  }
   async function teacherRoom(act, init, fresh){
     await connect();
     let last = null; try { last = JSON.parse(ls.get('live:last:' + act) || 'null'); } catch(e){}
@@ -80,7 +106,10 @@ const LIVE = (() => {
       ls.set('live:last:' + act, JSON.stringify({code: room.code, key: room.key}));
       room.fresh = true;
     }
-    room.save = () => { const t = Math.max(Date.now(), (room.pub.t || 0) + 1); room.pub.t = t; return db.ref().update({[`ctl/${room.code}/${room.key}/t`]: t, [`rooms/${room.code}/pub`]: room.pub}); };
+    room.save = () => { const t = Math.max(Date.now(), (room.pub.t || 0) + 1); room.pub.t = t; return db.ref().update({[`ctl/${room.code}/${room.key}/t`]: t, [`rooms/${room.code}/pub`]: room.pub}).then(() => db.ref(`idx/${room.code}`).set(t).catch(() => {})); };
+    /* 수업 끝: 이 방의 모든 기록 지우기 (비밀 키가 있는 기기만 가능) */
+    room.erase = () => { ls.set('live:last:' + act, ''); return db.ref().update({[`rooms/${room.code}`]: null, [`votes/${room.code}`]: null, [`posts/${room.code}`]: null, [`idx/${room.code}`]: null, [`keys/${room.code}`]: null, [`ctl/${room.code}/${room.key}`]: null}); };
+    prune();
     if (room.fresh) await room.save();
     return room;
   }
@@ -142,7 +171,7 @@ const LIVE = (() => {
     b.onclick = () => { if (document.querySelector('main .locked')) document.getElementById('allBtn')?.click(); setTimeout(() => { first.scrollIntoView({block: 'start'}); scrollBy(0, -80); }, 50); };
     tools.prepend(b);
   }, 0);
-  return {ls, rnd, esc, dev, connect, teacherRoom, roomBar, failBox, joinForm, bar, get db(){ return db; }};
+  return {ls, rnd, esc, dev, connect, teacherRoom, keepBar, roomBar, failBox, joinForm, bar, get db(){ return db; }};
 })();
 
 /* ============ 1) 실시간 투표 ============ */
@@ -182,6 +211,7 @@ function liveVote(box, cfg){
     try { room = await LIVE.teacherRoom(act, {q: Object.fromEntries(items.map((_, i) => [i, {open: false, show: false, round: 1}]))}, fresh); } catch(e){ return LIVE.failBox(top); }
     code = room.code; pub = room.pub;
     top.innerHTML = ''; top.appendChild(LIVE.roomBar(code, () => teacher(true)));
+    top.appendChild(LIVE.keepBar('투표결과_' + act, () => [['문항', '선택지', '표 수', '참여 수']].concat(...items.map((it, i) => it.opts.map((o, k) => [it.t, o, counts[i][k], counts[i].reduce((a, b) => a + b, 0)]))), room, () => { cleanup(); top.innerHTML = '<p class="feedback show ok">🗑 기록을 모두 지웠어요. 새 수업을 하려면 위의 [교사] 버튼을 다시 누르세요.</p>'; list.innerHTML = ''; }));
     list.innerHTML = items.map((it, i) => `<div class="lv-item" data-i="${i}">${head(it, i)}<div class="lv-ctl">
         <button class="btn" data-a="open"></button><button class="btn line" data-a="show"></button><button class="btn line" data-a="again">🔄 다시 투표</button></div><div class="lv-res"></div></div>`).join('');
     list.querySelectorAll('.lv-item').forEach(el => {
@@ -271,6 +301,8 @@ function liveBoard(box, cfg){
     try { room = await LIVE.teacherRoom(act, {open: false, show: false, round: 1, cfg: cfg.conf ? cfg.conf() : ''}, fresh); } catch(e){ return LIVE.failBox(top); }
     code = room.code; pub = room.pub; pub.hide = pub.hide || {};
     top.innerHTML = ''; top.appendChild(LIVE.roomBar(code, () => teacher(true)));
+    const flat = v => { try { const o = JSON.parse(v); return o && typeof o === 'object' ? Object.values(o).map(x => Array.isArray(x) ? x.map(y => typeof y === 'object' ? Object.values(y).join(' ') : y).join(' / ') : x).join(' | ') : String(v); } catch(e){ return String(v); } };
+    top.appendChild(LIVE.keepBar('제출기록_' + act, () => [['번호', '제출 내용', '숨김']].concat(Object.entries(posts).map(([id, v], i) => [i + 1, flat(v), (pub.hide || {})[id] ? '숨김' : ''])), room, () => { cleanup(); top.innerHTML = '<p class="feedback show ok">🗑 기록을 모두 지웠어요. 새 수업을 하려면 위의 [교사] 버튼을 다시 누르세요.</p>'; body.innerHTML = ''; }));
     body.innerHTML = `<div class="lv-item"><p><b>${esc(cfg.title || '실시간 모으기')}</b><span class="lv-st"></span></p>
       <div class="lv-ctl"><button class="btn" data-a="open"></button><button class="btn line" data-a="show"></button>${cfg.conf ? '<button class="btn line" data-a="conf">📤 지금 설정을 학생에게 보내기</button>' : ''}<button class="btn line" data-a="again">🔄 모두 지우고 새로 받기</button></div>
       <div class="lv-msg"></div><details style="margin-top:6px"><summary class="hint">🙈 부적절한 제출물 숨기기 (눌러서 펼치기)</summary><div class="lv-mod"></div></details></div><div class="lv-out"></div>`;

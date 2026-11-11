@@ -77,6 +77,7 @@
         <div style="flex:1;min-width:220px"><div class="ctrl"><input class="inp" id="w" placeholder="낱말 입력" style="width:160px"><button class="btn" id="wgo">말하기</button><button class="btn line" id="wre">새 게임</button></div><p id="wmsg" class="hint"></p></div>
       </div>
     </div>
+    <div class="card" id="entryMission"></div>
   </section>
 
   <section class="step">
@@ -128,6 +129,7 @@ renderQuiz($('#quiz'), [
   {q:'변수 "점수"를 80으로 정한 뒤 10만큼 더하고, 다시 50으로 정하면 마지막 값은?', o:['90','50','140'], a:1, e:'변수에는 마지막에 저장한 값 하나만 남아요.'},
   {q:'리스트 [가, 나, 다]에서 1번째 항목을 삭제하면 "다"는 몇 번째 항목이 될까?', o:['3번째','2번째','1번째'], a:1, e:'삭제하면 뒤 항목의 번호가 하나씩 당겨져요.'},
 ]);
+entryMission($('#entryMission'), {"title":"소망 목록 프로그램","goal":"리스트에 방학 소망을 추가·수정·삭제하는 프로그램을 만들어요. (교과서 104~105쪽)","need":["리스트: 소망 목록","글상자: 추가, 수정, 삭제"],"steps":["리스트 \"소망 목록\"을 만들고 기본 항목 3개를 넣는다.","[추가]를 클릭하면 \"추가할 소망은?\"을 묻고, 대답을 리스트에 추가한다.","[수정]을 클릭하면 몇 번째를 바꿀지 묻고, 그 항목을 새 대답으로 바꾼다.","[삭제]를 클릭하면 몇 번째를 지울지 묻고, 그 항목을 삭제한다."],"check":["리스트에 항목이 추가된다.","원하는 번호의 항목이 바뀐다.","원하는 번호의 항목이 지워지고 번호가 당겨진다."]});
 </script>
 </body>
 </html>

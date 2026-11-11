@@ -71,6 +71,7 @@
       <div class="checks" id="checks"></div>
       <p class="hint" id="chkMsg"></p>
     </div>
+    <div class="card" id="rubric"></div>
   </section>
 
   <section class="step sum">
@@ -115,6 +116,7 @@ liveBoard($('#live'), {act: '1-09', title: '우리 모둠 도서관 시스템 �
 const CH = ['소리 센서와 온도 센서가 값을 제대로 인식하는가?', '소리 값이 기준 이상이면 안내(또는 LED)가 동작하는가?', '온도가 기준 이상이면 냉방 장치 오브젝트가 바뀌는가?', '기준 미만이면 동작이 멈추는가?'];
 $('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
 $$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 모든 동작을 확인했어요!' : `${n} / ${CH.length}`; });
+rubric($('#rubric'), {"std":"01-03","rows":[["문제 이해","소음·온도 문제를 측정 가능한 값으로 정확히 정의함","문제를 정의했으나 측정할 값이 불분명함","문제를 정의하지 못함"],["구성 요소 선택","목적에 맞는 센서와 액추에이터를 고르고 이유를 설명함","알맞은 센서·액추에이터를 골랐으나 이유가 부족함","부적절한 구성 요소를 고름"],["동작 원리 설계","입력·처리(조건, 기준값)·출력을 빠짐없이 설계함","설계에 일부 빠진 부분이 있음","설계가 불완전함"],["구현과 점검","프로그램이 모든 조건에서 바르게 동작하고 기준값을 조정함","대부분 동작하나 일부 오류가 있음","동작하지 않음"]]});
 </script>
 </body>
 </html>

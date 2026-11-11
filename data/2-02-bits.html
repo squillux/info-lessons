@@ -110,6 +110,7 @@
       <div class="ctrl" id="flowmap"></div>
       <div id="flowOut" class="feedback show ok" style="font-weight:600"></div>
     </div>
+    <div class="card" id="explainIt"></div>
   </section>
 
   <section class="step">
@@ -263,6 +264,7 @@ renderQuiz($('#quiz'), [
   {q:'이진수 카드로 10진수 6을 만들려면 어떤 카드를 켜야 할까요?', o:['4와 2 → 110','4와 1 → 101','2와 1 → 011'], a:0, e:'4 + 2 = 6 → 이진수 110'},
   {q:'1바이트(byte)는 몇 비트일까요?', o:['2비트','4비트','8비트','10비트'], a:2, e:'비트 8개를 묶어 1바이트라고 해요.'},
 ]);
+explainIt($('#explainIt'), {"q":"컴퓨터가 0과 1만으로 여러 가지 수를 나타낼 수 있는 이유를 설명해 보세요.","words":["비트","자릿값","2진수"],"ex":"비트 하나는 0 또는 1을 나타내지만, 비트를 여러 개 쓰면 자리마다 1, 2, 4, 8처럼 자릿값이 달라져서 2진수로 많은 수를 나타낼 수 있어요."});
 </script>
 </body>
 </html>
