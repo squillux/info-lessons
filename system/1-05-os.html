@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내가 운영체제라면</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.ram{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:10px 0;max-width:480px}
+.ram i{height:34px;border-radius:6px;background:var(--bg);border:1px solid var(--line);font-style:normal;font-size:.7rem;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.apps{display:flex;flex-wrap:wrap;gap:6px}
+.apps button{border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 10px;font-weight:700;color:var(--ink)}
+.apps button.run{border-color:var(--brand);background:var(--brand-soft)}
+.drv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.drv div{border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center;background:#fff}
+.drv div.ok{border-color:var(--mint);background:var(--mint-soft)}
+.drv .ic{font-size:1.8rem}
+</style>
+</head>
+<body data-unit="1" data-title="내가 운영체제라면" data-sub="중1 Ⅰ단원 · 컴퓨팅 시스템의 동작 · 미래엔 18~21쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 컴퓨팅 시스템</span>
+  <h1>내가 운영체제라면</h1>
+  <p class="lead"><b>운영체제</b>는 컴퓨팅 시스템이 원활하게 동작하도록 한정된 <b>자원</b>을 효율적으로 관리하고 활용하게 하는 소프트웨어예요. 프로세스, 파일, 주기억 장치, 입출력 장치를 관리해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>음악을 들으며 웹 검색을 하고, 동시에 메신저 알림도 받아요. CPU는 하나뿐인데 어떻게 여러 프로그램이 함께 실행될까요? 누가 순서를 정해 줄까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧩 미션 1 · 주기억 장치 관리</h3>
+      <p>주기억 장치(램)는 빠르지만 저장 공간이 한정되어 있어요. 프로그램을 실행(누르기)하면 운영체제가 빈칸을 배정하고, 끝내면(다시 누르기) 공간을 돌려받아요. 공간이 모자라면 어떻게 될까요?</p>
+      <div class="apps" id="apps"></div>
+      <div class="ram" id="ram"></div>
+      <p class="hint" id="ramMsg"></p>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ 미션 2 · 프로세스 관리</h3>
+      <p><b>프로세스</b>는 실행 중인 프로그램이나 작업이에요. 위에서 실행 중인 프로그램들이 CPU를 차례로 나누어 쓰는 모습이에요.</p>
+      <div class="ctrl"><button class="btn" id="tick">▶ CPU 순서 돌리기</button></div>
+      <p id="cpu" class="scr" style="background:var(--bg);border-radius:12px;padding:10px">실행 중인 프로그램이 없어요.</p>
+    </div>
+
+    <div class="card">
+      <h3>🔌 미션 3 · 입출력 장치 관리</h3>
+      <p>새 장치가 연결되면 운영체제가 알맞은 <b>드라이버</b>(장치를 사용하기 위한 프로그램)를 찾아 연결해 줘요. 장치를 눌러 연결해 보세요.</p>
+      <div class="drv" id="drv"></div>
+    </div>
+
+    <div class="card">
+      <h3>🗂️ 어떤 관리일까?</h3>
+      <div id="kind"></div>
+    </div>
+
+    <div class="card">
+      <h3>🖐️ 사용자 인터페이스 <span class="tag-more">심화</span></h3>
+      <p>운영체제는 사용자가 컴퓨터와 소통하는 화면이나 방법인 <b>사용자 인터페이스</b>도 제공해요. 어떤 방식일까요?</p>
+      <div id="ui"></div>
+      <p class="hint">참고: 천재교육 중학교 정보 21쪽</p>
+    </div>
+
+    <div class="card">
+      <h3>📱 스마트폰 속 운영체제 <span class="tag-opt">더 해 보기</span></h3>
+      <p>스마트폰 설정에서 운영체제의 기능을 직접 찾아보세요. (안드로이드 기준, 기기마다 메뉴 이름이 조금 달라요.)</p>
+      <div id="phone"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>운영체제</b>는 실행 중인 프로그램의 순서를 정하는 <b>프로세스 관리</b>, 파일을 체계적으로 저장·검색하는 <b>파일 관리</b>, 한정된 램 공간을 나누는 <b>주기억 장치 관리</b>, 드라이버로 장치를 연결하는 <b>입출력 장치 관리</b>를 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 18~21쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const APPS = [['🎵 음악', 2, '#ff7aa2'], ['🌐 웹 브라우저', 3, '#3b6cf6'], ['💬 메신저', 1, '#16b8a6'], ['🎮 게임', 5, '#a24bd6'], ['📝 문서', 2, '#ffb020']];
+const ram = Array(16).fill(-1), running = [];
+$('#apps').innerHTML = APPS.map(([n, s], i) => `<button data-i="${i}">${n} <small>(${s}칸)</small></button>`).join('');
+$('#ram').innerHTML = '<i></i>'.repeat(16);
+function drawRam(msg){
+  $$('#ram i').forEach((c, k) => { const a = ram[k]; c.style.background = a < 0 ? '' : APPS[a][2]; c.textContent = a < 0 ? '' : APPS[a][0].split(' ')[0]; });
+  $$('#apps button').forEach(b => b.classList.toggle('run', running.includes(+b.dataset.i)));
+  $('#ramMsg').textContent = msg || `사용 중 ${ram.filter(x => x >= 0).length} / 16칸`;
+}
+$$('#apps button').forEach(b => b.onclick = () => {
+  const i = +b.dataset.i;
+  if (running.includes(i)){ ram.forEach((x, k) => { if (x === i) ram[k] = -1; }); running.splice(running.indexOf(i), 1); return drawRam(`✅ ${APPS[i][0]}을(를) 끝내고 공간을 돌려받았어요.`); }
+  const free = ram.map((x, k) => x < 0 ? k : -1).filter(k => k >= 0);
+  if (free.length < APPS[i][1]) return drawRam(`⚠️ 공간이 모자라요! 사용하지 않는 프로그램을 끝내야 ${APPS[i][0]}을(를) 실행할 수 있어요. 운영체제는 이렇게 한정된 공간을 효율적으로 나눠 써요.`);
+  free.slice(0, APPS[i][1]).forEach(k => ram[k] = i); running.push(i); drawRam(`🧩 ${APPS[i][0]}에 ${APPS[i][1]}칸을 배정했어요.`);
+});
+drawRam();
+
+let turn = 0;
+$('#tick').onclick = () => {
+  if (!running.length) return $('#cpu').textContent = '실행 중인 프로그램이 없어요. 미션 1에서 프로그램을 2개 이상 실행해 보세요.';
+  const a = running[turn % running.length]; turn++;
+  $('#cpu').innerHTML = running.map(r => `<span class="pill" style="${r === a ? 'background:' + APPS[r][2] + ';color:#fff' : ''}">${APPS[r][0]}</span>`).join(' → ') + `<br>지금 CPU 사용: <b>${APPS[a][0]}</b> · 운영체제가 순서를 정해 아주 짧은 시간씩 번갈아 실행하므로 동시에 실행되는 것처럼 보여요.`;
+};
+
+const DRV = [['🖨️', '프린터'], ['📷', '웹캠'], ['🎧', '헤드셋'], ['🎮', '게임 패드']];
+$('#drv').innerHTML = DRV.map(([ic, n], i) => `<div data-i="${i}"><span class="ic">${ic}</span><br><b>${n}</b><br><button class="btn line">연결하기</button><p class="hint" style="margin:4px 0 0"></p></div>`).join('');
+$$('#drv div').forEach(d => d.querySelector('button').onclick = () => {
+  const p = d.querySelector('p'), n = DRV[+d.dataset.i][1]; p.textContent = '🔎 드라이버 찾는 중…';
+  setTimeout(() => { d.classList.add('ok'); p.textContent = `✅ ${n} 드라이버 연결 완료!`; d.querySelector('button').remove(); }, 700);
+});
+
+renderChoice($('#kind'), [
+  {icon:'🐢', t:'게임이 멈춰서 작업 관리자로 그 프로그램만 강제로 종료했어요.', a:0, e:'실행 중인 작업을 관리하는 프로세스 관리예요.'},
+  {icon:'📁', t:'사진 파일을 날짜별 폴더로 옮기고, 이름으로 검색해 찾았어요.', a:1, e:'파일의 저장·이동·검색을 돕는 파일 관리예요.'},
+  {icon:'🧩', t:'프로그램을 너무 많이 켜서 느려지자, 쓰지 않는 앱을 정리해 공간을 확보했어요.', a:2, e:'한정된 램 공간을 관리하는 주기억 장치 관리예요.'},
+  {icon:'🖱️', t:'새 마우스를 꽂았더니 "장치를 설정하는 중"이라는 알림이 떴어요.', a:3, e:'드라이버를 찾아 연결하는 입출력 장치 관리예요.'},
+], ['프로세스', '파일', '주기억 장치', '입출력 장치']);
+
+renderChoice($('#ui'), [
+  {icon:'⌨️', t:'검은 화면에 명령어를 글자로 입력해 컴퓨터를 조작해요.', a:0, e:'CLI(명령어 인터페이스)예요.'},
+  {icon:'🖱️', t:'아이콘과 메뉴를 마우스로 눌러 조작해요.', a:1, e:'GUI(그래픽 사용자 인터페이스)예요. 윈도, 맥 OS 등이 있어요.'},
+  {icon:'🗣️', t:'말하거나 손짓하거나 화면을 손가락으로 쓸어 넘겨 조작해요.', a:2, e:'NUI(자연스러운 사용자 인터페이스)예요.'},
+], ['CLI 명령어', 'GUI 그래픽', 'NUI 자연스러운 동작']);
+
+renderChoice($('#phone'), [
+  {icon:'🔋', t:'[설정] → [배터리 및 디바이스 케어]에서 저장 공간·메모리 확인하기', a:0, e:'프로세스와 주기억 장치 관리를 확인할 수 있어요.'},
+  {icon:'📂', t:'[내 파일] 앱에서 파일 복사·이동·삭제하기', a:1, e:'파일 관리 기능이에요.'},
+  {icon:'📶', t:'[설정] → [연결]에서 와이파이·블루투스 연결하기', a:2, e:'네트워크와 장치 연결 기능이에요.'},
+], ['프로세스·메모리', '파일', '네트워크·연결']);
+
+renderQuiz($('#quiz'), [
+  {q:'운영체제가 하는 일이 아닌 것은?', o:['실행 중인 프로그램의 순서 정하기','문서의 맞춤법 고치기','새 장치에 드라이버 연결하기'], a:1, e:'맞춤법 검사는 워드 프로세서 같은 응용 소프트웨어의 기능이에요.'},
+  {q:'처리 속도가 빠르지만 저장 공간이 한정된 장치를 운영체제가 효율적으로 나누어 쓰게 하는 기능은?', o:['파일 관리','주기억 장치 관리','입출력 장치 관리'], a:1, e:'주기억 장치 관리예요.'},
+  {q:'컴퓨터에 연결되는 주변 기기를 사용하기 위해 필요한 프로그램은?', o:['드라이버','바이러스','폴더'], a:0, e:'운영체제가 알맞은 드라이버를 찾아 장치를 연결해 줘요.'},
+]);
+</script>
+</body>
+</html>

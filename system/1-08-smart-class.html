@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>스마트 교실 시뮬레이터</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.room{position:relative;height:170px;border-radius:18px;background:#2b3245;overflow:hidden;transition:background .4s;margin:10px 0}
+.room.lit{background:#fff8d6}
+.room .lamp{position:absolute;top:8px;font-size:2.2rem;filter:grayscale(1);transition:filter .3s}
+.room.lit .lamp{filter:none}
+.room .desk{position:absolute;bottom:14px;font-size:2rem}
+.meter{height:14px;background:var(--bg);border-radius:999px;overflow:hidden;position:relative;margin:6px 0}
+.meter i{display:block;height:100%;background:var(--brand);width:0}
+.meter b{position:absolute;top:-4px;width:3px;height:22px;background:var(--pink)}
+.sig{display:inline-flex;flex-direction:column;gap:8px;background:#222;padding:12px;border-radius:16px}
+.sig i{width:46px;height:46px;border-radius:50%;background:#444;transition:all .2s}
+.sig i.r.on{background:#ff3b3b;box-shadow:0 0 18px #ff3b3b}
+.sig i.y.on{background:#ffd23b;box-shadow:0 0 18px #ffd23b}
+.sig i.g.on{background:#3bff7a;box-shadow:0 0 18px #3bff7a}
+.sig i.b.on{background:#3b9cff;box-shadow:0 0 18px #3b9cff}
+.sigrow{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.seq{display:grid;gap:6px}
+.seq label{display:flex;gap:8px;align-items:center}
+.seq input{width:70px;font:inherit;padding:4px 8px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+.timer{font-family:ui-monospace,Consolas,monospace;font-size:1.4rem;font-weight:800}
+</style>
+</head>
+<body data-unit="1" data-title="스마트 교실 시뮬레이터" data-sub="중1 Ⅰ단원 · 피지컬 컴퓨팅 시스템 · 미래엔 32~36쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 피지컬 컴퓨팅</span>
+  <h1>스마트 교실 시뮬레이터</h1>
+  <p class="lead">이동 수업 때 전등을 끄지 않고 나가는 일이 많아요. 센서 보드의 <b>소리 센서</b>와 <b>LED</b>로 소리에 따라 자동으로 켜지고 꺼지는 전등을 만들고, 신호등도 프로그래밍해 봐요. 엔트리 실습 전에 원리를 먼저 확인해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>교실에 사람이 있는지 없는지를 센서로 어떻게 알 수 있을까요? 소리, 움직임, 밝기 중 무엇을 쓰면 좋을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>💡 소리로 켜지는 자동 전등</h3>
+      <p>학생들이 들어와 떠들면 전등이 켜지고, 모두 나가 조용해지면 꺼져요. 소리 크기와 <b>기준값</b>을 바꿔 보세요.</p>
+      <label>🔊 교실 소리 크기 (소리 센서 값) <input type="range" id="snd" min="0" max="100" value="5" style="width:100%"></label>
+      <label>📏 기준값: <b id="thv">20</b> <input type="range" id="th" min="5" max="80" value="20" style="width:100%"></label>
+      <div class="meter"><i id="sm"></i><b id="tm"></b></div>
+      <div class="room" id="room"><span class="lamp" style="left:20%">💡</span><span class="lamp" style="left:70%">💡</span><span class="desk" id="kids" style="left:30%"></span></div>
+      <p class="hint" id="rmsg"></p>
+      <p class="hint">🤔 기준값을 너무 낮게 잡으면 어떤 문제가 생길까요? 너무 높게 잡으면요?</p>
+    </div>
+
+    <div class="card">
+      <h3>🚦 시간에 따라 바뀌는 신호등</h3>
+      <p>각 색의 켜지는 시간을 정하고 실행해 보세요. (시뮬레이션에서는 1초를 0.2초로 빠르게 보여 줘요.)</p>
+      <div class="sigrow">
+        <div class="sig"><i class="r" data-c="r"></i><i class="y" data-c="y"></i><i class="g" data-c="g"></i></div>
+        <div class="seq"><label>🔴 빨간 LED <input type="number" id="tr" value="10" min="1" max="60">초</label><label>🟡 노란 LED <input type="number" id="ty" value="2" min="1" max="60">초</label><label>🟢 초록 LED <input type="number" id="tg" value="10" min="1" max="60">초</label>
+          <div class="ctrl"><button class="btn" id="play">▶ 계속 반복하기</button><button class="btn line" id="stop">■ 멈춤</button></div><span class="timer" id="tt"></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🚸 버튼으로 동작하는 신호등</h3>
+      <p>사람이 많지 않은 횡단보도에서는 보행자가 버튼을 누를 때만 신호가 바뀌어요. <b>평소에는 초록</b>, 버튼을 누르면 <b>노랑 5초 → 빨강 30초</b> 후 다시 초록이 돼요. (빠르게 보여 줘요.)</p>
+      <div class="sigrow">
+        <div class="sig"><i class="r" data-d="r"></i><i class="y" data-d="y"></i><i class="g on" data-d="g"></i></div>
+        <div><button class="btn" id="walk">🔘 보행자 버튼 누르기</button><p class="timer" id="wt"></p><p class="hint" id="wmsg">자동차 신호: 초록</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🧠 센서와 액추에이터 고르기</h3>
+      <div id="pick"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>문제를 해결하려면 목적에 맞는 <b>센서</b>(입력)와 <b>액추에이터</b>(출력)를 고르고, "만약 센서 값이 기준 이상이면 ~" 같은 조건과 반복으로 프로그램을 만들어요. 기준값을 알맞게 정하는 것도 중요해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 32~36쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+function room(){
+  const s = +$('#snd').value, t = +$('#th').value, on = s >= t;
+  $('#thv').textContent = t; $('#sm').style.width = s + '%'; $('#tm').style.left = t + '%';
+  $('#room').classList.toggle('lit', on);
+  $('#kids').textContent = s > 50 ? '🧑‍🎓🧑‍🎓🧑‍🎓🧑‍🎓' : s > 20 ? '🧑‍🎓🧑‍🎓' : s > 10 ? '🧑‍🎓' : '';
+  $('#rmsg').textContent = `소리 센서 값 ${s} ${on ? '≥' : '<'} 기준값 ${t} → 전등 ${on ? '켜짐 💡' : '꺼짐'}`;
+}
+['#snd', '#th'].forEach(s => $(s).oninput = room); room();
+
+let timer = null;
+const show = (sel, c) => $$(sel).forEach(x => x.classList.toggle('on', x.dataset.c === c || x.dataset.d === c));
+$('#play').onclick = () => {
+  clearTimeout(timer);
+  const seq = [['r', +$('#tr').value], ['y', +$('#ty').value], ['g', +$('#tg').value]];
+  let k = 0, left = 0;
+  const step = () => { if (left <= 0){ const [c, s] = seq[k % 3]; k++; left = Math.max(1, Math.min(60, s || 1)); show('.sig [data-c]', c); }
+    $('#tt').textContent = `${left}초 남음`; left--; timer = setTimeout(step, 200); };
+  step();
+};
+$('#stop').onclick = () => { clearTimeout(timer); show('.sig [data-c]', ''); $('#tt').textContent = ''; };
+
+let busy = false;
+$('#walk').onclick = () => {
+  if (busy) return; busy = true;
+  const phase = (c, s, msg, next) => { show('.sig [data-d]', c); $('#wmsg').textContent = msg; let left = s;
+    const t = () => { $('#wt').textContent = left > 0 ? `${left}초` : ''; if (left-- <= 0) return next(); setTimeout(t, 100); }; t(); };
+  phase('y', 5, '자동차 신호: 노랑 (곧 멈춰요)', () => phase('r', 30, '자동차 신호: 빨강 → 보행자가 건너요 🚶', () => { show('.sig [data-d]', 'g'); $('#wmsg').textContent = '자동차 신호: 초록 (다시 처음 상태)'; busy = false; }));
+};
+
+renderChoice($('#pick'), [
+  {icon:'🌡️', t:'실내 온도가 높아지면 자동으로 선풍기를 켜는 스마트 교실', a:0, e:'온도 센서로 입력받고, DC 모터(선풍기)로 출력해요.'},
+  {icon:'🚶', t:'사람이 지나가면 복도 전등을 켜는 장치', a:1, e:'움직임을 감지하는 센서로 입력받고 LED로 출력해요.'},
+  {icon:'📢', t:'교실이 너무 시끄러우면 경고음을 내는 장치', a:2, e:'소리 센서로 입력받고 버저(스피커)로 출력해요.'},
+], ['온도 센서 + DC 모터', '움직임 감지 센서 + LED', '소리 센서 + 버저']);
+
+renderQuiz($('#quiz'), [
+  {q:'소리에 따라 자동으로 켜지고 꺼지는 전등을 만들 때 필요한 센서는?', o:['빛 센서','소리 센서','거리 센서'], a:1, e:'소리 센서로 교실의 소리 크기를 측정해요.'},
+  {q:'"만약 소리 센서 값이 20 이상이라면 LED 켜기, 아니면 끄기"에서 소리 센서 값이 12이면?', o:['LED가 켜진다','LED가 꺼진다'], a:1, e:'12는 20보다 작으므로 조건이 거짓이라 LED가 꺼져요.'},
+]);
+</script>
+</body>
+</html>

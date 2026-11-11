@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>입력·처리·출력 따라가기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.pipe{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.pipe div{border:2px solid var(--line);border-radius:16px;padding:10px;text-align:center;background:#fff;transition:all .3s;min-height:120px}
+.pipe div.on{border-color:var(--brand);background:var(--brand-soft);transform:translateY(-3px)}
+.pipe b{display:block;font-size:1.1rem}
+.pipe .ic{font-size:2rem}
+.pipe p{margin:4px 0 0;font-size:.85rem;color:var(--muted)}
+.scr{background:var(--bg);border-radius:14px;padding:12px;min-height:60px;text-align:center}
+@media (max-width:520px){.pipe{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-unit="1" data-title="입력·처리·출력 따라가기" data-sub="중1 Ⅰ단원 · 컴퓨팅 시스템의 동작 · 미래엔 16~17쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 컴퓨팅 시스템</span>
+  <h1>입력·처리·출력 따라가기</h1>
+  <p class="lead">컴퓨팅 시스템은 운영체제가 실행된 상태에서 <b>입력 → 처리 → 출력</b> 과정을 반복하며 작업을 수행해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>스마트폰 지도 앱에 목적지를 입력하면 몇 초 만에 가장 빠른 길이 나와요. 그 몇 초 동안 스마트폰 안에서는 무슨 일이 일어날까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🗺️ 길 찾기 앱 속으로</h3>
+      <p>목적지를 고르고 <b>▶ 한 단계씩</b>을 눌러 데이터가 어디로 가는지 따라가 보세요.</p>
+      <div class="ctrl"><select class="inp" id="dest" style="width:auto"><option>도서관</option><option>체육공원</option><option>시청</option></select> <button class="btn" id="go">▶ 한 단계씩</button> <button class="btn line" id="reset">처음부터</button></div>
+      <div class="pipe" id="pipe">
+        <div><span class="ic">⌨️</span><b>입력</b><p>입력 장치</p></div>
+        <div><span class="ic">🧠</span><b>처리</b><p>중앙 처리 장치(CPU) + 주기억 장치</p></div>
+        <div><span class="ic">🖥️</span><b>출력</b><p>출력 장치</p></div>
+      </div>
+      <div class="scr" id="scr">목적지를 고르고 시작하세요.</div>
+    </div>
+
+    <div class="card">
+      <h3>🎨 그림판에서는?</h3>
+      <p>그림판으로 그림을 그려 저장하는 과정이에요. 각 장면은 어느 단계일까요?</p>
+      <div id="paint"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>컴퓨팅 시스템은 <b>입력</b>(입력 장치로 데이터를 받아 CPU로 전달) → <b>처리</b>(CPU가 주기억 장치의 데이터를 이용해 처리) → <b>출력</b>(결과를 출력 장치로 표현) 과정을 반복해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 16~17쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+let st = 0;
+const steps = d => [
+  `⌨️ 손가락으로 터치 화면에 "${d}"를 입력했어요. 입력된 데이터는 처리를 위해 CPU로 전달돼요.`,
+  `🧠 CPU가 주기억 장치에 올려 둔 지도 데이터를 이용해 "${d}"까지의 여러 경로 중 시간과 거리를 고려해 가장 빠른 길을 계산해요.`,
+  `🖥️ 계산 결과가 화면에 지도와 경로로 나타나고, 스피커로 "${d}까지 안내를 시작합니다"라는 소리가 나와요.`,
+];
+$('#go').onclick = () => {
+  if (st >= 3) return;
+  $$('#pipe div').forEach((x, i) => x.classList.toggle('on', i === st));
+  $('#scr').textContent = steps($('#dest').value)[st]; st++;
+  if (st === 3) $('#scr').textContent += ' ✅ 입력 → 처리 → 출력 완료!';
+};
+$('#reset').onclick = () => { st = 0; $$('#pipe div').forEach(x => x.classList.remove('on')); $('#scr').textContent = '목적지를 고르고 시작하세요.'; };
+
+renderChoice($('#paint'), [
+  {icon:'🖱️', t:'마우스로 원하는 모양을 그려요.', a:0, e:'입력 장치(마우스)로 데이터를 입력해요.'},
+  {icon:'🧠', t:'입력한 모양을 주기억 장치에 저장하고 CPU가 그림 작업을 처리해요.', a:1, e:'CPU와 주기억 장치가 처리를 담당해요.'},
+  {icon:'🖨️', t:'완성한 그림을 모니터로 보여 주고 프린터로 인쇄해요.', a:2, e:'출력 장치로 결과를 보여 줘요.'},
+], ['입력', '처리', '출력']);
+
+renderQuiz($('#quiz'), [
+  {q:'컴퓨팅 시스템의 동작 과정을 순서대로 나타낸 것은?', o:['처리 → 입력 → 출력','입력 → 처리 → 출력','출력 → 처리 → 입력'], a:1, e:'입력된 데이터를 처리하고 결과를 출력해요.'},
+  {q:'입력된 데이터를 처리하는 장치는?', o:['중앙 처리 장치(CPU)','스피커','마우스'], a:0, e:'CPU가 주기억 장치의 데이터를 이용해 처리해요.'},
+]);
+</script>
+</body>
+</html>

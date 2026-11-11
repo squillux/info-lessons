@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>가상 센서 보드</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.boardv{background:#c8102e;border-radius:20px;padding:16px;color:#fff;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;box-shadow:0 4px 0 #8a0a1f}
+.boardv .part{background:rgba(0,0,0,.18);border-radius:14px;padding:10px}
+.boardv .part b{display:block;font-size:.9rem}
+.boardv small{opacity:.85}
+.boardv input[type=range]{width:100%}
+.val{font-family:ui-monospace,Consolas,monospace;font-size:1.3rem;font-weight:800}
+.leds{display:flex;gap:10px;margin-top:6px}
+.led{width:30px;height:30px;border-radius:50%;background:#333;border:3px solid rgba(255,255,255,.4);transition:all .2s}
+.led.r.on{background:#ff3b3b;box-shadow:0 0 16px #ff3b3b}
+.led.g.on{background:#3bff7a;box-shadow:0 0 16px #3bff7a}
+.led.b.on{background:#3b9cff;box-shadow:0 0 16px #3b9cff}
+.led.y.on{background:#ffe03b;box-shadow:0 0 16px #ffe03b}
+.btns{display:flex;gap:8px;margin-top:6px}
+.btns button{width:44px;height:44px;border-radius:50%;border:3px solid #fff;font-weight:800;color:#fff}
+.rule{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--bg);border-radius:14px;padding:10px 12px}
+.rule select,.rule input{font:inherit;padding:4px 8px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+.blocks{font-family:ui-monospace,Consolas,monospace;background:#1f2a44;color:#e8f0ff;border-radius:12px;padding:10px 14px;margin-top:8px;line-height:1.7;font-size:.9rem}
+.blocks .k{color:#ffc233}
+</style>
+</head>
+<body data-unit="1" data-title="가상 센서 보드" data-sub="중1 Ⅰ단원 · 피지컬 컴퓨팅 시스템의 구성 · 미래엔 26, 28~31쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 피지컬 컴퓨팅</span>
+  <h1>가상 센서 보드</h1>
+  <p class="lead"><b>센서 보드</b>는 컴퓨터와 연결해 다양한 센서와 액추에이터를 제어할 수 있는 장치예요. 하나의 기판에 여러 센서가 붙어 있어 값을 쉽게 입력받고 프로그래밍으로 제어할 수 있어요. 실제 보드로 실습하기 전에 원리를 익혀 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>교실 불을 끄면 어두워진 것을 컴퓨터가 어떻게 알 수 있을까요? 어두움을 숫자로 나타낼 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧪 센서 값 살펴보기</h3>
+      <p>아날로그 센서는 <b>0~1023</b> 사이의 값을, 버튼 같은 디지털 센서는 <b>0 또는 1</b>을 입력해요. 막대를 움직이고 버튼을 눌러 값이 어떻게 바뀌는지 보세요.</p>
+      <div class="boardv">
+        <div class="part"><b>🎚️ 슬라이더 (아날로그 2번)</b><input type="range" min="0" max="1023" value="512" data-s="slide"><span class="val" id="v-slide"></span></div>
+        <div class="part"><b>☀️ 빛 센서 (아날로그 1번)</b><small>주변이 밝을수록 값이 커져요</small><input type="range" min="0" max="1023" value="700" data-s="light"><span class="val" id="v-light"></span></div>
+        <div class="part"><b>🔊 소리 센서 (아날로그 0번)</b><small>소리가 클수록 값이 커져요</small><input type="range" min="0" max="1023" value="40" data-s="sound"><span class="val" id="v-sound"></span></div>
+        <div class="part"><b>🌡️ 온도 센서 (아날로그 3번)</b><small>온도가 올라가면 값이 커져요</small><input type="range" min="0" max="1023" value="150" data-s="temp"><span class="val" id="v-temp"></span></div>
+        <div class="part"><b>🔘 버튼 (디지털)</b><small>누르는 동안 1</small><div class="btns"><button style="background:#e53935" data-b="red">빨</button><button style="background:#43a047" data-b="green">초</button><button style="background:#1e88e5" data-b="blue">파</button><button style="background:#fdd835;color:#333" data-b="yellow">노</button></div><span class="val" id="v-btn"></span></div>
+        <div class="part"><b>💡 LED (디지털 2~5번)</b><small>규칙에 따라 켜져요</small><div class="leds"><i class="led r" data-l="red"></i><i class="led g" data-l="green"></i><i class="led b" data-l="blue"></i><i class="led y" data-l="yellow"></i></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🧩 규칙 만들기: 만약 ~라면</h3>
+      <p>센서와 조건, 동작을 골라 규칙을 만들고, 위의 막대를 움직여 LED가 규칙대로 켜지는지 확인해 보세요.</p>
+      <div class="rule">만약 <select id="rs"><option value="light">빛 센서</option><option value="sound">소리 센서</option><option value="temp">온도 센서</option><option value="slide">슬라이더</option></select>
+        값이 <input id="rn" type="number" value="300" min="0" max="1023" style="width:90px">
+        <select id="rc"><option value="lt">보다 작으면</option><option value="gt">보다 크면</option></select>
+        <select id="rl"><option value="yellow">노랑</option><option value="red">빨강</option><option value="green">초록</option><option value="blue">파랑</option></select> LED 켜기, 아니면 끄기</div>
+      <div class="blocks" id="code"></div>
+      <div class="feedback" id="rFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>👟 다른 보드로 만든 만보기 <span class="tag-opt">더 해 보기</span></h3>
+      <p>마이크로비트 같은 보드에는 흔들림을 감지하는 <b>가속도 센서</b>가 있어요. 흔들림이 감지될 때마다 <b>변수</b> '운동 횟수'에 1을 더하면 만보기가 돼요.</p>
+      <div class="ctrl"><button class="btn" id="shake">🤸 흔들기 (걸음)</button><button class="btn line" id="pA">A 버튼: 횟수 보기</button><button class="btn line" id="pB">B 버튼: 0으로 초기화</button></div>
+      <p class="val" id="steps" style="font-size:2rem">-</p>
+      <div class="blocks">흔들림이 감지되면 → 운동 횟수 = 운동 횟수 + 1<br>A 버튼을 누르면 → 운동 횟수를 LED에 출력<br>B 버튼을 누르면 → 운동 횟수 = 0</div>
+      <p class="hint">참고: 비상교육 중학교 정보 22쪽</p>
+    </div>
+
+    <div class="card">
+      <h3>🎯 미션: 상황에 맞는 규칙은?</h3>
+      <div id="mission"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>센서 보드의 아날로그 센서(빛·소리·온도·슬라이더)는 <b>0~1023</b>의 값을, 버튼은 <b>0 또는 1</b>을 입력해요. "만약 센서 값이 기준보다 크면/작으면" 같은 조건으로 LED 같은 액추에이터를 제어해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 26, 28~31쪽 내용을 바탕으로 재구성 · 실제 보드의 핀 번호와 값 범위는 제품에 따라 다를 수 있어요</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const S = {}, pressed = new Set();
+const NAME = {light: '빛 센서', sound: '소리 센서', temp: '온도 센서', slide: '슬라이더'};
+const LNAME = {red: '빨강', green: '초록', blue: '파랑', yellow: '노랑'};
+$$('[data-s]').forEach(r => { const upd = () => { S[r.dataset.s] = +r.value; $('#v-' + r.dataset.s).textContent = r.value; run(); }; r.oninput = upd; S[r.dataset.s] = +r.value; $('#v-' + r.dataset.s).textContent = r.value; });
+$$('[data-b]').forEach(b => {
+  const on = e => { e.preventDefault(); pressed.add(b.dataset.b); run(); }, off = () => { pressed.delete(b.dataset.b); run(); };
+  b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off);
+});
+function run(){
+  $('#v-btn').textContent = ['red', 'green', 'blue', 'yellow'].map(k => LNAME[k][0] + ':' + (pressed.has(k) ? 1 : 0)).join(' ');
+  const s = $('#rs').value, n = +$('#rn').value, c = $('#rc').value, l = $('#rl').value, v = S[s];
+  const hit = c === 'lt' ? v < n : v > n;
+  $$('.led').forEach(x => x.classList.toggle('on', (x.dataset.l === l && hit) || pressed.has(x.dataset.l)));
+  $('#code').innerHTML = `<span class="k">계속 반복하기</span><br>&nbsp;&nbsp;<span class="k">만일</span> ${NAME[s]} 값 ${c === 'lt' ? '&lt;' : '&gt;'} ${n} <span class="k">이라면</span><br>&nbsp;&nbsp;&nbsp;&nbsp;${LNAME[l]} LED 켜기<br>&nbsp;&nbsp;<span class="k">아니면</span><br>&nbsp;&nbsp;&nbsp;&nbsp;${LNAME[l]} LED 끄기`;
+  feedback($('#rFb'), true, `지금 ${NAME[s]} 값은 ${v} → 조건이 ${hit ? '참이라서 LED가 켜져요 💡' : '거짓이라서 LED가 꺼져요'}`);
+}
+['#rs', '#rn', '#rc', '#rl'].forEach(s => $(s).oninput = $(s).onchange = run);
+run();
+
+let steps = 0;
+$('#shake').onclick = () => { steps++; $('#steps').textContent = '…'; };
+$('#pA').onclick = () => $('#steps').textContent = steps + '걸음';
+$('#pB').onclick = () => { steps = 0; $('#steps').textContent = '0걸음'; };
+
+renderChoice($('#mission'), [
+  {icon:'🌙', t:'복도가 어두워지면 자동으로 켜지는 전등', a:0, e:'빛 센서 값이 기준보다 작아지면(어두우면) 켜요.'},
+  {icon:'👏', t:'박수를 치면 켜지는 무드등', a:1, e:'소리 센서 값이 기준보다 커지면 켜요.'},
+  {icon:'🥵', t:'교실이 더워지면 켜지는 경고등', a:2, e:'온도 센서 값이 기준보다 커지면 켜요.'},
+], ['빛 센서 < 기준', '소리 센서 > 기준', '온도 센서 > 기준']);
+
+renderQuiz($('#quiz'), [
+  {q:'센서 보드의 아날로그 센서가 입력하는 값의 범위는?', o:['0 또는 1','0~1023','0~100'], a:1, e:'아날로그 센서는 0~1023 사이의 값을 입력해요.'},
+  {q:'버튼처럼 눌렀는지(1) 안 눌렀는지(0)만 입력하는 센서는?', o:['디지털 센서','아날로그 센서','온도 센서'], a:0, e:'버튼은 0 또는 1만 입력하는 디지털 센서예요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>소프트웨어 분류하기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.stack{display:grid;gap:6px;max-width:420px;margin:10px auto}
+.stack button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px;font:inherit;font-weight:700;color:var(--ink)}
+.stack button.done{border-color:var(--mint);background:var(--mint-soft)}
+.stack .slot{border:2px dashed var(--line);border-radius:14px;padding:10px;text-align:center;color:var(--muted);min-height:1.5em}
+.stack .slot.ok{border-style:solid;border-color:var(--mint);background:var(--mint-soft);color:var(--ink);font-weight:700}
+.pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+</style>
+</head>
+<body data-unit="1" data-title="소프트웨어 분류하기" data-sub="중1 Ⅰ단원 · 컴퓨팅 시스템의 구성 · 미래엔 13~14쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 컴퓨팅 시스템</span>
+  <h1>소프트웨어 분류하기</h1>
+  <p class="lead"><b>소프트웨어</b>는 하드웨어의 동작을 제어하고 관리해 사용자가 원하는 결과를 얻을 수 있도록 하는 명령어의 모음이에요. 크게 <b>시스템 소프트웨어</b>와 <b>응용 소프트웨어</b>로 나뉘어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>새로 산 컴퓨터를 켜자마자 게임을 할 수 있을까요? 게임보다 먼저 설치되어 있어야 하는 소프트웨어는 무엇일까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🗂️ 시스템 소프트웨어 vs 응용 소프트웨어</h3>
+      <p><b>시스템 소프트웨어</b>는 응용 소프트웨어가 잘 작동하도록 환경을 제공해요(운영체제, 유틸리티). <b>응용 소프트웨어</b>는 사용자가 특정한 문제를 해결하려고 쓰는 소프트웨어예요.</p>
+      <div id="sort"></div>
+    </div>
+
+    <div class="card">
+      <h3>🧱 사용자, 소프트웨어, 하드웨어의 관계</h3>
+      <p>사용자가 하드웨어를 직접 다루지 않고도 컴퓨터를 쓸 수 있는 이유는 무엇일까요? 위에서부터 순서대로 쌓아 보세요.</p>
+      <div class="stack" id="slots"></div>
+      <div class="pool" id="pool"></div>
+      <div class="feedback" id="sFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🎯 용도에 맞는 응용 소프트웨어</h3>
+      <div id="use"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>소프트웨어는 <b>시스템 소프트웨어</b>(운영체제, 유틸리티)와 <b>응용 소프트웨어</b>(워드 프로세서, 이미지 편집기 등)로 나뉘어요. 사용자는 응용 소프트웨어를 쓰고, 운영체제가 하드웨어를 관리해 줘요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 13~14쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#sort'), [
+  {icon:'🪟', t:'윈도', a:0, e:'운영체제(시스템 소프트웨어)예요.'},
+  {icon:'🤖', t:'안드로이드', a:0, e:'스마트폰 운영체제(시스템 소프트웨어)예요.'},
+  {icon:'🧹', t:'디스크 정리 프로그램', a:0, e:'컴퓨터를 관리하는 유틸리티(시스템 소프트웨어)예요.'},
+  {icon:'📝', t:'워드 프로세서', a:1, e:'문서를 만드는 응용 소프트웨어예요.'},
+  {icon:'🎨', t:'이미지 편집기', a:1, e:'그림을 편집하는 응용 소프트웨어예요.'},
+  {icon:'🎵', t:'음악 재생 프로그램', a:1, e:'음악을 듣는 응용 소프트웨어예요.'},
+], ['⚙️ 시스템 소프트웨어', '📱 응용 소프트웨어']);
+
+const ORDER = ['🙋 사용자', '📱 응용 소프트웨어', '⚙️ 시스템 소프트웨어(운영체제)', '🔩 하드웨어'];
+let pos = 0;
+$('#slots').innerHTML = ORDER.map(() => '<div class="slot">?</div>').join('');
+$('#pool').innerHTML = ORDER.map((t, i) => [t, i]).sort(() => Math.random() - .5).map(([t, i]) => `<button class="btn line" data-i="${i}">${t}</button>`).join('');
+$$('#pool button').forEach(b => b.onclick = () => {
+  if (+b.dataset.i !== pos) return feedback($('#sFb'), false, '❌ 사용자에서 시작해 하드웨어로 내려가요. 사용자와 바로 맞닿는 것은?');
+  const s = $$('#slots .slot')[pos]; s.textContent = ORDER[pos]; s.classList.add('ok'); b.remove(); pos++;
+  feedback($('#sFb'), true, pos === ORDER.length ? '🎉 사용자는 응용 소프트웨어를 쓰고, 운영체제가 하드웨어와 연결해 줘요. 그래서 하드웨어를 몰라도 컴퓨터를 쓸 수 있어요!' : '⭕ 좋아요!');
+});
+
+renderChoice($('#use'), [
+  {icon:'📄', t:'수행 평가 보고서를 작성해요.', a:0},
+  {icon:'💬', t:'친구와 메시지를 주고받아요.', a:1},
+  {icon:'📊', t:'모둠 발표 자료를 만들어요.', a:2},
+].map(x => ({...x, e: '용도에 맞는 응용 소프트웨어를 골랐어요.'})), ['워드 프로세서', '메신저', '프레젠테이션']);
+
+renderQuiz($('#quiz'), [
+  {q:'응용 소프트웨어가 잘 작동하도록 환경을 제공하는 소프트웨어는?', o:['시스템 소프트웨어','응용 소프트웨어','게임'], a:0, e:'운영체제와 유틸리티가 시스템 소프트웨어예요.'},
+  {q:'시스템 소프트웨어에 속하는 것은?', o:['이미지 편집기','운영체제','워드 프로세서'], a:1, e:'운영체제는 하드웨어를 관리하는 대표적인 시스템 소프트웨어예요.'},
+]);
+</script>
+</body>
+</html>

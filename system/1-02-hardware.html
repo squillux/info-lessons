@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하드웨어 분류소</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.parts{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.parts button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:8px 12px;font-weight:700;color:var(--ink)}
+.parts button.sel{border-color:var(--brand);background:var(--brand-soft)}
+.parts button.done{opacity:.35;pointer-events:none}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.bin{border:2px dashed var(--line);border-radius:16px;padding:10px;min-height:110px;background:var(--bg);text-align:left;font:inherit;color:var(--ink)}
+.bin b{display:block;margin-bottom:4px}
+.bin small{display:block;color:var(--muted);margin-bottom:6px}
+.bin span{display:inline-block;background:#fff;border-radius:8px;padding:2px 8px;margin:2px;font-size:.85rem}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;justify-content:center;margin:10px 0}
+.flow div{background:var(--brand-soft);border-radius:12px;padding:8px 12px;font-weight:700}
+.flow .mem{background:var(--yellow-soft)}
+</style>
+</head>
+<body data-unit="1" data-title="하드웨어 분류소" data-sub="중1 Ⅰ단원 · 컴퓨팅 시스템의 구성 · 미래엔 12, 15쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 컴퓨팅 시스템</span>
+  <h1>하드웨어 분류소</h1>
+  <p class="lead">컴퓨팅 시스템은 <b>하드웨어</b>와 <b>소프트웨어</b>로 구성돼요. 하드웨어는 데이터의 입출력, 연산·처리, 통신 등에 사용되는 물리적인 장치로, <b>입력 장치, 중앙 처리 장치(CPU), 기억 장치, 출력 장치</b>로 나뉘어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>사람은 눈과 귀로 정보를 받아들이고, 뇌로 생각하고 기억하며, 입과 손으로 표현해요. 컴퓨터에서 눈, 뇌, 입의 역할을 하는 장치는 무엇일까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🧭 하드웨어의 네 가지 역할</h3>
+      <div class="flow"><div>⌨️ 입력 장치</div>→<div>🧠 중앙 처리 장치(CPU)</div>→<div>🖥️ 출력 장치</div></div>
+      <div class="flow"><div class="mem">💾 기억 장치: 처리할 프로그램과 데이터, 처리 결과를 저장</div></div>
+      <p class="hint">CPU는 명령어를 해석해 처리하는 <b>제어 장치</b>와 데이터를 계산하는 <b>연산 장치</b>로 구성돼요.</p>
+    </div>
+
+    <div class="card">
+      <h3>📦 부품 정리하기</h3>
+      <p>부품을 누른 다음, 알맞은 상자를 누르세요.</p>
+      <div class="parts" id="parts"></div>
+      <div class="bins" id="bins"></div>
+      <div class="feedback" id="fb"></div>
+    </div>
+
+    <div class="card">
+      <h3>💾 주기억 장치와 보조 기억 장치</h3>
+      <div id="mem"></div>
+    </div>
+
+    <div class="card">
+      <h3>📱 스마트폰 속 하드웨어</h3>
+      <p>스마트폰도 컴퓨팅 시스템이에요. 각 부품은 어떤 장치일까요?</p>
+      <div id="phone"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>하드웨어는 데이터를 받아들이는 <b>입력 장치</b>, 명령을 해석하고 계산하는 <b>중앙 처리 장치(CPU)</b>, 프로그램과 데이터를 저장하는 <b>기억 장치</b>(주기억·보조 기억), 결과를 보여 주는 <b>출력 장치</b>로 나뉘어요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 12, 15쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const BINS = [['⌨️ 입력 장치', '데이터를 읽어 들여요'], ['🧠 중앙 처리 장치', '명령 해석, 계산'], ['💾 기억 장치', '프로그램과 데이터 저장'], ['🖥️ 출력 장치', '결과를 보여 줘요']];
+const PARTS = [['⌨️ 키보드', 0], ['🖱️ 마우스', 0], ['🎤 마이크', 0], ['📷 웹캠', 0], ['✍️ 태블릿(펜)', 0], ['🧠 CPU', 1], ['🧩 램(RAM)', 2], ['💽 SSD', 2], ['🔌 USB 메모리', 2], ['🗄️ 하드 디스크', 2], ['🖥️ 모니터', 3], ['🖨️ 프린터', 3], ['🔊 스피커', 3], ['📽️ 빔 프로젝터', 3]].sort(() => Math.random() - .5);
+let sel = null, done = 0;
+$('#parts').innerHTML = PARTS.map(([n], i) => `<button data-i="${i}">${n}</button>`).join('');
+$('#bins').innerHTML = BINS.map(([b, s], k) => `<button class="bin" data-k="${k}"><b>${b}</b><small>${s}</small><div></div></button>`).join('');
+$$('#parts button').forEach(b => b.onclick = () => { $$('#parts button').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); sel = +b.dataset.i; });
+$$('#bins .bin').forEach(bin => bin.onclick = () => {
+  if (sel === null) return feedback($('#fb'), false, '먼저 위에서 부품을 고르세요.');
+  const [n, k] = PARTS[sel], btn = $(`#parts [data-i="${sel}"]`);
+  if (k === +bin.dataset.k){ bin.querySelector('div').insertAdjacentHTML('beforeend', `<span>${n}</span>`); btn.classList.add('done'); btn.classList.remove('sel'); sel = null; done++;
+    feedback($('#fb'), true, done === PARTS.length ? '🎉 모든 부품을 정리했어요!' : `⭕ 정답! (${done} / ${PARTS.length})`); }
+  else feedback($('#fb'), false, `❌ ${n}은(는) 이 상자가 아니에요. 이 부품이 하는 일을 떠올려 보세요.`);
+});
+
+renderChoice($('#mem'), [
+  {icon:'🧩', t:'처리 속도가 빠르지만, 전원이 꺼지면 저장된 내용이 사라져요. 지금 실행 중인 프로그램과 데이터를 잠시 저장해요.', a:0, e:'주기억 장치(램, RAM)예요.'},
+  {icon:'💽', t:'전원이 꺼져도 내용이 남아 있어 사진, 문서 같은 파일을 오래 보관해요.', a:1, e:'보조 기억 장치(SSD, 하드 디스크, USB 메모리 등)예요.'},
+], ['주기억 장치', '보조 기억 장치']);
+
+renderChoice($('#phone'), [
+  {icon:'👆', t:'지문 센서, 터치 패드, 카메라, 마이크', a:0, e:'사용자의 지문·터치·영상·소리를 받아들이는 입력 장치예요.'},
+  {icon:'🧠', t:'스마트폰용 중앙 처리 장치(CPU)', a:1, e:'스마트폰의 뇌 역할을 해요.'},
+  {icon:'💳', t:'메모리, SD 카드', a:2, e:'데이터를 저장하는 기억 장치예요.'},
+  {icon:'💡', t:'LED, 디스플레이, 스피커', a:3, e:'결과를 빛·화면·소리로 보여 주는 출력 장치예요.'},
+], ['입력', '중앙 처리', '기억', '출력']);
+
+renderQuiz($('#quiz'), [
+  {q:'명령어를 해석해 명령을 내리는 제어 장치와 데이터를 계산하는 연산 장치로 구성된 하드웨어는?', o:['기억 장치','중앙 처리 장치(CPU)','출력 장치'], a:1, e:'CPU는 컴퓨터의 두뇌 역할을 해요.'},
+  {q:'전원이 꺼지면 저장된 내용이 사라지는 기억 장치는?', o:['램(RAM)','SSD','USB 메모리'], a:0, e:'램은 주기억 장치로, 실행 중인 데이터를 잠시 저장해요.'},
+  {q:'다음 중 출력 장치는?', o:['웹캠','스피커','마이크'], a:1, e:'스피커는 처리 결과를 소리로 출력해요.'},
+]);
+</script>
+</body>
+</html>

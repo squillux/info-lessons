@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 주변의 컴퓨팅 시스템</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.board-in{display:grid;gap:8px}
+.board-in select,.board-in textarea{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;width:100%;background:var(--panel);color:var(--ink)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.two-col>div{border-radius:16px;padding:10px 14px}
+.two-col .pos{background:var(--mint-soft)}
+.two-col .neg{background:var(--pink-soft)}
+.two-col h4{margin:0 0 6px}
+.two-col ul{margin:0;padding-left:1.2em}
+</style>
+</head>
+<body data-unit="1" data-title="우리 주변의 컴퓨팅 시스템" data-sub="중1 Ⅰ단원 · 컴퓨팅 시스템의 구성 · 미래엔 11, 14쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 컴퓨팅 시스템</span>
+  <h1>우리 주변의 컴퓨팅 시스템</h1>
+  <p class="lead"><b>컴퓨팅 시스템</b>은 문제 해결에 필요한 데이터를 관리하고 정해진 절차에 따라 자동으로 처리해 원하는 결과를 얻도록 돕는 시스템이에요. 컴퓨터뿐 아니라 생활 곳곳에 숨어 있어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>오늘 아침 일어나서 학교에 올 때까지 사용한 기기를 떠올려 보세요. 그중 스스로 데이터를 처리하는 기기는 무엇일까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🔍 컴퓨팅 시스템일까?</h3>
+      <p>데이터를 입력받아 <b>정해진 절차에 따라 자동으로 처리</b>하면 컴퓨팅 시스템이에요.</p>
+      <div id="judge"></div>
+    </div>
+
+    <div class="card">
+      <h3>🏠 어떤 문제를 해결해 줄까?</h3>
+      <div id="role"></div>
+    </div>
+
+    <div class="card">
+      <h3>⚖️ 컴퓨팅 시스템이 사회에 미치는 영향</h3>
+      <div class="two-col">
+        <div class="pos"><h4>👍 긍정적 영향</h4><ul><li>일을 자동화해 빠르고 정확하게 처리해요.</li><li>멀리 있는 사람과도 쉽게 소통하고 협업해요.</li><li>필요한 정보를 언제 어디서나 찾을 수 있어요.</li></ul></div>
+        <div class="neg"><h4>👎 부정적 영향</h4><ul><li>개인 정보 유출이나 사이버 범죄가 생길 수 있어요.</li><li>기기를 잘 다루지 못하는 사람은 소외될 수 있어요.</li><li>시스템이 고장 나면 많은 일이 멈춰요.</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📡 우리 반 영향 모으기 <span class="tag-opt">실시간</span></h3>
+      <p>내가 생각한 영향을 하나 골라 보내 보세요. 반 친구들의 생각이 긍정·부정으로 나뉘어 모여요. (1인 2개까지, 이름은 저장되지 않아요.)</p>
+      <div id="live"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>컴퓨팅 시스템</b>은 데이터를 정해진 절차에 따라 자동으로 처리해 문제 해결을 돕는 시스템이에요. 컴퓨터, 스마트폰, 키오스크, 로봇 청소기처럼 생활 곳곳에 있고, 사회에 긍정적·부정적 영향을 함께 줘요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 11, 14쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
+<script>
+renderChoice($('#judge'), [
+  {icon:'🧹', t:'방 안의 장애물을 감지해 스스로 방향을 바꾸며 청소하는 로봇 청소기', a:0, e:'센서로 데이터를 입력받아 자동으로 처리해요.'},
+  {icon:'🪑', t:'나무로 만든 교실 의자', a:1, e:'데이터를 입력받거나 처리하지 않아요.'},
+  {icon:'🧊', t:'남은 식품의 유통 기한을 알려 주는 스마트 냉장고', a:0, e:'식품 정보를 저장하고 처리해 알려 줘요.'},
+  {icon:'🪞', t:'벽에 걸린 거울', a:1, e:'빛을 반사할 뿐, 데이터를 처리하지 않아요.'},
+  {icon:'🛂', t:'지문과 얼굴을 인식해 출입국 심사를 하는 자동 출입국 심사대', a:0, e:'생체 정보를 입력받아 본인인지 자동으로 확인해요.'},
+], ['💻 컴퓨팅 시스템', '❌ 아니에요']);
+
+renderChoice($('#role'), [
+  {icon:'🍔', t:'키오스크', a:0, e:'주문과 결제를 사람 대신 자동으로 처리해요.'},
+  {icon:'🚗', t:'자율 주행 자동차', a:1, e:'주변을 인식해 안전하게 스스로 운전해요.'},
+  {icon:'🏭', t:'공장의 산업용 로봇', a:2, e:'반복적인 일을 빠르고 정확하게 해 생산성을 높여요.'},
+], ['주문·결제를 대신해요', '스스로 운전해요', '반복 작업을 정확하게 해요']);
+
+liveBoard($('#live'), {act: '1-01', title: '컴퓨팅 시스템이 사회에 미치는 영향', limit: 2,
+  text: v => { try { const d = JSON.parse(v); return (d.k ? '👎 ' : '👍 ') + d.t; } catch(e){ return '?'; } },
+  input(el, send){
+    el.innerHTML = '<div class="board-in"><select><option value="0">👍 긍정적 영향</option><option value="1">👎 부정적 영향</option></select><textarea rows="2" maxlength="80" placeholder="예: 원격 진료로 먼 곳에서도 진료를 받을 수 있어요."></textarea><button class="btn">보내기</button></div>';
+    el.querySelector('button').onclick = () => { const t = el.querySelector('textarea').value.trim(); if (t.length < 4) return; send(JSON.stringify({k: +el.querySelector('select').value, t})).then(() => el.querySelector('textarea').value = '').catch(() => {}); };
+  },
+  render(posts, el){
+    const L = s => String(s).replace(/[<>&]/g, ''), d = posts.map(p => { try { return JSON.parse(p.v); } catch(e){ return null; } }).filter(Boolean);
+    const col = k => d.filter(x => x.k === k).map(x => `<li>${L(x.t)}</li>`).join('') || '<li class="hint">아직 없어요</li>';
+    el.innerHTML = `<div class="two-col"><div class="pos"><h4>👍 긍정 (${d.filter(x => x.k === 0).length})</h4><ul>${col(0)}</ul></div><div class="neg"><h4>👎 부정 (${d.filter(x => x.k === 1).length})</h4><ul>${col(1)}</ul></div></div>`;
+  },
+});
+
+renderQuiz($('#quiz'), [
+  {q:'문제 해결에 필요한 데이터를 관리하고 정해진 절차에 따라 자동으로 처리하는 시스템은?', o:['컴퓨팅 시스템','교통 시스템','우편 시스템'], a:0, e:'컴퓨터, 스마트폰, 키오스크 등이 모두 컴퓨팅 시스템이에요.'},
+  {q:'컴퓨팅 시스템이 아닌 것은?', o:['스마트 워치','나무 책상','교통 카드 단말기'], a:1, e:'나무 책상은 데이터를 입력받거나 처리하지 않아요.'},
+]);
+</script>
+</body>
+</html>

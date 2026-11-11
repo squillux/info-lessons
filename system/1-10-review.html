@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ⅰ단원 정리 퀴즈</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>.self label{display:block;padding:6px 0;border-bottom:1px dashed var(--line)}</style>
+</head>
+<body data-unit="1" data-title="Ⅰ단원 정리 퀴즈" data-sub="중1 Ⅰ단원 · 단원 정리 · 미래엔 23, 37, 40쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 단원 정리</span>
+  <h1>Ⅰ단원 정리 퀴즈</h1>
+  <p class="lead">컴퓨팅 시스템의 구성과 동작, 피지컬 컴퓨팅 시스템을 정리해 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>이 단원에서 배운 내용을 "입력 → 처리 → 출력"이라는 말로 한 문장씩 설명해 볼까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>정리 퀴즈</h2>
+    <div class="card">
+      <h3>💻 컴퓨팅 시스템의 구성과 동작</h3>
+      <div id="q1"></div>
+    </div>
+    <div class="card">
+      <h3>🔌 피지컬 컴퓨팅 시스템</h3>
+      <div id="q2"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>스스로 점검</h2>
+    <div class="card">
+      <p>할 수 있게 된 것에 체크해 보세요. (저장되지 않아요.)</p>
+      <div class="self" id="self"></div>
+      <p class="hint" id="selfMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>컴퓨팅 시스템은 <b>하드웨어</b>와 <b>소프트웨어</b>로 구성되어 <b>입력 → 처리 → 출력</b>을 반복하고, <b>운영체제</b>가 자원을 관리해요. 피지컬 컴퓨팅 시스템은 <b>센서</b>로 현실 세계를 입력받아 <b>액추에이터</b>로 움직여요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 23, 37, 40쪽 정리 활동을 바탕으로 새로 구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderQuiz($('#q1'), [
+  {q:'컴퓨팅 시스템을 구성하는 두 요소는?', o:['하드웨어와 소프트웨어','센서와 모니터','CPU와 프린터'], a:0, e:'물리적 장치(하드웨어)와 명령어의 모음(소프트웨어)으로 구성돼요.'},
+  {q:'하드웨어 중 데이터를 계산하고 명령을 해석하는 장치는?', o:['입력 장치','중앙 처리 장치(CPU)','출력 장치'], a:1, e:'CPU는 제어 장치와 연산 장치로 구성돼요.'},
+  {q:'운영체제와 유틸리티는 어떤 소프트웨어일까?', o:['응용 소프트웨어','시스템 소프트웨어'], a:1, e:'응용 소프트웨어가 잘 작동하도록 환경을 제공해요.'},
+  {q:'새 프린터를 연결했을 때 운영체제가 드라이버를 찾아 연결해 주는 기능은?', o:['파일 관리','입출력 장치 관리','프로세스 관리'], a:1, e:'입출력 장치 관리예요.'},
+]);
+renderQuiz($('#q2'), [
+  {q:'센서, 마이크로컨트롤러, 액추에이터 등으로 현실 세계와 상호 작용하는 시스템은?', o:['피지컬 컴퓨팅 시스템','운영체제','클라우드'], a:0, e:'현실 세계의 데이터를 입력받아 처리하고 물리적으로 출력해요.'},
+  {q:'다음 중 액추에이터는?', o:['빛 센서','서보 모터','소리 센서'], a:1, e:'서보 모터는 신호에 따라 정해진 각도로 움직이는 액추에이터예요.'},
+  {q:'피지컬 컴퓨팅 시스템의 동작 과정으로 알맞은 순서는?', o:['액추에이터 제어 → 데이터 수집 → 프로그램 실행','데이터 수집 → 데이터 처리 → 프로그램 실행 → 액추에이터 제어','프로그램 실행 → 데이터 수집 → 데이터 처리'], a:1, e:'센서로 수집하고 처리한 뒤 프로그램에 따라 액추에이터를 제어해요.'},
+  {q:'센서 보드의 아날로그 센서 값의 범위는?', o:['0~1023','0 또는 1','1~10'], a:0, e:'아날로그 센서는 0~1023의 값을 입력해요.'},
+]);
+const SELF = ['컴퓨팅 시스템의 개념과 생활 속 사례를 말할 수 있다.', '하드웨어와 소프트웨어의 종류를 구분할 수 있다.', '컴퓨팅 시스템의 동작 과정과 운영체제의 기능을 설명할 수 있다.', '피지컬 컴퓨팅 시스템의 구성 요소(센서, 액추에이터)를 구분할 수 있다.', '문제 해결에 필요한 센서와 액추에이터를 골라 시스템을 설계할 수 있다.'];
+$('#self').innerHTML = SELF.map(s => `<label><input type="checkbox"> ${s}</label>`).join('');
+$$('#self input').forEach(i => i.onchange = () => { const n = $$('#self input:checked').length; $('#selfMsg').textContent = n === SELF.length ? '🎉 Ⅰ단원을 완벽하게 정리했어요!' : `${n} / ${SELF.length} · 체크하지 못한 내용은 해당 활동을 다시 해 보세요.`; });
+</script>
+</body>
+</html>

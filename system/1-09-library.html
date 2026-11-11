@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쾌적한 도서관 만들기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.ipo{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.ipo fieldset{border:2px solid var(--line);border-radius:14px;padding:8px 12px}
+.ipo legend{font-weight:800;padding:0 6px}
+.ipo select,.ipo input,.ipo textarea{font:inherit;padding:6px 8px;border:2px solid var(--line);border-radius:10px;width:100%;background:var(--panel);color:var(--ink);margin:3px 0}
+.lib{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.lib>div{border-radius:16px;padding:12px;background:var(--bg)}
+.lib .out{font-size:1.1rem;font-weight:700;min-height:2.5em}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.gal div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;font-size:.9rem}
+.gal b{color:var(--brand)}
+.checks label{display:block;padding:5px 0}
+</style>
+</head>
+<body data-unit="1" data-title="쾌적한 도서관 만들기" data-sub="중1 Ⅰ단원 · 창의·융합 프로젝트 · 미래엔 38~39쪽">
+<main>
+  <span class="badge">중1 Ⅰ단원 · 창의·융합 프로젝트</span>
+  <h1>쾌적한 도서관 만들기</h1>
+  <p class="lead">도서관이 너무 덥고, 몇몇 학생이 떠들어서 공부하기 어렵다는 의견이 있어요. 피지컬 컴퓨팅 시스템으로 이 문제를 해결하는 시스템을 설계해 봐요. 완성한 설계는 엔트리와 센서 보드로 직접 만들어요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제 이해</h2>
+    <div class="card">
+      <p>두 학생이 해결하고 싶은 문제는 무엇일까요? 각각의 문제를 알아채려면 어떤 값을 측정해야 할까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>설계와 시뮬레이션</h2>
+    <div class="card">
+      <h3>🔍 문제 해결에 필요한 센서 찾기</h3>
+      <div id="need"></div>
+    </div>
+
+    <div class="card">
+      <h3>📝 시스템의 동작 원리 설계</h3>
+      <p>입력 → 처리 → 출력으로 나누어 설계해요. 아래 시뮬레이터에 바로 반영돼요.</p>
+      <div class="ipo">
+        <fieldset><legend>규칙 ① 소음</legend>
+          입력: 소리 센서<br>처리: 소리 값 ≥ <input type="number" id="sTh" value="30" min="1" max="100" style="width:80px"><br>
+          출력: <select id="sOut"><option value="msg">"조용히 해 주세요" 안내(말하기)</option><option value="led">빨간 LED 켜기</option><option value="both">안내 + 빨간 LED</option></select></fieldset>
+        <fieldset><legend>규칙 ② 온도</legend>
+          입력: 온도 센서<br>처리: 온도 ≥ <input type="number" id="tTh" value="28" min="15" max="40" style="width:80px"> ℃<br>
+          출력: <select id="tOut"><option value="ac">에어컨 켜기</option><option value="fan">선풍기(DC 모터) 켜기</option></select></fieldset>
+      </div>
+      <div class="lib">
+        <div><b>🔊 지금 소리 크기</b> <span id="sv"></span><input type="range" id="snd" min="0" max="100" value="10" style="width:100%"><div class="out" id="sRes"></div></div>
+        <div><b>🌡️ 지금 온도</b> <span id="tv"></span><input type="range" id="tmp" min="15" max="38" value="24" style="width:100%"><div class="out" id="tRes"></div></div>
+      </div>
+      <p class="hint">💡 센서 보드에 따라 온도 센서 값을 ℃로 바꾸는 방법이 달라요. 실제로 만들 때는 사용하는 센서의 설명서를 확인해요.</p>
+    </div>
+
+    <div class="card">
+      <h3>📡 모둠 설계 모아 보기 <span class="tag-opt">실시간</span></h3>
+      <p>위에서 설계한 규칙과 우리 모둠의 추가 아이디어를 보내면 반 전체 설계가 한 화면에 모여요. (모둠당 2개까지, 이름은 저장되지 않아요.)</p>
+      <div id="live"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>프로그램 확인하기</h2>
+    <div class="card">
+      <p>엔트리로 만든 뒤 하나씩 확인해 보세요.</p>
+      <div class="checks" id="checks"></div>
+      <p class="hint" id="chkMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>정리</h2>
+    <div class="card">
+      <p>피지컬 컴퓨팅으로 문제를 해결하려면 <b>문제 이해 → 필요한 센서·액추에이터 선택 → 입력·처리·출력 설계 → 프로그래밍과 확인</b> 순서로 진행해요. 기준값을 바꿔 가며 가장 알맞은 값을 찾는 것도 중요해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 38~39쪽 프로젝트를 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
+<script>
+renderChoice($('#need'), [
+  {icon:'🗣️', t:'떠드는 소리가 크면 조용히 하라고 안내하고 싶어요.', a:0, e:'소리 센서로 소리 크기를 측정해요.'},
+  {icon:'🥵', t:'도서관이 더우면 자동으로 냉방 장치를 켜고 싶어요.', a:1, e:'온도 센서로 실내 온도를 측정해요.'},
+], ['🔊 소리 센서', '🌡️ 온도 센서', '📏 거리 센서']);
+
+const OUT = {msg: '📢 "조용히 해 주세요!"', led: '🔴 빨간 LED 켜짐', both: '📢 "조용히 해 주세요!" + 🔴 LED'};
+function sim(){
+  const s = +$('#snd').value, t = +$('#tmp').value, sT = +$('#sTh').value, tT = +$('#tTh').value;
+  $('#sv').textContent = s; $('#tv').textContent = t + '℃';
+  $('#sRes').textContent = s >= sT ? OUT[$('#sOut').value] : '😌 조용해요 (동작 없음)';
+  $('#tRes').textContent = t >= tT ? ($('#tOut').value === 'ac' ? '❄️ 에어컨 켜짐' : '🌀 선풍기 켜짐') : '🙂 적당해요 (꺼짐)';
+}
+['#snd', '#tmp', '#sTh', '#tTh', '#sOut', '#tOut'].forEach(s => $(s).oninput = $(s).onchange = sim); sim();
+
+liveBoard($('#live'), {act: '1-09', title: '우리 모둠 도서관 시스템 설계', limit: 2,
+  text: v => { try { return JSON.parse(v).idea.slice(0, 30) || '설계'; } catch(e){ return '?'; } },
+  input(el, send){
+    el.innerHTML = '<div class="ipo"><textarea rows="2" maxlength="150" placeholder="추가 아이디어 (예: 거리 센서로 자리에 사람이 없으면 조명 끄기)"></textarea></div><button class="btn">📤 우리 모둠 설계 보내기</button>';
+    el.querySelector('button').onclick = () => send(JSON.stringify({s: +$('#sTh').value, so: $('#sOut').value, t: +$('#tTh').value, to: $('#tOut').value, idea: el.querySelector('textarea').value.trim()})).catch(() => {});
+  },
+  render(posts, el){
+    const L = s => String(s || '').replace(/[<>&]/g, '');
+    const d = posts.map(p => { try { return JSON.parse(p.v); } catch(e){ return null; } }).filter(Boolean);
+    el.innerHTML = d.length ? '<div class="gal">' + d.map((x, k) => `<div><b>모둠 설계 ${k + 1}</b><br>🔊 소리 ≥ ${+x.s || 0} → ${L(OUT[x.so] || '')}<br>🌡️ 온도 ≥ ${+x.t || 0}℃ → ${x.to === 'fan' ? '🌀 선풍기' : '❄️ 에어컨'}${x.idea ? '<br>💡 ' + L(x.idea) : ''}</div>`).join('') + '</div>' : '<p class="hint">아직 보낸 설계가 없어요.</p>';
+  },
+});
+
+const CH = ['소리 센서와 온도 센서가 값을 제대로 인식하는가?', '소리 값이 기준 이상이면 안내(또는 LED)가 동작하는가?', '온도가 기준 이상이면 냉방 장치 오브젝트가 바뀌는가?', '기준 미만이면 동작이 멈추는가?'];
+$('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
+$$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 모든 동작을 확인했어요!' : `${n} / ${CH.length}`; });
+</script>
+</body>
+</html>
