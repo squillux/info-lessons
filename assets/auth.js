@@ -41,6 +41,11 @@
 .ga-chip .ga-att{background:var(--pink,#ff6fa5);color:#fff;animation:gaPulse 1.2s infinite}
 .ga-chip .ga-ok{color:#0d7d71;font-weight:700}
 .ga-chip input{width:5.5em;font:inherit;padding:4px 8px;border:2px solid var(--line,#e3e8f2);border-radius:10px;letter-spacing:.1em}
+
+.ga-live{position:fixed;left:50%;top:72px;transform:translateX(-50%);z-index:160;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;background:#fff;border:3px solid var(--pink,#ff6fa5);border-radius:18px;padding:8px 10px 8px 14px;box-shadow:0 6px 18px rgba(30,40,80,.18);max-width:calc(100vw - 20px);width:max-content;animation:gaGlow 1.2s 4}
+@keyframes gaGlow{50%{box-shadow:0 0 0 8px rgba(255,111,165,.25)}}
+.ga-live .btn{padding:6px 14px}
+.ga-live button{border:0;background:none;font-size:1rem;color:var(--muted,#667);cursor:pointer}
 @keyframes gaPulse{50%{transform:scale(1.06)}}
 a.card.ga-locked{opacity:.55;filter:grayscale(.6);cursor:not-allowed}
 a.card.ga-locked:hover{transform:none}
@@ -50,7 +55,7 @@ a.card.ga-locked:hover{transform:none}
 .ga-today a{display:inline-block;margin:4px 6px 0 0;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid #f0d27a;color:inherit;text-decoration:none;font-weight:700;font-size:.9rem}
 .ga-toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:210;background:#333;color:#fff;border-radius:12px;padding:10px 16px;font-size:.9rem;max-width:90vw}
 body{padding-bottom:56px}
-@media print{.ga-chip,.ga-over,.ga-toast{display:none!important}}`;
+@media print{.ga-chip,.ga-over,.ga-toast,.ga-live{display:none!important}}`;
   const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   document.documentElement.classList.add('ga-wait');
 
@@ -166,6 +171,7 @@ body{padding-bottom:56px}
     visit();
     attendWatch();
     listen('today/' + S.c, s => { S.today = s.val() || {}; decorate(); });
+    listen('liveNow/' + S.c, s => liveDraw(s.val()));
     if (isIndex){
       watchCards();
       ref('progress/' + S.c + '/' + S.sid).once('value').then(s => { S.prog = s.val() || {}; decorate(); }).catch(() => {});
@@ -195,6 +201,23 @@ body{padding-bottom:56px}
       if (v) await ref(p).update({l: TS(), n: firebase.database.ServerValue.increment(1)});
       else await ref(p).set({f: TS(), l: TS(), n: 1});
     } catch (e){}
+  }
+
+  /* 실시간 활동 알림: 선생님이 방을 열고 [알리기]를 누르면 [참여하기]가 뜸 (코드 입력 없이 참여) */
+  let liveTimer = 0;
+  function liveDraw(v){
+    clearTimeout(liveTimer);
+    let el = $id('gaLive');
+    const now = Date.now() + S.off;
+    const here = v && location.pathname === v.path && new URLSearchParams(location.search).get('join') === v.code;
+    const okv = v && /^\/[A-Za-z0-9\/_.-]{1,150}$/.test(v.path || '') && /^\d{4}$/.test(v.code || '') && v.until > now && !here;
+    let closed = false; try { closed = !!v && sessionStorage.getItem('ga:liveX') === v.code + v.t; } catch (e){}
+    if (!okv || closed){ if (el) el.remove(); return; }
+    if (!el){ el = document.createElement('div'); el.id = 'gaLive'; el.className = 'ga-live'; document.body.appendChild(el); }
+    const c = typeof contentsList !== 'undefined' && contentsList.find(x => actOf(x.href) === v.act);
+    el.innerHTML = `<span>📡 선생님이 <b>${esc(c ? c.title : '실시간 활동')}</b>을(를) 열었어요</span><a class="btn" href="${esc(v.path)}?join=${esc(v.code)}">참여하기 ▶</a><button title="닫기" aria-label="닫기">✕</button>`;
+    el.querySelector('button').onclick = () => { try { sessionStorage.setItem('ga:liveX', v.code + v.t); } catch (e){} el.remove(); };
+    liveTimer = setTimeout(() => liveDraw(v), Math.min(60000, v.until - now + 500));
   }
 
   /* 출석: 교사가 연 동안 [✋ 출석] → 칠판의 출석 코드 4자리 입력 */

@@ -96,7 +96,24 @@
     clearListen(); soft = null;
     $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === T.tab));
     const v = $('#view'); v.innerHTML = '';
-    ({open: vOpen, attend: vAttend, prog: vProg, notes: vNotes, roster: vRoster, data: vData}[T.tab] || vOpen)(v);
+    ({open: vOpen, live: vLive, attend: vAttend, prog: vProg, notes: vNotes, roster: vRoster, data: vData}[T.tab] || vOpen)(v);
+  }
+
+  /* ---------- 📡 실시간 활동 실행 ---------- */
+  function vLive(v){
+    const L = contentsList.filter(c => c.live && actOf(c.href));
+    v.insertAdjacentHTML('beforeend', `<div class="card"><h3>📡 실시간 활동 실행</h3>
+      <p class="hint">[▶ 실행]을 누르면 새 탭에서 활동이 <b>교사 모드</b>로 열리고, 방 코드와 QR 코드가 바로 만들어져요. 그 탭을 전자칠판에 띄우세요. 학생 화면에는 <b>방 코드 입력 칸</b>만 보여요.
+      로그인한 <b>${cname(T.c)}</b> 학생 화면에는 [참여하기] 알림이 함께 떠서 코드를 입력하지 않아도 돼요. (반은 위쪽에서 바꿀 수 있어요)</p>
+      <div id="lnow"></div>
+      <div class="acts">${[1, 2, 3, 4, 5].map(u => { const g = L.filter(c => c.unit === u); return g.length ? `<p style="margin:10px 0 0"><b>${ROMAN[u]} ${esc((unitList.find(x => x.unit === u) || {}).name || '')}</b></p>` + g.map(c => { const id = actOf(c.href);
+        return `<div class="act"><span class="nm"><b>${esc(c.icon || '')} ${esc(c.title)}</b><small>${ROMAN[u]}-${+id.slice(2)}</small></span><a class="btn" style="padding:6px 14px" target="_blank" href="../${esc(c.href)}?host=1${EMU ? '&emu' : ''}">▶ 실행</a></div>`; }).join('') : ''; }).join('')}</div></div>`);
+    listen('liveNow/' + T.c, x => {
+      const el = $('#lnow'); if (!el) return;
+      const c = x && contentsList.find(a => actOf(a.href) === x.act);
+      el.innerHTML = x && x.until > now() ? `<div class="att-box"><div>📢 지금 ${cname(T.c)} 학생 화면에 알림 중<br><b>${esc(c ? c.title : x.act)}</b> · 방 코드 <b style="font-family:ui-monospace,Consolas,monospace;font-size:1.3rem">${esc(x.code)}</b></div><button class="btn line" id="lOff">알림 끄기</button></div>` : '';
+      const b = $('#lOff'); if (b) b.onclick = () => ref('liveNow/' + T.c).remove();
+    });
   }
   const unitSeg = (v, cb) => {
     const d = document.createElement('div'); d.className = 'seg';
@@ -389,7 +406,7 @@
     $('#wipe').onclick = () => {
       if ($('#wipeTx').value.trim() !== '전체 삭제') return msg($('#wFb'), false, "'전체 삭제'라고 정확히 입력하세요.");
       if (!confirm('정말 모든 반의 학습 기록과 명단을 지울까요? 되돌릴 수 없어요.')) return;
-      const up = {}; ['progress', 'visits', 'attend', 'attendOpen', 'attendKey', 'notes', 'claims', 'tries', 'roster', 'pins', 'open', 'today'].forEach(k => up[k] = null);
+      const up = {}; ['progress', 'visits', 'attend', 'attendOpen', 'attendKey', 'notes', 'claims', 'tries', 'roster', 'pins', 'open', 'today', 'liveNow'].forEach(k => up[k] = null);
       ref().update(up).then(() => msg($('#wFb'), true, '✅ 모두 지웠어요.')).catch(e => msg($('#wFb'), false, '지우지 못했어요. (' + e.code + ')'));
     };
   }
