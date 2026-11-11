@@ -37,7 +37,12 @@ const LIVE = (() => {
 .lv-out{margin-top:10px}
 .lv-room .qr{background:#fff;padding:6px;border-radius:10px;line-height:0}
 .lv-room .qr img,.lv-room .qr canvas{width:120px;height:120px}
-.lv-url{font-size:.85rem;word-break:break-all}`;
+.lv-url{font-size:.85rem;word-break:break-all}
+.lv-over{position:fixed;inset:0;z-index:100;background:rgba(15,20,35,.75);display:flex;align-items:center;justify-content:center;padding:16px}
+.lv-over-in{background:#fff;border-radius:20px;padding:20px;text-align:center;max-width:95vw}
+.lv-over-in b{font-family:ui-monospace,Consolas,monospace;font-size:2.4rem;letter-spacing:.15em;color:var(--brand)}
+.qr-big{display:inline-block;line-height:0}
+.qr-big img,.qr-big canvas{max-width:80vw;height:auto}`;
   const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
 
   const ls = {get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch(e){} }};
@@ -86,9 +91,17 @@ const LIVE = (() => {
     d.innerHTML = `<div class="qr" title="학생용 주소 QR"></div><div><span>방 코드</span> <span class="code">${code}</span>
       <p class="hint" style="margin:4px 0">학생은 <b>QR 코드를 찍거나</b> 아래 주소로 들어오면 바로 참여해요. (또는 <b>🙋 학생</b> 버튼을 누르고 번호 입력)</p>
       <p style="margin:4px 0"><code class="lv-url">${url.replace(/^https?:[/][/]/, '')}</code></p>
-      <div class="lv-ctl"><button class="btn line" data-c>🔗 학생용 주소 복사</button><button class="btn line" data-n>새 방 만들기</button></div></div>`;
+      <div class="lv-ctl"><button class="btn line" data-big>🔍 QR 크게 보기</button><button class="btn line" data-c>🔗 학생용 주소 복사</button><button class="btn line" data-n>새 방 만들기</button></div></div>`;
     d.querySelector('[data-n]').onclick = onNew;
     d.querySelector('[data-c]').onclick = e => { navigator.clipboard?.writeText(url).then(() => e.target.textContent = '✅ 복사했어요').catch(() => {}); };
+    d.querySelector('[data-big]').onclick = () => {
+      const ov = document.createElement('div'); ov.className = 'lv-over';
+      ov.innerHTML = `<div class="lv-over-in"><div class="qr-big"></div><p>방 코드 <b>${code}</b></p><p class="hint">휴대폰·태블릿 카메라로 QR 코드를 찍으면 바로 참여해요.</p><button class="btn">닫기</button></div>`;
+      ov.onclick = e => { if (e.target === ov || e.target.tagName === 'BUTTON') ov.remove(); };
+      document.body.appendChild(ov);
+      const s = Math.min(innerWidth, innerHeight) * .62;
+      try { new QRCode(ov.querySelector('.qr-big'), {text: url, width: s, height: s, correctLevel: QRCode.CorrectLevel.M}); } catch(e){ ov.querySelector('.qr-big').textContent = url; }
+    };
     const qrEl = d.querySelector('.qr');
     const draw = () => { try { new QRCode(qrEl, {text: url, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M}); } catch(e){ qrEl.remove(); } };
     if (window.QRCode) draw(); else { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; sc.onload = draw; sc.onerror = () => qrEl.remove(); document.head.appendChild(sc); }
@@ -121,6 +134,14 @@ const LIVE = (() => {
       setTimeout(() => { const all = document.getElementById('allBtn'); if (all && document.querySelector('main .locked')) all.click(); box.scrollIntoView({block: 'start'}); window.scrollBy(0, -80); }, 300);
     } else if (start) pick(start);
   }
+  /* 실시간 카드가 있는 페이지: 상단에 바로 가기 버튼 */
+  setTimeout(() => {
+    const tools = document.querySelector('header.top .tools'), first = document.querySelector('.lv-bar');
+    if (!tools || !first || document.getElementById('liveBtn')) return;
+    const b = document.createElement('button'); b.className = 'tool'; b.id = 'liveBtn'; b.title = '실시간 투표·모으기로 바로 가기'; b.innerHTML = '📡 <span>실시간</span>';
+    b.onclick = () => { if (document.querySelector('main .locked')) document.getElementById('allBtn')?.click(); setTimeout(() => { first.scrollIntoView({block: 'start'}); scrollBy(0, -80); }, 50); };
+    tools.prepend(b);
+  }, 0);
   return {ls, rnd, esc, dev, connect, teacherRoom, roomBar, failBox, joinForm, bar, get db(){ return db; }};
 })();
 

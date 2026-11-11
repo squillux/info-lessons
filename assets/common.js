@@ -119,6 +119,7 @@ function renderQuiz(box, items){
       if (Object.keys(answered).length === items.length){
         const sc = Object.values(answered).filter(Boolean).length, s = box.querySelector('.score');
         s.textContent = sc === items.length ? `🎉 ${sc} / ${items.length} 모두 맞혔어요!` : `${sc} / ${items.length} · 틀린 문제의 해설을 다시 읽어 보세요.`;
+        const again = document.createElement('button'); again.className = 'btn line'; again.style.marginLeft = '8px'; again.textContent = '🔄 다시 풀기'; again.onclick = () => renderQuiz(box, items); s.appendChild(again);
         s.classList.add('show');
       }
     });
