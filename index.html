@@ -16,6 +16,7 @@ main{max-width:1080px}
 .hero h1::after{display:none}
 .hero p{margin:2px 0 0;color:var(--muted)}
 .units{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:6px;background:var(--bg);border-radius:16px}
+.live-chip{display:inline-block;margin-left:6px;font-size:.72rem;font-weight:800;color:#c2185b;background:var(--pink-soft);border-radius:999px;padding:1px 9px;vertical-align:middle}
 .unit-btn{border:0;background:none;border-radius:12px;padding:8px 14px;font-weight:700;color:var(--muted)}
 .unit-btn.on{background:var(--panel);color:var(--brand);box-shadow:0 2px 0 var(--line)}
 .unit-btn .n{font-family:ui-monospace,Consolas,monospace;margin-right:4px}
@@ -69,6 +70,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;font-size:.8rem;color:
       <li>전자칠판에서는 <b>가+ 크게</b>와 <b>전체 화면</b>을 쓰세요. 인쇄하면 모든 활동이 펼쳐져 학습지처럼 나와요.</li>
       <li>단원별 주소를 나눠 줄 수 있어요. 예: 이 페이지 주소 끝의 <code>?unit=2</code></li>
       <li>학생 이름이나 답을 저장하지 않아요. <b>심화</b>는 교과서 밖 내용, <b>더 해 보기</b>는 선택 활동이에요.</li>
+      <li><b>📡 실시간</b> 표시 활동은 반 전체가 함께 투표하거나 응답을 모을 수 있어요. 선생님 기기에서 <b>🧑‍🏫 교사</b> 버튼을 누르면 방 코드와 <b>QR 코드</b>가 나오고, 학생은 QR을 찍으면 바로 참여해요. 서버에는 이름 없이 투표 수와 제출 내용만 남고, 부적절한 제출물은 선생님이 숨길 수 있어요.</li>
     </ul>
   </details>
   <nav class="units" id="units"></nav>
@@ -96,7 +98,7 @@ function show(u){
     list.innerHTML = groups.map(g => { const gi = items.filter(c => c.sub === g); return `<div class="sub-h"><span class="mono">${g}</span>${esc(subList[g] || '')} <span class="cnt">· 활동 ${gi.filter(c => !c.lesson).length}개</span></div>
       <div class="cards">${gi.map(c => `<a class="card${c.lesson ? ' lesson' : ''}" href="${esc(c.href)}">
         <span class="ic" aria-hidden="true">${c.icon || '📘'}</span><span class="num">${c.lesson ? 'LESSON' : 'NO. ' + String(++n).padStart(2, '0')}</span>
-        <span class="badge">${esc(c.badge)}</span><h2>${esc(c.title)}</h2><p>${esc(c.desc)}</p></a>`).join('')}</div>`; }).join('');
+        <span class="badge">${esc(c.badge)}</span>${c.live ? '<span class="live-chip">📡 실시간</span>' : ''}<h2>${esc(c.title)}</h2><p>${esc(c.desc)}</p></a>`).join('')}</div>`; }).join('');
   }
   history.replaceState(null, '', '?unit=' + info.unit);
 }

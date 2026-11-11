@@ -34,7 +34,10 @@ const LIVE = (() => {
 .lv-mod{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;max-height:220px;overflow:auto}
 .lv-mod button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:3px 8px;font-size:.85rem;color:var(--ink)}
 .lv-mod button.hid{text-decoration:line-through;opacity:.45}
-.lv-out{margin-top:10px}`;
+.lv-out{margin-top:10px}
+.lv-room .qr{background:#fff;padding:6px;border-radius:10px;line-height:0}
+.lv-room .qr img,.lv-room .qr canvas{width:120px;height:120px}
+.lv-url{font-size:.85rem;word-break:break-all}`;
   const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
 
   const ls = {get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch(e){} }};
@@ -76,9 +79,20 @@ const LIVE = (() => {
     if (room.fresh) await room.save();
     return room;
   }
+  const joinParam = (new URLSearchParams(location.search).get('join') || '').match(/^[0-9]{4}$/)?.[0] || null;
+  /* 교사 화면: 방 코드 + 학생용 주소(QR) */
   const roomBar = (code, onNew) => { const d = document.createElement('div'); d.className = 'lv-room';
-    d.innerHTML = `<span>방 코드</span><span class="code">${code}</span><span class="hint">학생은 이 페이지에서 <b>🙋 학생: 방 코드로 참여</b>를 누르고 이 번호를 입력해요.</span><button class="btn line">새 방 만들기</button>`;
-    d.querySelector('button').onclick = onNew; return d; };
+    const url = location.origin + location.pathname + '?join=' + code;
+    d.innerHTML = `<div class="qr" title="학생용 주소 QR"></div><div><span>방 코드</span> <span class="code">${code}</span>
+      <p class="hint" style="margin:4px 0">학생은 <b>QR 코드를 찍거나</b> 아래 주소로 들어오면 바로 참여해요. (또는 <b>🙋 학생</b> 버튼을 누르고 번호 입력)</p>
+      <p style="margin:4px 0"><code class="lv-url">${url.replace(/^https?:[/][/]/, '')}</code></p>
+      <div class="lv-ctl"><button class="btn line" data-c>🔗 학생용 주소 복사</button><button class="btn line" data-n>새 방 만들기</button></div></div>`;
+    d.querySelector('[data-n]').onclick = onNew;
+    d.querySelector('[data-c]').onclick = e => { navigator.clipboard?.writeText(url).then(() => e.target.textContent = '✅ 복사했어요').catch(() => {}); };
+    const qrEl = d.querySelector('.qr');
+    const draw = () => { try { new QRCode(qrEl, {text: url, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M}); } catch(e){ qrEl.remove(); } };
+    if (window.QRCode) draw(); else { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; sc.onload = draw; sc.onerror = () => qrEl.remove(); document.head.appendChild(sc); }
+    return d; };
   const failBox = el => { el.innerHTML = `<p class="feedback show bad">⚠️ 실시간 서버에 연결할 수 없어요(학교 인터넷 차단 등). 이 활동의 기본 기능으로 진행해 주세요.</p>`; };
   function joinForm(el, act, onJoin){
     el.innerHTML = `<p>선생님 화면의 <b>방 코드 4자리</b>를 입력하세요.</p><p><input class="inp" inputmode="numeric" maxlength="4" style="width:140px"> <button class="btn">참여하기</button></p><div class="feedback"></div>`;
@@ -93,13 +107,19 @@ const LIVE = (() => {
       onJoin(c, snap.val());
     };
     el.querySelector('button').onclick = go; inp.onkeydown = e => { if (e.key === 'Enter') go(); };
+    if (joinParam){ inp.value = joinParam; go(); }
   }
   function bar(box, modes, onPick, start){
     const b = document.createElement('div'); b.className = 'lv-bar';
     b.innerHTML = modes.map(([m, label]) => `<button class="btn line" data-m="${m}">${label}</button>`).join('');
     const pick = m => { b.querySelectorAll('.btn').forEach(x => x.classList.toggle('line', x.dataset.m !== m)); onPick(m); };
     b.querySelectorAll('.btn').forEach(x => x.onclick = () => pick(x.dataset.m));
-    box.prepend(b); if (start) pick(start);
+    box.prepend(b);
+    if (joinParam && modes.some(m => m[0] === 'student')){
+      /* 학생용 주소(?join=코드)로 들어오면: 모든 활동을 펼치고 이 카드로 이동해 바로 참여 */
+      pick('student');
+      setTimeout(() => { const all = document.getElementById('allBtn'); if (all && document.querySelector('main .locked')) all.click(); box.scrollIntoView({block: 'start'}); window.scrollBy(0, -80); }, 300);
+    } else if (start) pick(start);
   }
   return {ls, rnd, esc, dev, connect, teacherRoom, roomBar, failBox, joinForm, bar, get db(){ return db; }};
 })();

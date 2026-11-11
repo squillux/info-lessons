@@ -64,7 +64,7 @@ textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid v
 
     <div class="card">
       <h3>📡 우리 반 실시간 응답 받기 <span class="tag-opt">실시간</span></h3>
-      <p>선생님이 방을 열고 <b>📤 설정 보내기</b>로 음식점 목록을 보내면, 학생들이 각자 기기에서 별점을 보내요. 받은 응답은 아래 분석에 바로 반영돼요. (1인 음식점 8곳까지, 이름은 저장되지 않아요.)</p>
+      <p>선생님이 방을 열고 <b>📤 설정 보내기</b>로 음식점 목록을 보내면, 학생들이 각자 기기에서 별점을 보내요. 목록에 없는 음식점은 학생이 직접 추가할 수도 있어요. 받은 응답은 아래 표와 그래프에 하나로 모여요. (1인 10개까지, 이름은 저장되지 않아요.)</p>
       <div id="liveRate"></div>
     </div>
 
@@ -133,22 +133,39 @@ $('#fake').onclick = () => {
   analyze();
 };
 $('#clearResp').onclick = () => { resp = []; analyze(); };
-liveBoard($('#liveRate'), {act: '2-23', title: '음식점 별점 보내기', limit: 8,
-  conf: () => JSON.stringify(shops.map(s => s[0])),
-  text: v => { try { const [i, a, b, c] = JSON.parse(v); return `#${i + 1} 맛${a} 가격${b} 양${c}`; } catch(e){ return '?'; } },
+liveBoard($('#liveRate'), {act: '2-23', title: '음식점 별점 보내기', limit: 10,
+  conf: () => JSON.stringify(shops.map(s => [s[0], s[1]])),
+  text: v => { try { const d = JSON.parse(v); return `${d.n}(${d.y}) 맛${d.r[0]} 가격${d.r[1]} 양${d.r[2]}`; } catch(e){ return '?'; } },
   input(el, send, conf){
-    let names = []; try { names = JSON.parse(conf || '[]'); } catch(e){}
-    if (!names.length){ el.innerHTML = '<p class="hint">선생님이 음식점 목록을 보내면 별점을 줄 수 있어요.</p>'; return; }
-    const p = [3, 3, 3];
-    el.innerHTML = `<div class="rate"><div class="row1"><b>음식점</b><select class="inp" style="width:auto;font-size:1rem">${names.map((n, i) => `<option value="${i}">${esc(n)}</option>`).join('')}</select></div>` +
+    let list = []; try { list = JSON.parse(conf || '[]'); } catch(e){}
+    const TYPES = ['분식', '한식', '중식', '양식', '일식', '기타'], p = [3, 3, 3];
+    el.innerHTML = `<div class="rate"><div class="row1"><b>음식점</b><select class="inp" data-s style="width:auto;font-size:1rem">${list.map(([n, t], i) => `<option value="${i}">${esc(n)} (${esc(t)})</option>`).join('')}<option value="new">➕ 직접 입력하기</option></select></div>
+      <div class="row1" data-new style="display:none"><b>새 음식점</b><input class="inp" data-n maxlength="15" placeholder="음식점 이름" style="width:160px"><select class="inp" data-y style="width:auto;font-size:1rem">${TYPES.map(t => `<option>${t}</option>`).join('')}</select></div>` +
       ['맛', '가격', '양'].map((l, k) => `<div class="row1"><b style="width:40px">${l}</b><div class="stars" data-k="${k}">${[1, 2, 3, 4, 5].map(v => `<button data-v="${v}">${v}</button>`).join('')}</div></div>`).join('') +
-      '</div><div class="ctrl" style="margin-top:8px"><button class="btn" data-send>📨 이 음식점 별점 보내기</button></div>';
+      '</div><div class="ctrl" style="margin-top:8px"><button class="btn" data-send>📨 이 음식점 별점 보내기</button></div><p class="hint">목록에 없는 단골 음식점은 ‘직접 입력하기’로 추가해요. 친구들과 같은 이름으로 쓰면 하나로 합쳐져요.</p>';
+    const sel = el.querySelector('[data-s]'), nw = el.querySelector('[data-new]');
+    sel.onchange = () => nw.style.display = sel.value === 'new' ? '' : 'none';
+    if (!list.length){ sel.value = 'new'; nw.style.display = ''; }
     el.querySelectorAll('.stars').forEach(st => { const k = +st.dataset.k, upd = () => st.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.v <= p[k])); st.querySelectorAll('button').forEach(b => b.onclick = () => { p[k] = +b.dataset.v; upd(); }); upd(); });
-    el.querySelector('[data-send]').onclick = () => send(JSON.stringify([+el.querySelector('select').value, ...p])).catch(() => {});
+    el.querySelector('[data-send]').onclick = () => {
+      let n, y;
+      if (sel.value === 'new'){ n = el.querySelector('[data-n]').value.trim(); y = el.querySelector('[data-y]').value; if (!n) return alert('음식점 이름을 입력하세요.'); }
+      else [n, y] = list[+sel.value];
+      send(JSON.stringify({n, y, r: p.slice()})).catch(() => {});
+    };
   },
   render(posts, el){
-    liveResp = posts.map(x => { try { return JSON.parse(x.v); } catch(e){ return null; } }).filter(r => Array.isArray(r) && r.length === 4 && r[0] < shops.length && r.slice(1).every(n => n >= 1 && n <= 5));
-    el.innerHTML = `<p class="hint">📡 실시간 응답 ${liveResp.length}개가 아래 분석에 함께 반영돼요.</p>`; analyze();
+    const key = s => s.replace(/\s+/g, '').toLowerCase();
+    let added = 0;
+    liveResp = posts.map(x => { try { return JSON.parse(x.v); } catch(e){ return null; } })
+      .filter(d => d && typeof d.n === 'string' && d.n.trim() && Array.isArray(d.r) && d.r.length === 3 && d.r.every(v => v >= 1 && v <= 5))
+      .map(d => {
+        let i = shops.findIndex(s => key(s[0]) === key(d.n));
+        if (i < 0 && shops.length < 20){ shops.push([d.n.trim().slice(0, 15), d.y || '기타']); i = shops.length - 1; added++; }
+        return i < 0 ? null : [i, ...d.r];
+      }).filter(Boolean);
+    if (added){ renderShops(); renderSel(); }
+    el.innerHTML = `<p class="hint">📡 실시간 응답 ${liveResp.length}개가 아래 분석과 그래프에 함께 반영돼요.${added ? ` 학생이 추가한 음식점 ${added}곳이 목록에 들어왔어요.` : ''}</p>`; analyze();
   },
 });
 
