@@ -13,7 +13,7 @@
 html{font-size:var(--fs)}
 body{margin:0;background:var(--page);color:var(--ink);
   font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.6;
-  -webkit-tap-highlight-color:transparent}
+  -webkit-tap-highlight-color:transparent;word-break:keep-all;overflow-wrap:break-word}
 html.big{--fs:21px}
 button{font:inherit;cursor:pointer;color:inherit}
 input{font:inherit}
@@ -24,7 +24,7 @@ header.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);bac
 header.top .in{max-width:1000px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px}
 .back{flex:0 0 auto;text-decoration:none;color:var(--brand);background:var(--brand-soft);font-weight:700;border-radius:10px;padding:6px 12px;font-size:.85rem}
 .ttl{flex:1 1 auto;min-width:0}
-.ttl b{display:block;font-family:var(--cute);font-weight:400;font-size:1.15rem;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ttl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-family:var(--cute);font-weight:400;font-size:1.15rem;line-height:1.25;overflow:hidden;word-break:keep-all}
 .ttl small{display:block;font-size:.75rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tools{display:flex;gap:6px;flex:0 0 auto}
 .tool{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 10px;font-size:.8rem;color:var(--muted)}
@@ -120,6 +120,11 @@ table.tbl td,table.tbl th{border:1px solid var(--line);padding:4px 12px;text-ali
   h1{font-size:1.35rem}
   .tool span{display:none}
   .ttl small{display:none}
+  /* 휴대폰: 제목은 한 줄 전체, 도구 버튼은 아래 줄 */
+  header.top .in{flex-wrap:wrap;row-gap:6px;padding:8px 12px}
+  .ttl{flex:1 1 calc(100% - 90px)}
+  .tools{flex:1 1 100%;justify-content:flex-end}
+  .tool{padding:5px 9px}
 }
 /* 키보드·펜 입력 시 현재 선택 위치 표시 */
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--on);outline-offset:2px}
@@ -139,3 +144,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .rubric th,.rubric td{border:1px solid var(--line);padding:5px 8px;vertical-align:top;text-align:left}
 .rubric tr:first-child th{background:var(--bg)}
 .explain-in{font:inherit;width:100%;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);margin:4px 0 6px}
+/* 큰 글씨 + 태블릿 폭: 제목이 잘리지 않도록 도구 버튼을 아래 줄로 */
+@media (max-width:900px){
+  html.big header.top .in{flex-wrap:wrap;row-gap:6px}
+  html.big .ttl{flex:1 1 calc(100% - 120px)}
+  html.big .tools{flex:1 1 100%;justify-content:flex-end}
+}
