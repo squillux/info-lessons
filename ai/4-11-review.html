@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ⅳ단원 정리 퀴즈</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.fill{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:520px;margin:10px 0}
+.fill div{border:2px dashed var(--line);border-radius:12px;padding:10px 4px;text-align:center;min-height:2.6em;font-weight:700}
+.fill div.ok{border-style:solid;border-color:var(--mint);background:var(--mint-soft)}
+.self label{display:block;padding:6px 0;border-bottom:1px dashed var(--line)}
+@media (max-width:520px){.fill{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body data-unit="4" data-title="Ⅳ단원 정리 퀴즈" data-sub="중1 Ⅳ단원 · 단원 정리 · 미래엔 161, 183, 186쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 단원 정리</span>
+  <h1>Ⅳ단원 정리 퀴즈</h1>
+  <p class="lead">인공지능의 개념과 특성, 인공지능 시스템과 데이터, 활용과 윤리를 정리해 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>인공지능이 똑똑한 이유를 한 단어로 말한다면? 힌트: 인공지능은 ○○○를 먹고 자라요.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>정리 퀴즈</h2>
+    <div class="card">
+      <h3>🔄 인공지능 모델 개발 과정 채우기</h3>
+      <p>낱말을 순서대로 눌러 빈칸을 채워 보세요.</p>
+      <div class="fill" id="fill"></div>
+      <div class="opts" id="words"></div>
+      <div class="feedback" id="fFb"></div>
+    </div>
+    <div class="card">
+      <h3>🤖 인공지능의 이해와 데이터</h3>
+      <div id="q1"></div>
+    </div>
+    <div class="card">
+      <h3>⚖️ 인공지능의 활용과 윤리</h3>
+      <div id="q2"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>스스로 점검</h2>
+    <div class="card">
+      <p>할 수 있게 된 것에 체크해 보세요. (저장되지 않아요.)</p>
+      <div class="self" id="self"></div>
+      <p class="hint" id="selfMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>인공지능은 <b>데이터</b>로 <b>학습</b>해 <b>모델</b>을 만들고 <b>평가</b>해 활용해요. 좋은 인공지능에는 좋은 데이터가 필요하고, 개발하고 쓸 때는 <b>윤리적 문제</b>를 함께 고려해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 161, 183, 186쪽 정리 활동을 바탕으로 새로 구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const ORD = ['데이터 입력', '학습', '모델 생성', '모델 평가'];
+let at = 0;
+$('#fill').innerHTML = ORD.map((_, i) => `<div>${i + 1}</div>`).join('');
+$('#words').innerHTML = ORD.map((w, i) => [w, i]).sort(() => Math.random() - .5).map(([w, i]) => `<button class="opt" data-i="${i}">${w}</button>`).join('');
+$$('#words .opt').forEach(b => b.onclick = () => {
+  if (+b.dataset.i !== at) return feedback($('#fFb'), false, '❌ 이 단계는 아직이에요.');
+  const c = $$('#fill div')[at]; c.textContent = ORD[at]; c.classList.add('ok'); b.disabled = true; at++;
+  feedback($('#fFb'), true, at === 4 ? '🎉 데이터 입력 → 학습 → 모델 생성 → 모델 평가!' : '⭕');
+});
+renderQuiz($('#q1'), [
+  {q:'인공지능의 특성 중 이미지, 소리, 글자 등을 알아보는 것은?', o:['추론','인식','생성'], a:1, e:'센서 등으로 외부 세계를 알아보는 인식이에요.'},
+  {q:'인공지능 소프트웨어와 일반 소프트웨어의 가장 큰 차이는?', o:['화면 색깔','데이터로 스스로 규칙을 학습하는지 여부','사용하는 컴퓨터의 크기'], a:1, e:'인공지능 소프트웨어는 데이터로 학습해 모델을 만들어요.'},
+  {q:'모델의 성능을 평가할 때 사용하는 데이터는?', o:['훈련 데이터','테스트 데이터'], a:1, e:'학습에 쓰지 않은 새로운 데이터로 평가해요.'},
+  {q:'좋은 학습 데이터의 조건이 아닌 것은?', o:['충분한 양','한쪽에 치우친 데이터','특징이 드러난 데이터'], a:1, e:'데이터는 대표성이 있어야 해요.'},
+]);
+renderQuiz($('#q2'), [
+  {q:'인공지능으로 문제를 해결하는 과정의 첫 단계는?', o:['모델 개발','문제 이해','실행 및 적용'], a:1, e:'먼저 해결할 문제를 발견하고 정의해요.'},
+  {q:'얼굴 사진으로 자동 출석부를 만들 때 반드시 지켜야 할 것은?', o:['사진 주인의 동의를 받는다','사진을 많이 공유한다','아무 사진이나 모은다'], a:0, e:'얼굴은 개인 정보이므로 동의를 받고 수집해요.'},
+  {q:'인공지능이 내린 판단의 근거를 알 수 있어야 한다는 원칙은?', o:['투명성','데이터 편향','저작권'], a:0, e:'투명해야 결과를 믿을 수 있어요.'},
+  {q:'바람직한 인공지능을 위해 정부가 할 수 있는 노력은?', o:['인공지능 관련 법과 제도 마련','윤리 지침에 따라 제품 개발','결과를 다른 자료와 비교해 확인'], a:0, e:'기업은 윤리 지침 준수, 개인은 비판적 활용을 실천해요.'},
+]);
+const SELF = ['인공지능의 개념과 특성을 설명하고, 인공지능 소프트웨어를 구별할 수 있다.', '인공지능 모델이 만들어지는 과정과 훈련·테스트 데이터를 설명할 수 있다.', '좋은 학습 데이터의 조건을 알고 데이터를 고를 수 있다.', '이미지·텍스트 데이터로 분류 모델을 만들고 평가할 수 있다.', '인공지능으로 해결할 수 있는 문제를 찾고 시스템을 구상할 수 있다.', '인공지능의 윤리적 문제를 알고 해결 방안을 제시할 수 있다.'];
+$('#self').innerHTML = SELF.map(s => `<label><input type="checkbox"> ${s}</label>`).join('');
+$$('#self input').forEach(i => i.onchange = () => { const n = $$('#self input:checked').length; $('#selfMsg').textContent = n === SELF.length ? '🎉 Ⅳ단원을 완벽하게 정리했어요!' : `${n} / ${SELF.length} · 체크하지 못한 내용은 해당 활동을 다시 해 보세요.`; });
+</script>
+</body>
+</html>

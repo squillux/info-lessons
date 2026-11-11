@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사람을 위한 착한 인공지능</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.dt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 12px}
+.dt span{background:var(--yellow-soft);border-radius:12px;padding:6px 10px;font-weight:700;font-size:.9rem}
+.ed{display:grid;gap:8px}
+.ed label{font-weight:700}
+.ed input,.ed textarea,.ed select{font:inherit;font-weight:400;padding:6px 10px;border:2px solid var(--line);border-radius:10px;width:100%;background:var(--panel);color:var(--ink);margin-top:4px}
+.sdg{display:flex;flex-wrap:wrap;gap:6px}
+.sdg button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-weight:700;color:var(--ink)}
+.sdg button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.card-out{border:3px dashed var(--brand);border-radius:18px;padding:12px 16px;background:#fff}
+.card-out h4{margin:0 0 6px;font-family:var(--cute);font-weight:400;font-size:1.3rem;color:var(--brand)}
+.card-out p{margin:4px 0}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.gal>div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;font-size:.92rem}
+.checks label{display:block;padding:5px 0}
+</style>
+</head>
+<body data-unit="4" data-title="사람을 위한 착한 인공지능" data-sub="중1 Ⅳ단원 · 창의·융합 프로젝트 · 미래엔 184~185쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 창의·융합 프로젝트</span>
+  <h1>사람을 위한 착한 인공지능</h1>
+  <p class="lead"><b>디자인 싱킹</b>은 사용자의 입장에서 문제를 이해하고, 아이디어를 내고, 시제품을 만들어 테스트하는 과정을 반복하며 해결책을 찾는 방법이에요. 사회 문제를 해결하는 인공지능 시스템을 기획해 봐요.</p>
+  <div class="dt"><span>① 문제에 대한 공감하기</span>→<span>② 문제 정의하기</span>→<span>③ 아이디어 찾기</span>→<span>④ 제품 만들기</span>→<span>⑤ 평가하기</span></div>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제에 대한 공감하기</h2>
+    <div class="card">
+      <p>우리 주변에서 어려움을 겪는 사람은 누구일까요? 국제 연합(UN)의 지속 가능 발전 목표(빈곤, 건강, 교육, 환경 등)를 참고해 모둠 주제를 골라 보세요.</p>
+      <div class="sdg" id="sdg"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>정의하고, 아이디어 내고, 만들기</h2>
+    <div class="card">
+      <h3>📝 기획서 작성</h3>
+      <p>모둠별로 적으면 아래에 기획 카드가 만들어져요. (저장되지 않아요. 완성되면 캡처하거나 인쇄하세요.)</p>
+      <div class="ed">
+        <label>② 누구의 어떤 문제를 해결할까요? <textarea id="prob" rows="2" placeholder="예: 시각 장애가 있는 친구가 학교 안에서 원하는 장소를 찾기 어려워요."></textarea></label>
+        <label>③ 인공지능이 어떻게 도와줄까요? <textarea id="idea" rows="2" placeholder="예: 카메라로 교실 표지판을 인식해 소리로 장소를 알려 줘요."></textarea></label>
+        <label>④ 모델 종류 <select id="mtype"><option>이미지 분류</option><option>소리 분류</option><option>텍스트 분류</option></select></label>
+        <label>④ 클래스 (쉼표로 구분) <input id="cls" placeholder="예: 과학실, 음악실, 보건실"></label>
+        <label>④ 수집할 데이터 <input id="data" placeholder="예: 각 교실 표지판을 여러 각도에서 찍은 사진 30장씩"></label>
+      </div>
+      <div class="card-out" id="out" style="margin-top:12px"></div>
+      <p style="margin-top:8px"><button class="btn line" onclick="print()">🖨️ 인쇄하기</button></p>
+    </div>
+
+    <div class="card">
+      <h3>📡 모둠 기획 갤러리 <span class="tag-opt">실시간</span></h3>
+      <p>완성한 기획 카드를 보내면 반 전체의 기획이 한 화면에 모여요. 다른 모둠의 기획을 보고 좋은 점과 보완할 점을 이야기해요. (모둠당 2개까지, 이름은 저장되지 않아요.)</p>
+      <div id="live"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>평가하기</h2>
+    <div class="card">
+      <p>완성한 인공지능 시스템을 점검해 보세요.</p>
+      <div class="checks" id="checks"></div>
+      <p class="hint" id="chkMsg"></p>
+    </div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>정리</h2>
+    <div class="card">
+      <p>착한 인공지능은 <b>사용자에게 공감</b>하는 데서 시작해요. 문제를 정의하고, 알맞은 모델과 데이터를 골라 만들고, <b>공정성·개인 정보·인간 중심성</b>까지 평가하며 고쳐 나가요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 184~185쪽 프로젝트를 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
+<script>
+const SDG = ['🍚 빈곤·기아', '🏥 건강', '🎓 교육', '⚖️ 차별 없는 사회', '🌊 깨끗한 환경', '♻️ 자원 재활용', '🏙️ 안전한 마을', '🌍 기후 변화'];
+let topic = SDG[2];
+$('#sdg').innerHTML = SDG.map(s => `<button class="${s === topic ? 'on' : ''}">${s}</button>`).join('');
+$$('#sdg button').forEach(b => b.onclick = () => { $$('#sdg button').forEach(x => x.classList.remove('on')); b.classList.add('on'); topic = b.textContent; draw(); });
+const L = s => String(s || '').replace(/[<>&]/g, '');
+const val = id => L($('#' + id).value.trim());
+function draw(){
+  $('#out').innerHTML = `<h4>🤖 우리 모둠의 착한 인공지능 · ${L(topic)}</h4><p><b>문제</b> ${val('prob') || '<span class="hint">②를 적어 주세요</span>'}</p><p><b>해결 아이디어</b> ${val('idea') || '<span class="hint">③을 적어 주세요</span>'}</p><p><b>모델</b> ${val('mtype')} · 클래스: ${val('cls') || '-'}</p><p><b>데이터</b> ${val('data') || '-'}</p>`;
+}
+['prob', 'idea', 'mtype', 'cls', 'data'].forEach(i => $('#' + i).oninput = $('#' + i).onchange = draw); draw();
+
+liveBoard($('#live'), {act: '4-09', title: '우리 모둠 착한 인공지능 기획', limit: 2,
+  text: v => { try { return JSON.parse(v).p.slice(0, 30); } catch(e){ return '?'; } },
+  input(el, send){
+    el.innerHTML = '<button class="btn">📤 우리 모둠 기획 보내기</button>';
+    el.querySelector('button').onclick = () => {
+      const d = {t: topic, p: $('#prob').value.trim().slice(0, 200), i: $('#idea').value.trim().slice(0, 200), m: $('#mtype').value, c: $('#cls').value.trim().slice(0, 80), d: $('#data').value.trim().slice(0, 120)};
+      if (!d.p || !d.i) return alert('문제(②)와 해결 아이디어(③)를 먼저 적어 주세요.');
+      send(JSON.stringify(d)).catch(() => {});
+    };
+  },
+  render(posts, el){
+    const d = posts.map(p => { try { return JSON.parse(p.v); } catch(e){ return null; } }).filter(Boolean);
+    el.innerHTML = d.length ? '<div class="gal">' + d.map((x, k) => `<div><b>${k + 1}. ${L(x.t)}</b><br>🙋 ${L(x.p)}<br>🤖 ${L(x.i)}<br><span class="hint">${L(x.m)} · ${L(x.c)}</span></div>`).join('') + '</div>' : '<p class="hint">아직 보낸 기획이 없어요.</p>';
+  },
+});
+
+const CH = ['훈련 데이터의 양은 충분한가?', '편향된 데이터를 사용하지 않았는가?', '새로운 데이터를 입력해 정확도를 평가했는가?', '수집한 데이터가 의도적으로 왜곡되거나 개인 정보를 침해하지 않는가?', '개발한 인공지능 시스템이 인간 중심적인가?', '개발한 인공지능 시스템이 문제 해결에 효율적인가?'];
+$('#checks').innerHTML = CH.map(c => `<label><input type="checkbox"> ${c}</label>`).join('');
+$$('#checks input').forEach(i => i.onchange = () => { const n = $$('#checks input:checked').length; $('#chkMsg').textContent = n === CH.length ? '🎉 모든 기준을 점검했어요!' : `${n} / ${CH.length}`; });
+</script>
+</body>
+</html>

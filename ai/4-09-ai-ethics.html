@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인공지능의 가치와 윤리</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.five{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.five div{border-radius:14px;padding:10px 12px;background:var(--bg);font-size:.92rem}
+.five b{display:block}
+.trans{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.trans div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.trans .out{font-weight:800;color:#c2185b}
+.plan textarea{font:inherit;width:100%;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);margin:4px 0}
+</style>
+</head>
+<body data-unit="4" data-title="인공지능의 가치와 윤리" data-sub="중1 Ⅳ단원 · 인공지능의 가치와 윤리 · 미래엔 178~182쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능 윤리</span>
+  <h1>인공지능의 가치와 윤리</h1>
+  <p class="lead">인공지능은 사회 문제를 해결하고 우리 삶을 편리하게 해 주지만, 학습 데이터의 수집과 활용 과정에서 여러 <b>윤리적 문제</b>가 생길 수 있어요. 여러 관점에서 생각하고, 근거를 들어 의견을 나눠 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>인공지능 챗봇이 친구들과 나눈 대화를 학습했는데, 그 안에 내 개인 정보가 들어 있었다면 어떤 문제가 생길까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🌍 인공지능의 사회적 역할</h3>
+      <div id="role"></div>
+    </div>
+
+    <div class="card">
+      <h3>⚖️ 인공지능을 개발하고 활용할 때 고려할 것</h3>
+      <div class="five">
+        <div><b>📊 데이터 편향</b>데이터가 성별·인종·출신 등에 치우치면 공정하지 못한 결과가 나와요.</div>
+        <div><b>🔍 투명성</b>어떤 규칙과 근거로 판단했는지 알 수 있어야 믿을 수 있어요.</div>
+        <div><b>🧑 인간 중심성</b>최종 결정권은 사람이 가지고, 모두에게 공정하게 쓰여야 해요.</div>
+        <div><b>📝 책임감</b>문제가 생겼을 때 책임질 주체와 제도가 필요해요.</div>
+        <div><b>🔐 데이터 관리</b>개인 정보와 사생활이 침해되지 않게 목적에 맞게 관리해요.</div>
+      </div>
+      <div id="five" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔎 데이터 편향 실험: 번역기</h3>
+      <p>성별 구분이 없는 언어의 문장을 영어로 번역하는 가상의 번역기예요. 학습 데이터에 "간호사=여자, 의사=남자" 문장이 훨씬 많았다면 결과는 어떻게 될까요?</p>
+      <div class="trans">
+        <div>입력: "그 사람은 간호사이다."<br>번역: <span class="out">She is a nurse.</span></div>
+        <div>입력: "그 사람은 의사이다."<br>번역: <span class="out">He is a doctor.</span></div>
+      </div>
+      <div id="bias" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h3>🗳️ 자율 주행 사고, 누구의 책임일까? <span class="tag-opt">실시간 투표</span></h3>
+      <p>자율 주행 자동차가 사고를 냈어요. 책임이 누구에게 있다고 생각하나요? 정답은 없어요. 투표한 뒤 <b>근거</b>를 들어 이야기하고, 나와 다른 의견도 끝까지 들어 봐요.</p>
+      <p class="hint">💻 선생님이 [교사] 버튼으로 방을 열면 학생들은 QR 코드로 참여해요. 이름은 저장되지 않아요.</p>
+      <div id="vote"></div>
+    </div>
+
+    <div class="card">
+      <h3>🤝 바람직한 인공지능을 위한 노력</h3>
+      <div id="who"></div>
+      <div class="plan" style="margin-top:10px"><b>✏️ 내가 할 수 있는 노력 한 가지</b><textarea rows="2" placeholder="예: 인공지능이 만든 답을 그대로 믿지 않고 다른 자료와 비교해 확인한다. (저장되지 않아요)"></textarea></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>인공지능은 <b>사회 문제 해결, 개인화된 경험, 지식과 정보의 확장</b>에 기여하지만, <b>데이터 편향, 투명성, 인간 중심성, 책임감, 데이터 관리</b>를 고려해야 해요. 바람직한 인공지능을 위해 개인, 기업, 정부가 함께 노력해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 178~182쪽 내용을 바탕으로 재구성 · 번역 예시는 학습용으로 단순화함</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
+<script>
+renderChoice($('#role'), [
+  {icon:'🌪️', t:'자연재해를 미리 예측하고 범죄 예방을 도와요.', a:0, e:'사회 문제를 해결하는 역할이에요.'},
+  {icon:'🎧', t:'내가 좋아할 만한 음악과 학습 콘텐츠를 추천해요.', a:1, e:'개인화된 경험을 제공하는 역할이에요.'},
+  {icon:'🔬', t:'대규모 데이터를 분석해 새로운 약의 후보 물질을 찾아요.', a:2, e:'새로운 지식을 발견하는 지식과 정보의 확장 역할이에요.'},
+], ['사회 문제 해결', '개인화된 경험', '지식·정보 확장']);
+
+renderChoice($('#five'), [
+  {icon:'🏦', t:'대출 심사 인공지능이 왜 거절했는지 아무도 설명하지 못해요.', a:1, e:'판단 근거를 알 수 없는 투명성 문제예요.'},
+  {icon:'📷', t:'얼굴 인식 시스템이 특정 피부색의 사람을 잘 인식하지 못해요.', a:0, e:'학습 데이터가 치우친 데이터 편향 문제예요.'},
+  {icon:'💬', t:'챗봇이 사용자의 대화 속 주소와 전화번호를 그대로 학습했어요.', a:4, e:'개인 정보를 보호하지 못한 데이터 관리 문제예요.'},
+  {icon:'⚕️', t:'인공지능이 진단했으니 의사는 확인하지 않고 그대로 처방해요.', a:2, e:'최종 판단은 사람이 해야 하는 인간 중심성 문제예요.'},
+  {icon:'🚗', t:'자율 주행 사고가 났는데 누가 책임질지 정해진 규칙이 없어요.', a:3, e:'책임 주체가 필요한 책임감 문제예요.'},
+], ['데이터 편향', '투명성', '인간 중심성', '책임감', '데이터 관리']);
+
+renderChoice($('#bias'), [
+  {icon:'🤔', t:'이 번역 결과가 생긴 가장 큰 원인은?', a:1, e:'학습 데이터가 한쪽 성별에 치우쳐 고정 관념이 그대로 학습되었어요.'},
+  {icon:'🛠️', t:'이 문제를 줄이는 방법으로 알맞은 것은?', a:2, e:'다양하고 균형 잡힌 데이터로 학습하고, 성별이 불분명하면 두 가지 번역을 함께 보여 줄 수 있어요.'},
+], ['번역기가 일부러 차별해서', '학습 데이터가 치우쳐서', '균형 잡힌 데이터로 다시 학습하기']);
+
+liveVote($('#vote'), {act: '4-08', items: [
+  {t: '자율 주행 자동차 사고의 책임은 누구에게 가장 크다고 생각하나요?', sub: '개발자: 프로그램을 만든 사람 · 사용자: 차에 탄 사람 · 제조사: 차를 판 회사', opts: ['🧑‍💻 개발자', '🧑 사용자', '🏭 제조사', '🤝 모두 함께']},
+  {t: '사람의 생명과 관련된 결정(예: 의료 진단)을 인공지능이 최종적으로 해도 될까요?', opts: ['🙆 된다', '🙅 안 된다', '🤔 조건에 따라 다르다']},
+]});
+
+renderChoice($('#who'), [
+  {icon:'🧑', t:'인공지능의 결과를 그대로 믿지 않고 다른 정보와 비교해 확인한다.', a:0},
+  {icon:'🏢', t:'개발할 때 개인 정보 보호와 공정성 같은 윤리 지침을 지킨다.', a:1},
+  {icon:'🏛️', t:'인공지능 관련 법과 제도를 만들어 문제가 생기면 대응한다.', a:2},
+  {icon:'🧑‍🎓', t:'인공지능 윤리 교육을 받고, 사용할 때 책임감을 갖는다.', a:0},
+].map(x => ({...x, e: ['개인이 실천할 수 있는 노력이에요.', '기업(개발자)의 노력이에요.', '정부의 노력이에요.'][x.a]})), ['개인', '기업', '정부']);
+
+renderQuiz($('#quiz'), [
+  {q:'인공지능 학습 데이터가 특정 집단에 치우쳐 공정하지 못한 결과가 나오는 문제는?', o:['데이터 편향','투명성','저작권'], a:0, e:'다양하고 대표성 있는 데이터로 줄일 수 있어요.'},
+  {q:'인공지능이 어떤 근거로 판단했는지 알 수 있어야 한다는 것은?', o:['책임감','투명성','인간 중심성'], a:1, e:'판단 과정을 알 수 있어야 결과를 믿을 수 있어요.'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인공지능 모델이 만들어지는 과정</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.cyc{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.cyc div{border:2px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;background:#fff;transition:all .3s;font-size:.9rem}
+.cyc div.on{border-color:var(--brand);background:var(--brand-soft);font-weight:700}
+.cyc .ic{display:block;font-size:1.6rem}
+.dset{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.dset span{background:var(--bg);border-radius:10px;padding:4px 8px;font-size:.9rem}
+.dset span b{font-size:1.4rem;vertical-align:middle}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.tests div{border:2px solid var(--line);border-radius:12px;padding:8px;text-align:center;background:#fff}
+.tests .em{font-size:2rem}
+.order{display:grid;gap:6px;max-width:560px}
+.order button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;color:var(--ink)}
+.order button.done{border-color:var(--mint);background:var(--mint-soft)}
+.order .n{display:inline-block;min-width:1.8em;font-weight:800;color:var(--mint)}
+@media (max-width:520px){.cyc{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body data-unit="4" data-title="인공지능 모델이 만들어지는 과정" data-sub="중1 Ⅳ단원 · 인공지능 시스템 · 미래엔 152~155쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능 시스템</span>
+  <h1>인공지능 모델이 만들어지는 과정</h1>
+  <p class="lead">인공지능 시스템은 수집된 <b>데이터</b>로부터 규칙을 찾아 <b>학습</b>하고, 학습한 결과를 <b>모델</b>로 만들어 개발해요. 모델은 데이터를 바탕으로 문제를 해결하는 규칙(틀)이에요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>어린아이는 새와 물고기를 어떻게 구별하게 될까요? 누가 "새는 날개가 있어"라고 규칙을 알려 주지 않아도, 많이 보면서 스스로 알게 되지 않나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🐦🐟 새와 물고기 분류 모델 만들기</h3>
+      <p><b>훈련 데이터</b>(데이터 + 정답)로 학습시키고, 처음 보는 <b>테스트 데이터</b>로 모델을 평가해요. 버튼을 눌러 한 단계씩 진행해 보세요.</p>
+      <div class="cyc" id="cyc">
+        <div><span class="ic">📥</span>① 데이터 입력</div>
+        <div><span class="ic">📚</span>② 학습</div>
+        <div><span class="ic">🧩</span>③ 모델 생성</div>
+        <div><span class="ic">✅</span>④ 모델 평가</div>
+      </div>
+      <div class="ctrl"><button class="btn" id="next">▶ 다음 단계</button><button class="btn line" id="again">처음부터</button></div>
+      <div id="stage" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔢 인공지능으로 문제를 해결하는 순서</h3>
+      <p>인공지능 시스템으로 문제를 해결하는 과정을 순서대로 눌러 보세요.</p>
+      <div class="order" id="order"></div>
+      <div class="feedback" id="oFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔍 어느 단계일까?</h3>
+      <div id="which"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>인공지능 모델은 <b>데이터 입력 → 학습 → 모델 생성 → 모델 평가</b>로 만들어요. 학습에는 정답이 있는 <b>훈련 데이터</b>를, 평가에는 처음 보는 <b>테스트 데이터</b>를 써요. 문제 해결은 <b>문제 이해 → 데이터 수집과 가공 → 모델 개발 → 모델 활용 → 실행 및 적용</b> 순서로 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 152~155쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+// 특징: [날개, 지느러미, 깃털, 비늘] (1=있음)
+const TRAIN = [['🐦', '새', [1,0,1,0]], ['🦜', '새', [1,0,1,0]], ['🦅', '새', [1,0,1,0]], ['🐧', '새', [1,0,1,0]], ['🐟', '물고기', [0,1,0,1]], ['🐠', '물고기', [0,1,0,1]], ['🐡', '물고기', [0,1,0,1]], ['🦈', '물고기', [0,1,0,0]]];
+const TEST = [['🕊️', '새', [1,0,1,0]], ['🦉', '새', [1,0,1,0]], ['🐟', '물고기', [0,1,0,1]], ['🦩', '새', [1,0,1,0]]];
+const FN = ['날개', '지느러미', '깃털', '비늘'];
+let st = 0;
+const learn = () => { const m = {}; ['새', '물고기'].forEach(c => { const rows = TRAIN.filter(r => r[1] === c); m[c] = FN.map((_, k) => rows.reduce((s, r) => s + r[2][k], 0) / rows.length); }); return m; };
+const predict = (m, x) => { const d = c => m[c].reduce((s, v, k) => s + (v - x[k]) ** 2, 0); return d('새') <= d('물고기') ? '새' : '물고기'; };
+const stages = [
+  () => `<p><b>① 데이터 입력</b>: 사진(데이터)과 이름표(정답)를 함께 넣어요. 이것이 <b>훈련 데이터</b>예요.</p><div class="dset">${TRAIN.map(([e, l]) => `<span><b>${e}</b> ${l}</span>`).join('')}</div>`,
+  () => { const m = learn(); return `<p><b>② 학습</b>: 같은 이름표끼리 공통된 특징을 찾아요.</p><div class="dset">${['새', '물고기'].map(c => `<span><b>${c === '새' ? '🐦' : '🐟'}</b> ${c}: ${FN.filter((_, k) => m[c][k] >= .5).join(', ')} 이(가) 있음</span>`).join('')}</div>`; },
+  () => `<p><b>③ 모델 생성</b>: 학습이 끝나면 "날개·깃털이 있으면 새, 지느러미·비늘이 있으면 물고기"처럼 분류할 수 있는 <b>모델</b>이 만들어져요. 사람이 규칙을 직접 쓰지 않았다는 점이 중요해요!</p>`,
+  () => { const m = learn(); let ok = 0; const cells = TEST.map(([e, l, x]) => { const p = predict(m, x), y = p === l; if (y) ok++; return `<div><div class="em">${e}</div>예측: <b>${p}</b> ${y ? '⭕' : '❌'}</div>`; }).join('');
+    return `<p><b>④ 모델 평가</b>: 학습에 쓰지 않은 <b>테스트 데이터</b>로 잘 분류하는지 확인해요.</p><div class="tests">${cells}</div><p class="feedback show ok">정확도 ${ok} / ${TEST.length}. 처음 보는 비둘기·부엉이·홍학도 새로 분류했어요! 평가가 좋으면 모델을 프로그램에 활용해요.</p>`; },
+];
+const draw = () => { $$('#cyc div').forEach((d, i) => d.classList.toggle('on', i === st - 1)); $('#stage').innerHTML = st ? stages[st - 1]() : '<p class="hint">▶ 다음 단계를 눌러 시작하세요.</p>'; };
+$('#next').onclick = () => { if (st < 4){ st++; draw(); } };
+$('#again').onclick = () => { st = 0; draw(); };
+draw();
+
+const STEPS = ['문제 이해: 해결할 문제를 발견하고 정의해요.', '데이터 수집과 가공: 문제 해결에 필요한 데이터를 모으고 다듬어요.', '인공지능 모델 개발: 모델의 종류를 고르고, 학습시켜 모델을 만든 뒤 평가해요.', '인공지능 모델 활용: 완성된 모델로 프로그램을 만들어요.', '실행 및 적용: 프로그램을 실행해 실생활에 적용해요.'];
+let nx = 0;
+$('#order').innerHTML = STEPS.map((s, i) => [s, i]).sort(() => Math.random() - .5).map(([s, i]) => `<button data-i="${i}"><span class="n"></span>${s}</button>`).join('');
+$$('#order button').forEach(b => b.onclick = () => {
+  if (b.classList.contains('done')) return;
+  if (+b.dataset.i === nx){ b.classList.add('done'); b.querySelector('.n').textContent = ++nx + '.'; feedback($('#oFb'), true, nx === STEPS.length ? '🎉 순서를 모두 맞혔어요!' : '⭕'); }
+  else feedback($('#oFb'), false, '❌ 이보다 먼저 해야 할 일이 있어요.');
+});
+
+renderChoice($('#which'), [
+  {icon:'🍱', t:'학교 급식에서 남은 음식이 많다는 문제를 찾았어요.', a:0, e:'문제를 발견하고 정의하는 문제 이해 단계예요.'},
+  {icon:'📸', t:'남은 음식 사진 500장을 찍고 흐린 사진은 골라냈어요.', a:1, e:'데이터 수집과 가공 단계예요.'},
+  {icon:'🧪', t:'사진으로 학습시킨 뒤 새 사진으로 얼마나 정확한지 확인했어요.', a:2, e:'모델을 만들고 평가하는 모델 개발 단계예요.'},
+  {icon:'📲', t:'남은 양을 알려 주는 앱을 만들어 식당에 설치했어요.', a:3, e:'모델을 활용해 프로그램을 만들고 적용했어요.'},
+], ['문제 이해', '데이터 수집·가공', '모델 개발', '모델 활용·적용']);
+
+renderQuiz($('#quiz'), [
+  {q:'인공지능 모델을 학습시킬 때 데이터와 함께 제공하는 정답이 있는 데이터는?', o:['훈련 데이터','테스트 데이터','메타데이터'], a:0, e:'훈련 데이터로 학습하고, 테스트 데이터로 평가해요.'},
+  {q:'모델이 잘 만들어졌는지 확인할 때 쓰는 데이터는?', o:['학습에 썼던 데이터','학습에 쓰지 않은 새로운 데이터'], a:1, e:'처음 보는 테스트 데이터로 평가해야 실제 성능을 알 수 있어요.'},
+]);
+</script>
+</body>
+</html>

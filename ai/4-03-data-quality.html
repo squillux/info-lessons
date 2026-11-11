@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>좋은 데이터 실험실</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.lab svg{width:100%;height:auto;background:#fff;border:2px solid var(--line);border-radius:14px}
+.acc{font-family:var(--cute);font-size:2rem}
+.bar{height:16px;background:var(--bg);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;transition:width .4s}
+.legend{font-size:.85rem;color:var(--muted)}
+@media (max-width:640px){.lab{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-unit="4" data-title="좋은 데이터 실험실" data-sub="중1 Ⅳ단원 · 인공지능 시스템과 데이터 · 미래엔 156~159쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능과 데이터</span>
+  <h1>좋은 데이터 실험실</h1>
+  <p class="lead">인공지능 모델은 대량의 데이터를 사용해 학습하므로, 데이터의 <b>양과 품질</b>이 모델의 성능을 좌우해요. 같은 인공지능에 서로 다른 데이터를 주고 결과를 비교해 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>사과 사진을 딱 한 장만 보고 배운 친구가 처음 보는 초록 사과를 사과라고 알아볼 수 있을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🍎🍊 사과와 귤 분류 실험</h3>
+      <p>학습 데이터를 바꿔 가며 같은 인공지능을 학습시키고, 처음 보는 <b>테스트 과일 20개</b>(빨간 사과 7, 초록 사과 3, 귤 10)를 얼마나 맞히는지 비교해 보세요.</p>
+      <div class="seg" id="sets"></div>
+      <div class="lab">
+        <div><svg id="plot" viewBox="0 0 300 260"></svg><p class="legend">● 학습 데이터(빨강·초록: 사과, 주황: 귤 이름표) &nbsp; ◆ 테스트 과일(⭕ 맞힘 / ❌ 틀림)</p></div>
+        <div><p id="desc"></p><p>정확도 <span class="acc" id="acc"></span></p><div class="bar"><i id="accBar"></i></div><p class="hint" id="why"></p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 좋은 데이터의 네 가지 조건</h3>
+      <p>실험에서 본 문제는 어떤 조건이 부족했기 때문일까요?</p>
+      <div id="cond"></div>
+    </div>
+
+    <div class="card">
+      <h3>🐱 이 데이터, 학습에 써도 될까?</h3>
+      <div id="cat"></div>
+    </div>
+
+    <div class="card">
+      <h3>🚲 자율 주행 자전거에 필요한 데이터</h3>
+      <p>자율 주행 자전거를 만들려고 해요. 기능마다 어떤 유형의 데이터가 필요할까요?</p>
+      <div id="bike"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>좋은 인공지능을 만들려면 <b>충분한 양</b>, <b>좋은 품질</b>(선명하고 잡음이 없으며 정답이 정확한), <b>특징이 드러난</b>, <b>대표성 있는</b>(한쪽에 치우치지 않은) 데이터가 필요해요. 데이터가 나쁘면 같은 인공지능이라도 성능이 크게 떨어져요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 156~159쪽 내용을 바탕으로 재구성 · 실험 데이터는 모두 가상</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+let seed = 7; const R = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+const N = (m, s) => m + (R() + R() + R() - 1.5) * s;
+const pt = (kind) => kind === 'red' ? [N(.72, .07), N(.85, .07), '사과'] : kind === 'green' ? [N(.72, .07), N(.18, .07), '사과'] : [N(.48, .06), N(.52, .06), '귤'];
+const many = (k, n) => Array.from({length: n}, () => pt(k));
+seed = 11; const TEST = [...many('red', 7), ...many('green', 3), ...many('tan', 10)].map(p => [...p, false]);
+seed = 23; const GOOD = [...many('red', 14), ...many('green', 6), ...many('tan', 20)];
+seed = 31; const BIAS = [...many('red', 20), ...many('tan', 20)];
+seed = 41; const NOISY = GOOD.map(p => [Math.min(.97, Math.max(.03, p[0] + (R() - .5) * .5)), Math.min(.97, Math.max(.03, p[1] + (R() - .5) * .5)), R() < .45 ? (p[2] === '사과' ? '귤' : '사과') : p[2]]);
+const FEW = [GOOD[15], GOOD[25]];
+seed = 51; const BG = GOOD.map(p => [R() * .9 + .05, R() * .9 + .05, p[2]]);
+const SETS = {
+  good: ['✅ 좋은 데이터 40개', GOOD, '빨간 사과, 초록 사과, 귤이 골고루 충분히 있고 정답도 정확해요.', '크기', '빨간 정도'],
+  few: ['양이 부족 (2개)', FEW, '사과 1개(초록), 귤 1개만으로 학습했어요.', '크기', '빨간 정도'],
+  noisy: ['품질이 나쁨', NOISY, '흐린 사진이라 측정값이 흔들리고, 이름표도 절반 가까이 잘못 붙어 있어요.', '크기', '빨간 정도'],
+  feat: ['특징이 없음', BG, '과일이 아니라 "사진 배경의 밝기·채도"만 학습했어요. 과일의 특징이 드러나지 않아요.', '배경 밝기', '배경 채도'],
+  bias: ['한쪽에 치우침', BIAS, '사과 데이터가 모두 빨간 사과예요. 초록 사과는 한 장도 없어요.', '크기', '빨간 정도'],
+};
+const knn = (train, x, y) => { const d = train.map(p => [(p[0] - x) ** 2 + (p[1] - y) ** 2, p[2]]).sort((a, b) => a[0] - b[0]).slice(0, 1); const c = d.filter(v => v[1] === '사과').length; return c * 2 >= d.length + (d.length % 2 ? 0 : 1) ? '사과' : '귤'; };
+$('#sets').innerHTML = Object.entries(SETS).map(([k, v]) => `<button data-k="${k}">${v[0]}</button>`).join('');
+function run(k){
+  $$('#sets button').forEach(b => b.classList.toggle('active', b.dataset.k === k));
+  const [, train, desc, xl, yl] = SETS[k];
+  const testPts = k === 'feat' ? TEST.map((p, i) => { seed = 60 + i; return [R() * .9 + .05, R() * .9 + .05, p[2], p]; }) : TEST.map(p => [p[0], p[1], p[2], p]);
+  let ok = 0;
+  const X = v => 30 + v * 255, Y = v => 230 - v * 215;
+  const res = testPts.map(([x, y, l, orig]) => { const p = knn(train, x, y), good = p === l; if (good) ok++; return {x, y, l, good, green: orig[1] < .4 && orig[2] === '사과'}; });
+  $('#plot').innerHTML = `<line x1="30" y1="230" x2="290" y2="230" stroke="#ccd"/><line x1="30" y1="10" x2="30" y2="230" stroke="#ccd"/>
+    <text x="160" y="254" font-size="11" text-anchor="middle" fill="#667">${xl} →</text><text x="12" y="120" font-size="11" text-anchor="middle" fill="#667" transform="rotate(-90 12 120)">${yl} →</text>` +
+    train.map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="5" fill="${p[2] === '사과' ? (p[1] < .4 && k !== 'feat' ? '#66bb6a' : '#e53935') : '#ffa000'}" opacity=".55"/>`).join('') +
+    res.map(r => `<g transform="translate(${X(r.x)},${Y(r.y)})"><rect x="-6" y="-6" width="12" height="12" transform="rotate(45)" fill="${r.l === '사과' ? (r.green ? '#43a047' : '#c62828') : '#ef6c00'}" stroke="#fff"/><text x="9" y="4" font-size="10">${r.good ? '⭕' : '❌'}</text></g>`).join('');
+  const acc = Math.round(ok / 20 * 100);
+  $('#desc').textContent = desc; $('#acc').textContent = acc + '%';
+  $('#accBar').style.width = acc + '%'; $('#accBar').style.background = acc >= 85 ? 'var(--mint)' : acc >= 65 ? 'var(--on)' : 'var(--pink)';
+  const gm = res.filter(r => r.green && !r.good).length;
+  $('#why').textContent = k === 'good' ? '모든 종류의 과일을 골고루 배웠기 때문에 처음 보는 과일도 잘 맞혀요.' : k === 'bias' ? `초록 사과 ${gm}개를 귤로 잘못 분류했어요. 초록 사과를 한 번도 배우지 못했기 때문이에요.` : k === 'few' ? '데이터가 너무 적어 일반적인 규칙을 찾지 못했어요.' : k === 'noisy' ? '잘못된 정답과 흔들린 값을 그대로 배워서 정확도가 크게 떨어졌어요.' : '과일과 상관없는 특징만 배워서 거의 맞히지 못해요. 무엇을 배우는지가 중요해요!';
+}
+$$('#sets button').forEach(b => b.onclick = () => run(b.dataset.k)); run('good');
+
+renderChoice($('#cond'), [
+  {icon:'2️⃣', t:'데이터가 2개뿐이라 정확도가 낮았어요.', a:0, e:'충분한 양의 데이터가 필요해요.'},
+  {icon:'🌫️', t:'흐린 사진과 잘못된 이름표 때문에 정확도가 낮았어요.', a:1, e:'선명하고 정답이 정확한 좋은 품질의 데이터가 필요해요.'},
+  {icon:'🖼️', t:'과일이 아닌 배경만 학습해서 정확도가 낮았어요.', a:2, e:'구별하려는 대상의 특징이 드러난 데이터가 필요해요.'},
+  {icon:'🍏', t:'빨간 사과만 배워서 초록 사과를 틀렸어요.', a:3, e:'한쪽에 치우치지 않은 대표성 있는 데이터가 필요해요. 사람을 다루는 인공지능이라면 성별·인종·문화 등에 따른 차별로 이어질 수 있어요.'},
+], ['충분한 양', '좋은 품질', '특징이 드러남', '대표성']);
+
+renderChoice($('#cat'), [
+  {icon:'🐈', t:'고양이 얼굴이 일부만 나오고 대부분 창문이 찍힌 사진', a:1, e:'고양이의 전체적인 특징이 드러나지 않아요.'},
+  {icon:'🟧', t:'너무 가까이 찍어 털만 흐릿하게 보이는 사진', a:1, e:'화질이 낮고 특징이 드러나지 않아요.'},
+  {icon:'😺', t:'다양한 품종의 고양이가 여러 방향에서 선명하게 찍힌 사진 1,000장', a:0, e:'양, 품질, 특징, 대표성을 모두 갖춘 좋은 데이터예요.'},
+], ['👍 좋은 데이터', '👎 문제가 있는 데이터']);
+
+renderChoice($('#bike'), [
+  {icon:'🚸', t:'신호등과 횡단보도를 알아보고 멈추기', a:0, e:'신호등·도로 사진 같은 이미지 데이터가 필요해요.'},
+  {icon:'🚑', t:'구급차 사이렌이 들리면 길 가장자리로 비키기', a:1, e:'사이렌, 경적 같은 소리 데이터가 필요해요.'},
+  {icon:'🪧', t:'길가의 표지판 글자를 읽고 속도 줄이기', a:2, e:'표지판의 글자를 읽으려면 텍스트 데이터가 필요해요.'},
+], ['🖼️ 이미지', '🔊 소리', '🔤 텍스트']);
+
+renderQuiz($('#quiz'), [
+  {q:'인공지능 학습 데이터가 한쪽에 치우치지 않도록 해야 하는 조건은?', o:['충분한 양','대표성','좋은 품질'], a:1, e:'치우친 데이터로 학습하면 편향된 판단을 할 수 있어요.'},
+  {q:'100개의 이미지로 학습한 모델과 1,000개로 학습한 모델의 정확도가 다른 가장 큰 이유는?', o:['데이터의 양','컴퓨터의 색깔','프로그램의 이름'], a:0, e:'부족한 데이터로 학습하면 정확도가 낮아지기 쉬워요.'},
+]);
+</script>
+</body>
+</html>

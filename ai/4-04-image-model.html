@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>나만의 이미지 분류 모델</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.pad{display:grid;grid-template-columns:repeat(12,1fr);width:min(100%,264px);aspect-ratio:1;border:3px solid var(--ink);border-radius:12px;overflow:hidden;touch-action:none;background:#fff;user-select:none}
+.pad i{border:1px solid #eef}
+.pad i.on{background:var(--ink)}
+.work{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.classes{display:grid;gap:8px;flex:1;min-width:240px}
+.cls{border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:#fff}
+.cls .thumbs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.cls canvas{width:36px;height:36px;border:1px solid var(--line);border-radius:6px}
+.res{font-size:1.2rem;font-weight:800}
+.conf{display:grid;gap:4px;margin-top:8px}
+.conf div{display:grid;grid-template-columns:4em 1fr 3em;gap:6px;align-items:center;font-size:.9rem}
+.conf span.tr{height:12px;background:var(--bg);border-radius:999px;overflow:hidden}
+.conf span.tr i{display:block;height:100%;background:var(--brand)}
+</style>
+</head>
+<body data-unit="4" data-title="나만의 이미지 분류 모델" data-sub="중1 Ⅳ단원 · 인공지능 시스템의 적용 · 미래엔 163~167쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능의 활용</span>
+  <h1>나만의 이미지 분류 모델</h1>
+  <p class="lead">인공지능 모델은 <b>데이터 입력</b>(클래스별로 데이터 모으기) → <b>학습</b> → <b>결과 확인</b>(새로운 데이터로 평가) 과정으로 만들어요. <b>클래스</b>는 데이터를 구분하는 이름표예요. 직접 그린 그림으로 모델을 만들어 봐요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>엔트리에서 가위·바위·보 손 모양을 분류하는 모델을 만든다면, 손 사진을 몇 장쯤 찍어야 할까요? 모두 같은 각도로 찍어도 될까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>✏️ 1단계 · 데이터 입력</h3>
+      <p>칸에 <b>⭕ 동그라미</b> 또는 <b>✖ 가위표</b>를 그리고, 알맞은 클래스의 <b>[추가]</b>를 누르세요. 클래스마다 <b>5개 이상</b> 모아요. 크기와 위치를 조금씩 다르게 그리면 더 좋아요.</p>
+      <div class="work">
+        <div><div class="pad" id="pad"></div><div class="ctrl" style="margin-top:6px"><button class="btn line" id="clr">지우기</button></div></div>
+        <div class="classes" id="classes"></div>
+      </div>
+      <p class="hint" id="cnt"></p>
+    </div>
+
+    <div class="card">
+      <h3>📚 2단계 · 학습 &nbsp;→&nbsp; ✅ 3단계 · 결과 확인</h3>
+      <p>데이터를 다 모았으면 학습시키고, 새로 그린 그림을 모델이 어떻게 분류하는지 확인해요.</p>
+      <div class="ctrl"><button class="btn" id="train">📚 모델 학습하기</button><button class="btn line" id="test">🔍 지금 그린 그림 분류하기</button></div>
+      <p class="res" id="res"></p>
+      <div class="conf" id="conf"></div>
+      <p class="hint" id="tip"></p>
+    </div>
+
+    <div class="card">
+      <h3>🔎 확인하기</h3>
+      <div id="check"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>이미지 분류 모델은 <b>클래스</b>별로 이미지 데이터를 입력하고 <b>학습</b>시킨 뒤, 새로운 이미지로 <b>결과를 확인</b>해 만들어요. 클래스마다 충분하고 다양한 데이터가 있어야 처음 보는 이미지도 잘 분류해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 163~167쪽 내용을 바탕으로 재구성 · 그린 그림은 저장되지 않아요</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const G = 12, cells = [];
+$('#pad').innerHTML = '<i></i>'.repeat(G * G);
+$$('#pad i').forEach(c => cells.push(c));
+let down = false, erase = false;
+const paint = e => { const t = document.elementFromPoint(e.clientX, e.clientY); if (t && t.parentElement === $('#pad')) t.classList.toggle('on', !erase); };
+$('#pad').addEventListener('pointerdown', e => { down = true; const t = document.elementFromPoint(e.clientX, e.clientY); erase = !!(t && t.classList.contains('on')); paint(e); });
+addEventListener('pointermove', e => { if (down) paint(e); });
+addEventListener('pointerup', () => down = false);
+$('#clr').onclick = () => cells.forEach(c => c.classList.remove('on'));
+const grab = () => cells.map(c => c.classList.contains('on') ? 1 : 0);
+// 위치·크기에 덜 민감하도록: 그림이 있는 영역을 찾아 8x8로 맞춘 뒤 부드럽게
+function feat(v){
+  let x0 = G, y0 = G, x1 = -1, y1 = -1;
+  v.forEach((b, i) => { if (!b) return; const x = i % G, y = Math.floor(i / G); x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); });
+  if (x1 < 0) return null;
+  const S = 8, out = Array(S * S).fill(0), w = x1 - x0 + 1, h = y1 - y0 + 1, s = Math.max(w, h);
+  v.forEach((b, i) => { if (!b) return; const x = i % G - x0 + (s - w) / 2, y = Math.floor(i / G) - y0 + (s - h) / 2;
+    const fx = x / s * S, fy = y / s * S; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++){ const X = Math.floor(fx + dx * .6), Y = Math.floor(fy + dy * .6); if (X >= 0 && X < S && Y >= 0 && Y < S) out[Y * S + X] += dx || dy ? .5 : 1; } });
+  const m = Math.max(...out); return out.map(o => o / m);
+}
+const CL = [['⭕', '동그라미', []], ['✖', '가위표', []]];
+function drawClasses(){
+  $('#classes').innerHTML = CL.map(([ic, n, d], k) => `<div class="cls"><b>클래스 ${k + 1}: ${ic} ${n}</b> <span class="pill">${d.length}개</span> <button class="btn line" data-add="${k}" style="padding:4px 10px;font-size:.85rem">➕ 추가</button><div class="thumbs" data-t="${k}"></div></div>`).join('');
+  CL.forEach(([, , d], k) => d.forEach(v => { const c = document.createElement('canvas'); c.width = c.height = G; const x = c.getContext('2d'); v.forEach((b, i) => { if (b){ x.fillStyle = '#1f2a44'; x.fillRect(i % G, Math.floor(i / G), 1, 1); } }); $(`[data-t="${k}"]`).appendChild(c); }));
+  $$('[data-add]').forEach(b => b.onclick = () => { const v = grab(); if (!v.some(Boolean)) return feedback($('#cnt'), false, '먼저 그림을 그려 주세요.'); CL[+b.dataset.add][2].push(v); cells.forEach(c => c.classList.remove('on')); model = null; drawClasses(); });
+  const a = CL[0][2].length, b = CL[1][2].length;
+  $('#cnt').textContent = a >= 5 && b >= 5 ? '✅ 데이터가 준비됐어요. 학습해 보세요!' : `클래스마다 5개 이상 필요해요 (지금 ${a}개, ${b}개)`;
+}
+drawClasses();
+let model = null;
+$('#train').onclick = () => {
+  if (CL.some(c => c[2].length < 5)) return feedback($('#res'), false, '클래스마다 데이터를 5개 이상 모아야 학습할 수 있어요.');
+  model = CL.map(([, , d]) => d.map(feat).filter(Boolean));
+  $('#res').textContent = '📚 학습 완료! 새 그림을 그리고 분류해 보세요.'; $('#conf').innerHTML = ''; $('#tip').textContent = '';
+};
+$('#test').onclick = () => {
+  if (!model) return feedback($('#res'), false, '먼저 모델을 학습시켜 주세요.');
+  const f = feat(grab()); if (!f) return feedback($('#res'), false, '분류할 그림을 그려 주세요.');
+  const all = []; model.forEach((list, k) => list.forEach(m => all.push([m.reduce((s, v, i) => s + (v - f[i]) ** 2, 0), k])));
+  all.sort((a, b) => a[0] - b[0]); const top = all.slice(0, 5), votes = [0, 0]; top.forEach(t => votes[t[1]]++);
+  const k = votes[0] >= votes[1] ? 0 : 1;
+  $('#res').textContent = `결과: ${CL[k][0]} ${CL[k][1]}`;
+  $('#conf').innerHTML = CL.map(([ic, n], i) => `<div><span>${ic} ${n}</span><span class="tr"><i style="width:${votes[i] / 5 * 100}%"></i></span><b>${votes[i] * 20}%</b></div>`).join('');
+  $('#tip').textContent = Math.max(...votes) <= 3 ? '🤔 모델이 헷갈려해요. 이런 모양의 데이터를 더 추가하면 좋아져요.' : '모델이 비슷한 데이터를 근거로 자신 있게 분류했어요.';
+};
+
+renderChoice($('#check'), [
+  {icon:'📸', t:'가위·바위·보 손 사진을 모두 같은 각도, 같은 배경에서 찍었어요.', a:1, e:'손을 돌리거나 배경을 바꾸는 등 다양하게 찍어야 처음 보는 손도 잘 분류해요.'},
+  {icon:'🧮', t:'클래스마다 데이터 수를 비슷하게, 충분히 모았어요.', a:0, e:'클래스 사이의 데이터 수가 비슷하고 충분해야 해요.'},
+  {icon:'🧪', t:'학습에 쓴 사진으로만 결과를 확인했어요.', a:1, e:'새로운 데이터로 확인해야 모델의 진짜 성능을 알 수 있어요.'},
+], ['👍 좋은 방법', '👎 고칠 점']);
+
+renderQuiz($('#quiz'), [
+  {q:'인공지능 모델을 만드는 과정을 바르게 나열한 것은?', o:['학습 → 데이터 입력 → 결과 확인','데이터 입력 → 학습 → 결과 확인','결과 확인 → 학습 → 데이터 입력'], a:1, e:'클래스별로 데이터를 입력하고, 학습한 뒤, 새 데이터로 결과를 확인해요.'},
+  {q:'데이터를 구분하는 이름표(예: 가위, 바위, 보)를 무엇이라고 할까?', o:['클래스','변수','함수'], a:0, e:'클래스별로 데이터를 모아 학습시켜요.'},
+]);
+</script>
+</body>
+</html>

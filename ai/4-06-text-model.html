@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>텍스트 분류 모델: 감정과 스팸</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.two label{font-weight:700}
+.two textarea{font:inherit;font-size:.9rem;width:100%;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);margin-top:4px}
+.res{font-size:1.2rem;font-weight:800;margin:8px 0}
+.words{display:flex;flex-wrap:wrap;gap:4px}
+.words span{border-radius:8px;padding:2px 8px;font-size:.85rem}
+.tbl2{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl2 td,.tbl2 th{border:1px solid var(--line);padding:4px 8px}
+</style>
+</head>
+<body data-unit="4" data-title="텍스트 분류 모델: 감정과 스팸" data-sub="중1 Ⅳ단원 · 인공지능 시스템의 적용 · 미래엔 169~171쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능의 활용</span>
+  <h1>텍스트 분류 모델: 감정과 스팸</h1>
+  <p class="lead">글자(텍스트) 데이터로도 인공지능을 학습시킬 수 있어요. 클래스별로 문장을 입력해 학습시키면, 모델은 <b>어떤 낱말이 어느 클래스에 자주 나오는지</b>를 배워 새로운 문장을 분류해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>"오늘 시험 망쳤어 ㅠㅠ"와 "드디어 방학이다!!"를 읽으면 바로 기분을 알 수 있죠. 우리는 어떤 단서로 기분을 알아챘을까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>📝 모델 고르기와 데이터 입력</h3>
+      <div class="seg" id="mode"><button data-m="emo" class="active">😊 감정 인식 (기쁨/슬픔)</button><button data-m="spam">📩 문자 분류 (필요한 문자/스팸)</button></div>
+      <p>클래스마다 한 줄에 한 문장씩 입력해요. 예시 문장(가상)을 고치거나 더 추가해도 돼요.</p>
+      <div class="two">
+        <label id="l0"></label>
+        <label id="l1"></label>
+      </div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="train">📚 모델 학습하기</button></div>
+      <p class="hint" id="tinfo"></p>
+    </div>
+
+    <div class="card">
+      <h3>🔍 결과 확인</h3>
+      <p>새 문장을 입력하고 분류해 보세요.</p>
+      <div class="ctrl"><input class="inp" id="q" style="width:min(100%,380px)"><button class="btn" id="go">분류하기</button></div>
+      <p class="res" id="res"></p>
+      <div class="words" id="why"></div>
+    </div>
+
+    <div class="card">
+      <h3>📏 모델 평가하기</h3>
+      <p>학습에 쓰지 않은 <b>테스트 문장 8개</b>로 정확도를 재 봐요. 학습 데이터를 늘리거나 고친 뒤 다시 평가하면 정확도가 어떻게 바뀔까요?</p>
+      <div class="ctrl"><button class="btn line" id="eval">📏 정확도 평가</button></div>
+      <div id="evalOut"></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>텍스트 분류 모델은 클래스별 문장 데이터에서 <b>각 클래스를 대표하는 낱말의 특징</b>을 학습해 새 문장을 분류해요. 다양하고 충분한 문장을 넣을수록, 그리고 <b>테스트 데이터로 평가</b>하며 고칠수록 정확해져요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 169~171쪽 내용을 바탕으로 재구성 · 문장은 모두 가상 · 실제 텍스트 분류 모델은 더 복잡한 방법을 써요</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+const M = {
+  emo: {c: ['😊 기쁨', '😢 슬픔'],
+    d: [['오늘 정말 즐거웠어', '시험 백 점 맞아서 기뻐', '친구가 생일 선물을 줘서 행복해', '드디어 방학이다 신난다', '맛있는 거 먹어서 기분 좋아', '우리 반이 축구 경기에서 이겼어', '칭찬받아서 뿌듯해', '여행 가서 너무 재밌었어'],
+        ['시험을 망쳐서 속상해', '친구랑 싸워서 슬퍼', '강아지가 아파서 걱정돼', '비 와서 소풍이 취소됐어 우울해', '휴대폰을 잃어버려서 속상해', '경기에서 져서 눈물 났어', '혼자 남아서 외로워', '이사 가서 친구랑 헤어져서 슬퍼']],
+    t: [['생일 파티가 정말 즐거웠어', 0], ['선물 받아서 너무 행복해', 0], ['수학 백 점이라니 기뻐', 0], ['체육 대회에서 이겼어 신난다', 0], ['친구가 전학 가서 슬퍼', 1], ['지갑을 잃어버려서 속상해', 1], ['감기에 걸려서 우울해', 1], ['혼자 밥 먹어서 외로워', 1]]},
+  spam: {c: ['✅ 필요한 문자', '🚫 스팸 문자'],
+    d: [['내일 체육복 챙겨 와', '학부모 상담 주간 안내입니다', '오늘 수학 숙제는 32쪽까지야', '방과 후 수업 장소가 과학실로 바뀌었어요', '저녁 7시에 집 앞에서 만나', '현장 체험 학습 동의서를 내일까지 제출하세요', '엄마 오늘 늦어 밥 먼저 먹어', '도서관 책 반납일이 내일입니다'],
+        ['축하합니다 경품에 당첨되었습니다 지금 클릭', '무료 쿠폰 지급 링크를 눌러 받으세요', '저금리 대출 즉시 승인 상담 무료', '지금 가입하면 포인트 만 점 지급', '특가 할인 오늘만 클릭하세요', '택배 주소 확인 링크를 눌러 주세요', '당첨 상품 수령하려면 개인 정보를 입력하세요', '광고 무료 게임 아이템 지급 지금 클릭']],
+    t: [['내일 미술 준비물은 색연필이야', 0], ['학교 축제 일정 안내입니다', 0], ['오늘 학원 늦을 것 같아', 0], ['급식 메뉴 변경 안내입니다', 0], ['이벤트 당첨 지금 바로 클릭', 1], ['대출 무료 상담 즉시 승인', 1], ['무료 포인트 받으려면 링크 클릭', 1], ['경품 수령을 위해 정보 입력', 1]]},
+};
+let mode = 'emo', model = null;
+const tok = s => s.replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(w => w.length >= 1).flatMap(w => { const b = w.replace(/(은|는|이|가|을|를|에|에서|으로|로|도|만|이야|이다|입니다|해요|했어|어요|아요|해서|어서|아서|요)$/, ''); return b.length >= 1 ? [b] : [w]; });
+function setMode(m){
+  mode = m; model = null; const d = M[m];
+  $$('#mode button').forEach(b => b.classList.toggle('active', b.dataset.m === m));
+  [0, 1].forEach(k => $('#l' + k).innerHTML = `클래스 ${k + 1}: ${d.c[k]}<textarea id="t${k}" rows="8">${d.d[k].join('\n')}</textarea>`);
+  $('#tinfo').textContent = '데이터를 확인하고 [모델 학습하기]를 누르세요.'; $('#res').textContent = ''; $('#why').innerHTML = ''; $('#evalOut').innerHTML = '';
+  $('#q').placeholder = m === 'emo' ? '예: 친구가 칭찬해 줘서 기뻐' : '예: 지금 클릭하면 상품 지급';
+}
+function train(){
+  const cls = [0, 1].map(k => $('#t' + k).value.split('\n').map(s => s.trim()).filter(Boolean));
+  if (cls.some(c => c.length < 3)) { $('#tinfo').textContent = '⚠️ 클래스마다 3문장 이상 입력해 주세요.'; return false; }
+  const cnt = cls.map(c => { const o = {}; c.forEach(s => tok(s).forEach(w => o[w] = (o[w] || 0) + 1)); return o; });
+  const vocab = new Set([...Object.keys(cnt[0]), ...Object.keys(cnt[1])]);
+  const tot = cnt.map(o => Object.values(o).reduce((a, b) => a + b, 0));
+  model = {cnt, vocab: vocab.size, tot, n: cls.map(c => c.length)};
+  $('#tinfo').textContent = `📚 학습 완료! 문장 ${cls[0].length + cls[1].length}개에서 낱말 ${vocab.size}개의 특징을 배웠어요.`;
+  return true;
+}
+function predict(s){
+  const ws = tok(s), sc = [0, 1].map(k => Math.log(model.n[k]) + ws.reduce((a, w) => a + Math.log(((model.cnt[k][w] || 0) + 1) / (model.tot[k] + model.vocab)), 0));
+  const m = Math.max(...sc), p = sc.map(v => Math.exp(v - m)), z = p[0] + p[1];
+  return {k: sc[0] >= sc[1] ? 0 : 1, p: p.map(v => v / z), ws};
+}
+$$('#mode button').forEach(b => b.onclick = () => setMode(b.dataset.m));
+$('#train').onclick = train;
+$('#go').onclick = () => {
+  if (!model && !train()) return;
+  const s = $('#q').value.trim(); if (!s) return;
+  const r = predict(s), c = M[mode].c;
+  $('#res').textContent = `결과: ${c[r.k]} (${Math.round(r.p[r.k] * 100)}%)`;
+  $('#why').innerHTML = '<span class="hint">단서가 된 낱말:</span> ' + r.ws.map(w => { const a = model.cnt[0][w] || 0, b = model.cnt[1][w] || 0; return `<span style="background:${a > b ? 'var(--mint-soft)' : b > a ? 'var(--pink-soft)' : 'var(--bg)'}">${w.replace(/[<>&]/g, '')}</span>`; }).join('') + (r.ws.filter(w => !(model.cnt[0][w] || model.cnt[1][w])).length > r.ws.length / 2 ? '<br><b>🤔 처음 보는 낱말이 많아서 틀릴 수 있어요. 비슷한 문장을 학습 데이터에 추가하고 다시 학습해 보세요.</b>' : '') + '<br><span class="hint">초록: 클래스 1에 많이 나온 낱말 · 분홍: 클래스 2에 많이 나온 낱말 · 회색: 처음 보는 낱말</span>';
+};
+$('#q').onkeydown = e => { if (e.key === 'Enter') $('#go').click(); };
+$('#eval').onclick = () => {
+  if (!model && !train()) return;
+  const T = M[mode].t, c = M[mode].c; let ok = 0;
+  const rows = T.map(([s, a]) => { const r = predict(s), y = r.k === a; if (y) ok++; return `<tr><td>${s}</td><td>${c[a]}</td><td>${c[r.k]} ${y ? '⭕' : '❌'}</td></tr>`; }).join('');
+  $('#evalOut').innerHTML = `<p class="res">정확도 ${ok} / ${T.length} (${Math.round(ok / T.length * 100)}%)</p><div class="scroll-x"><table class="tbl2"><tr><th>테스트 문장</th><th>정답</th><th>모델의 예측</th></tr>${rows}</table></div><p class="hint">💡 틀린 문장이 있다면 비슷한 문장을 학습 데이터에 더 넣고 다시 학습·평가해 보세요. 반대로 문장을 지워 데이터를 줄이면 어떻게 될까요?</p>`;
+};
+setMode('emo');
+
+renderQuiz($('#quiz'), [
+  {q:'텍스트 분류 모델이 문장을 분류할 때 주로 사용하는 단서는?', o:['문장의 글꼴','클래스별로 자주 나오는 낱말','문장의 길이만'], a:1, e:'클래스마다 자주 나오는 낱말의 특징을 학습해요.'},
+  {q:'스팸 문자 분류 모델의 정확도를 높이는 방법으로 알맞은 것은?', o:['학습 데이터를 다양하고 충분하게 모은다','학습 데이터를 한 문장만 넣는다','테스트를 하지 않는다'], a:0, e:'다양하고 충분한 데이터로 학습하고 평가하며 고쳐요.'},
+]);
+</script>
+</body>
+</html>

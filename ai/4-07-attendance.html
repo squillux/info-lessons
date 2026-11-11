@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자동 출석부 설계하기</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.order{display:grid;gap:6px;max-width:580px}
+.order button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;color:var(--ink)}
+.order button.done{border-color:var(--mint);background:var(--mint-soft)}
+.order .n{display:inline-block;min-width:1.8em;font-weight:800;color:var(--mint)}
+.sim{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.cam{width:150px;height:120px;border:3px solid var(--ink);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:3.4rem;background:#e9f1ff}
+.roll{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;flex:1;min-width:220px}
+.roll div{border:2px solid var(--line);border-radius:10px;padding:6px;text-align:center;font-size:.9rem;background:#fff}
+.roll div.in{border-color:var(--mint);background:var(--mint-soft)}
+</style>
+</head>
+<body data-unit="4" data-title="자동 출석부 설계하기" data-sub="중1 Ⅳ단원 · 스마트 교실 프로젝트 · 미래엔 172~175쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능의 활용</span>
+  <h1>자동 출석부 설계하기</h1>
+  <p class="lead">선생님이 출석을 부르지 않아도 얼굴을 보고 자동으로 출석을 확인하는 인공지능 시스템을 설계해 봐요. 실제 모델은 엔트리로 만들고, 여기서는 <b>문제 정의 → 데이터 수집 → 모델 개발 → 모델 활용</b> 과정을 설계해요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>문제 이해</h2>
+    <div class="card">
+      <p>지금은 선생님이 한 명씩 이름을 불러 출석을 확인해요(현재 상태). 우리가 원하는 모습(목표 상태)은 무엇일까요? 친구들의 얼굴 사진을 모을 때 꼭 지켜야 할 것은 무엇일까요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>설계 활동</h2>
+    <div class="card">
+      <h3>🎯 문제 정의하기</h3>
+      <div id="state"></div>
+    </div>
+
+    <div class="card">
+      <h3>📸 데이터 수집 계획 점검</h3>
+      <p>얼굴은 <b>민감한 개인 정보</b>예요. 데이터를 모을 때 알맞은 행동을 골라 보세요.</p>
+      <div id="collect"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔢 프로그램이 동작하는 순서</h3>
+      <p>완성된 자동 출석부 프로그램의 동작을 순서대로 눌러 보세요.</p>
+      <div class="order" id="order"></div>
+      <div class="feedback" id="oFb"></div>
+    </div>
+
+    <div class="card">
+      <h3>🖥️ 동작 시뮬레이션</h3>
+      <p>가상의 학생(번호로만 표시)이 카메라 앞에 서면 모델이 얼굴을 인식해 출석을 표시해요. 학습하지 않은 사람이 오면 어떻게 될까요?</p>
+      <div class="sim"><div class="cam" id="cam">📷</div><div class="roll" id="roll"></div></div>
+      <div class="ctrl" style="margin-top:8px"><button class="btn" id="next">🚶 다음 사람 입장</button><button class="btn line" id="reset">처음부터</button></div>
+      <p class="hint" id="smsg"></p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p>인공지능 시스템을 설계할 때는 <b>현재 상태와 목표 상태</b>로 문제를 정의하고, <b>동의를 받아</b> 다양하고 충분한 데이터를 모으며, 모델을 만든 뒤 <b>평가</b>하고 프로그램으로 활용해요. 얼굴 같은 개인 정보는 목적 외로 쓰지 않고 안전하게 관리해야 해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 172~175쪽 프로젝트를 바탕으로 재구성 · 학생은 모두 가상(번호로만 표시)</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script>
+renderChoice($('#state'), [
+  {icon:'📋', t:'선생님이 한 명씩 이름을 불러 출석을 확인한다.', a:0, e:'지금의 모습인 현재(초기) 상태예요.'},
+  {icon:'🤖', t:'인공지능이 친구들의 얼굴을 인식해 자동으로 출석을 확인한다.', a:1, e:'도달하고 싶은 목표 상태예요.'},
+], ['현재 상태', '목표 상태']);
+
+renderChoice($('#collect'), [
+  {icon:'✍️', t:'사진을 찍기 전에 친구들에게 목적을 설명하고 동의를 받는다.', a:0, e:'개인 정보는 동의를 받고 수집해요.'},
+  {icon:'📱', t:'모은 얼굴 사진을 재미로 단체 대화방에 올린다.', a:1, e:'수집 목적 외로 쓰면 개인 정보 침해예요.'},
+  {icon:'🔄', t:'정면, 옆모습, 안경 쓴 모습 등 다양한 사진을 충분히 모은다.', a:0, e:'다양하고 충분한 데이터라야 잘 인식해요.'},
+  {icon:'🗑️', t:'프로젝트가 끝나면 모은 사진을 안전하게 삭제한다.', a:0, e:'목적을 다한 개인 정보는 파기해요.'},
+], ['👍 알맞아요', '👎 안 돼요']);
+
+const STEPS = ['카메라로 앞에 선 사람의 얼굴을 촬영한다.', '학습된 모델로 얼굴을 분류한다.', '분류 결과(누구인지)와 확신 정도를 확인한다.', '출석부에 출석을 표시하고 인사말을 출력한다.'];
+let nx = 0;
+$('#order').innerHTML = STEPS.map((s, i) => [s, i]).sort(() => Math.random() - .5).map(([s, i]) => `<button data-i="${i}"><span class="n"></span>${s}</button>`).join('');
+$$('#order button').forEach(b => b.onclick = () => {
+  if (b.classList.contains('done')) return;
+  if (+b.dataset.i === nx){ b.classList.add('done'); b.querySelector('.n').textContent = ++nx + '.'; feedback($('#oFb'), true, nx === STEPS.length ? '🎉 입력(촬영) → 처리(분류) → 출력(출석 표시) 순서예요!' : '⭕'); }
+  else feedback($('#oFb'), false, '❌ 이보다 먼저 일어나는 일이 있어요.');
+});
+
+const STU = ['🧑', '👧', '👦', '🧒', '👩'], QUEUE = [0, 2, 'x', 1, 4, 3];
+let q = 0;
+const roll = () => { $('#roll').innerHTML = STU.map((e, i) => `<div data-i="${i}">${i + 1}번 학생<br>${e} <span>결석</span></div>`).join(''); };
+$('#next').onclick = () => {
+  if (q >= QUEUE.length) return $('#smsg').textContent = '모두 입장했어요. [처음부터]를 눌러 다시 해 보세요.';
+  const s = QUEUE[q++];
+  if (s === 'x'){ $('#cam').textContent = '🧔'; $('#smsg').textContent = '❓ 확신 정도가 낮아요(42%) → 학습하지 않은 사람이라 출석을 표시하지 않았어요. 기준값을 정해 두면 엉뚱한 사람을 출석 처리하지 않아요.'; return; }
+  $('#cam').textContent = STU[s]; const d = $(`#roll [data-i="${s}"]`); d.classList.add('in'); d.querySelector('span').textContent = '✅ 출석';
+  $('#smsg').textContent = `${s + 1}번 학생으로 인식했어요 (확신 정도 ${88 + s * 2}%). "안녕하세요!"`;
+};
+$('#reset').onclick = () => { q = 0; $('#cam').textContent = '📷'; $('#smsg').textContent = ''; roll(); };
+roll();
+
+renderQuiz($('#quiz'), [
+  {q:'자동 출석부를 위해 친구들의 얼굴 사진을 모을 때 가장 먼저 해야 할 일은?', o:['몰래 사진을 찍는다','목적을 알리고 동의를 받는다','인터넷에서 아무 사진이나 내려받는다'], a:1, e:'얼굴은 개인 정보이므로 동의를 받고 수집해요.'},
+  {q:'학습하지 않은 사람이 카메라 앞에 섰을 때 잘못 출석 처리되는 것을 막으려면?', o:['확신 정도가 기준값 이상일 때만 출석 처리한다','무조건 가장 비슷한 학생으로 출석 처리한다'], a:0, e:'확신 정도가 낮으면 판단을 보류하도록 설계해요.'},
+]);
+</script>
+</body>
+</html>

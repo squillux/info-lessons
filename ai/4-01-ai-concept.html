@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인공지능의 개념과 특성</title>
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+.feat4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.feat4 div{border-radius:16px;padding:10px 12px;background:var(--bg)}
+.feat4 b{display:block;font-size:1.1rem}
+.cmp{width:100%;border-collapse:collapse;font-size:.92rem}
+.cmp th,.cmp td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+.cmp th{background:var(--bg)}
+.idea{display:grid;gap:8px}
+.idea select,.idea textarea{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:12px;width:100%;background:var(--panel);color:var(--ink)}
+.idea-out{background:var(--bg);border-radius:12px;padding:10px 14px;min-height:44px}
+</style>
+</head>
+<body data-unit="4" data-title="인공지능의 개념과 특성" data-sub="중1 Ⅳ단원 · 인공지능의 이해 · 미래엔 147~151쪽">
+<main>
+  <span class="badge">중1 Ⅳ단원 · 인공지능의 이해</span>
+  <h1>인공지능의 개념과 특성</h1>
+  <p class="lead"><b>인공지능</b>(Artificial Intelligence, AI)은 인간의 지능적인 특징을 모방하여 문제를 해결할 수 있도록 만든 컴퓨팅 시스템이에요.</p>
+
+  <section class="step think">
+    <h2 class="step-h"><span class="no">1</span>생각 열기</h2>
+    <div class="card">
+      <p>오늘 사용한 앱 중에 "나를 알아보거나, 내 말을 알아듣거나, 나에게 맞는 것을 추천한" 기능이 있었나요?</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">2</span>조작 활동</h2>
+    <div class="card">
+      <h3>🙋 내가 경험한 인공지능 <span class="tag-opt">실시간 투표</span></h3>
+      <p>경험해 본 것에 투표해 보세요. 우리 반이 인공지능을 얼마나 가까이에서 쓰고 있는지 알 수 있어요.</p>
+      <p class="hint">💻 선생님이 [교사] 버튼으로 방을 열고 QR 코드를 보여 주면 학생들이 바로 참여해요. 이름은 저장되지 않아요.</p>
+      <div id="poll"></div>
+    </div>
+
+    <div class="card">
+      <h3>🧠 인공지능의 네 가지 특성</h3>
+      <div class="feat4">
+        <div><b>🧩 추론</b>지식을 바탕으로 논리적인 과정을 거쳐 새로운 결론을 이끌어 내요.</div>
+        <div><b>📚 학습</b>많은 경험(데이터)으로부터 스스로 규칙을 찾아 배워요.</div>
+        <div><b>👀 인식</b>센서 등으로 이미지, 소리, 글자 등 외부 세계를 알아봐요.</div>
+        <div><b>🎨 생성</b>데이터를 바탕으로 글, 그림, 음악 등 새로운 것을 만들어 내요.</div>
+      </div>
+      <div id="feat" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <h3>⚖️ 일반 소프트웨어 vs 인공지능 소프트웨어</h3>
+      <div class="scroll-x"><table class="cmp">
+        <tr><th></th><th>일반 소프트웨어</th><th>인공지능 소프트웨어</th></tr>
+        <tr><th>하는 일</th><td>계산, 기억 등 정해진 규칙대로 반복하는 일</td><td>판단, 결정, 학습, 추론, 예측 등 지능적인 일</td></tr>
+        <tr><th>결과를 내는 방법</th><td>사람이 만든 알고리즘에 데이터를 넣어 정해진 결과를 출력</td><td>데이터와 정답으로 스스로 규칙(모델)을 학습해 결과를 출력</td></tr>
+      </table></div>
+      <div id="sw" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <h3>💡 물건에 인공지능 입히기 <span class="tag-opt">더 해 보기</span></h3>
+      <p>물건 하나와 특성 하나를 골라, 인공지능을 적용하면 어떤 일을 할 수 있을지 적어 보세요. (저장되지 않아요.)</p>
+      <div class="idea">
+        <select id="thing"><option>🪑 의자</option><option>🔦 손전등</option><option>🪞 거울</option><option>📚 책가방</option><option>🌱 화분</option><option>🧮 계산기</option></select>
+        <select id="ft"><option>인식</option><option>추론</option><option>학습</option><option>생성</option></select>
+        <textarea id="itxt" rows="2" placeholder="예: 거울이 내 얼굴을 인식해 오늘 날씨에 맞는 옷을 추천해요."></textarea>
+        <div class="idea-out" id="iout"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-h"><span class="no">3</span>확인 미션</h2>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <section class="step sum">
+    <h2 class="step-h"><span class="no">4</span>한 줄 정리</h2>
+    <div class="card">
+      <p><b>인공지능</b>은 인간의 지능을 모방한 컴퓨팅 시스템으로 <b>추론, 학습, 인식, 생성</b>의 특성을 가져요. 일반 소프트웨어는 정해진 규칙대로 결과를 내지만, 인공지능 소프트웨어는 데이터로 스스로 규칙을 학습해요.</p>
+    </div>
+  </section>
+  <p class="src">미래엔 중학교 정보 147~151쪽 내용을 바탕으로 재구성</p>
+</main>
+<script src="../assets/contents.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/live.js"></script>
+<script>
+liveVote($('#poll'), {act: '4-01', items: [
+  {t: '음성 인식 비서(스피커, 스마트폰)에게 말로 물어본 적이 있다.', opts: ['🙆 있다', '🙅 없다']},
+  {t: '얼굴이나 지문을 인식해 잠금을 푼 적이 있다.', opts: ['🙆 있다', '🙅 없다']},
+  {t: '글이나 그림을 만들어 주는 생성형 인공지능을 써 본 적이 있다.', opts: ['🙆 있다', '🙅 없다']},
+]});
+
+renderChoice($('#feat'), [
+  {icon:'🚗', t:'자율 주행 자동차가 신호등과 보행자를 보고 지금 멈춰야 한다고 판단해요.', a:0, e:'주어진 정보를 바탕으로 결론을 내리는 추론이에요.'},
+  {icon:'🍎', t:'수많은 과일 사진을 보며 사과와 배를 구별하는 방법을 스스로 익혀요.', a:1, e:'데이터로부터 규칙을 찾는 학습이에요.'},
+  {icon:'🎙️', t:'스마트 스피커가 내 목소리를 알아듣고 글자로 바꿔요.', a:2, e:'소리를 알아보는 인식이에요.'},
+  {icon:'🖼️', t:'"바다 위를 나는 고래"라고 쓰면 그 장면의 그림을 그려 줘요.', a:3, e:'새로운 그림을 만드는 생성이에요.'},
+], ['추론', '학습', '인식', '생성']);
+
+renderChoice($('#sw'), [
+  {icon:'🧮', t:'계산기 앱', a:0, e:'입력한 수를 정해진 규칙대로 계산해요.'},
+  {icon:'📝', t:'워드 프로세서', a:0, e:'사용자가 입력한 대로 문서를 만들어요.'},
+  {icon:'🌐', t:'번역기', a:1, e:'많은 문장 데이터를 학습해 자연스럽게 번역해요.'},
+  {icon:'📧', t:'스팸 메일 필터', a:1, e:'스팸의 특징을 학습해 새 메일을 판단해요.'},
+  {icon:'🎬', t:'콘텐츠 추천 시스템', a:1, e:'내 시청 기록을 학습해 좋아할 만한 것을 추천해요.'},
+], ['일반 소프트웨어', '인공지능 소프트웨어']);
+
+const upd = () => { const v = $('#itxt').value.trim().replace(/[<>&]/g, ''); $('#iout').innerHTML = v ? `<b>${$('#thing').value}</b> + <b>${$('#ft').value}</b> → ${v}` : '<span class="hint">여기에 내 아이디어가 정리돼요.</span>'; };
+['#thing', '#ft', '#itxt'].forEach(s => $(s).oninput = $(s).onchange = upd); upd();
+
+renderQuiz($('#quiz'), [
+  {q:'인간의 지능적인 특징을 모방하여 문제를 해결하도록 만든 컴퓨팅 시스템은?', o:['인공지능','운영체제','데이터베이스'], a:0, e:'인공지능은 추론, 학습, 인식, 생성의 특성을 가져요.'},
+  {q:'인공지능 소프트웨어의 특징으로 알맞은 것은?', o:['사람이 정한 규칙대로만 계산한다','데이터를 바탕으로 스스로 규칙을 학습한다','입력과 상관없이 항상 같은 결과를 낸다'], a:1, e:'인공지능 소프트웨어는 데이터와 정답으로 모델을 학습해요.'},
+]);
+</script>
+</body>
+</html>
